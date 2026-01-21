@@ -203,14 +203,14 @@ export default function MenuEditor() {
                   <div className="space-y-2">
                     <Label>Aplicar a</Label>
                     <Select
-                      value={priceData.sectionId}
-                      onValueChange={(v) => setPriceData({ ...priceData, sectionId: v })}
+                      value={priceData.sectionId || "all"}
+                      onValueChange={(v) => setPriceData({ ...priceData, sectionId: v === "all" ? "" : v })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Todo el menú" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Todo el menú</SelectItem>
+                        <SelectItem value="all">Todo el menú</SelectItem>
                         {sections?.map(s => (
                           <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                         ))}
