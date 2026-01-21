@@ -6,6 +6,7 @@ import {
   UtensilsCrossed, 
   LayoutDashboard, 
   FileText, 
+  BarChart3,
   LogOut,
   Loader2,
   Menu as MenuIcon,
@@ -17,6 +18,7 @@ import { useState } from 'react';
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/menus', label: 'Mis Menús', icon: FileText },
+  { href: '/admin/analytics', label: 'Analítica', icon: BarChart3 },
 ];
 
 export function AdminLayout() {
