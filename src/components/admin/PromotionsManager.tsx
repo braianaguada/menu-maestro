@@ -280,11 +280,11 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
               </Select>
             </div>
 
-            {linkType === 'section' && (
+            {linkType === 'section' && sections.length > 0 && (
               <div className="space-y-2">
                 <Label>Sección</Label>
                 <Select
-                  value={formData.linked_section_id}
+                  value={formData.linked_section_id || undefined}
                   onValueChange={(v) => setFormData({ ...formData, linked_section_id: v })}
                 >
                   <SelectTrigger>
@@ -299,18 +299,18 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
               </div>
             )}
 
-            {linkType === 'item' && (
+            {linkType === 'item' && items && items.length > 0 && (
               <div className="space-y-2">
                 <Label>Ítem</Label>
                 <Select
-                  value={formData.linked_item_id}
+                  value={formData.linked_item_id || undefined}
                   onValueChange={(v) => setFormData({ ...formData, linked_item_id: v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccionar ítem" />
                   </SelectTrigger>
                   <SelectContent>
-                    {items?.map(item => (
+                    {items.map(item => (
                       <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>
                     ))}
                   </SelectContent>
