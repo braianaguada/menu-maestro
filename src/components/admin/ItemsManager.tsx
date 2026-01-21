@@ -26,10 +26,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, Edit, Trash2, Eye, EyeOff, Star, Leaf, Flame, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Star, Leaf, Flame, Loader2, ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import type { Item } from '@/types/menu';
 
 interface ItemsManagerProps {
@@ -40,6 +41,7 @@ const defaultFormData = {
   name: '',
   description: '',
   price: '',
+  image_url: null as string | null,
   is_recommended: false,
   is_vegan: false,
   is_spicy: false,
@@ -62,6 +64,7 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
       name: item.name,
       description: item.description || '',
       price: item.price.toString(),
+      image_url: item.image_url || null,
       is_recommended: item.is_recommended,
       is_vegan: item.is_vegan,
       is_spicy: item.is_spicy,
@@ -95,6 +98,7 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
           name: formData.name,
           description: formData.description || null,
           price,
+          image_url: formData.image_url,
           is_recommended: formData.is_recommended,
           is_vegan: formData.is_vegan,
           is_spicy: formData.is_spicy,
@@ -107,6 +111,7 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
           name: formData.name,
           description: formData.description || undefined,
           price,
+          image_url: formData.image_url,
           is_recommended: formData.is_recommended,
           is_vegan: formData.is_vegan,
           is_spicy: formData.is_spicy,
@@ -173,20 +178,33 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
               !item.is_visible && "opacity-50"
             )}
           >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-medium text-foreground">{item.name}</span>
-                {item.is_recommended && (
-                  <Star className="w-3.5 h-3.5 text-primary" />
-                )}
-                {item.is_vegan && (
-                  <Leaf className="w-3.5 h-3.5 text-green-500" />
-                )}
-                {item.is_spicy && (
-                  <Flame className="w-3.5 h-3.5 text-red-500" />
-                )}
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {item.image_url ? (
+                <img
+                  src={item.image_url}
+                  alt={item.name}
+                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-medium text-foreground">{item.name}</span>
+                  {item.is_recommended && (
+                    <Star className="w-3.5 h-3.5 text-primary" />
+                  )}
+                  {item.is_vegan && (
+                    <Leaf className="w-3.5 h-3.5 text-green-500" />
+                  )}
+                  {item.is_spicy && (
+                    <Flame className="w-3.5 h-3.5 text-red-500" />
+                  )}
+                </div>
+                <p className="text-sm text-primary font-medium">{formatPrice(item.price)}</p>
               </div>
-              <p className="text-sm text-primary font-medium">{formatPrice(item.price)}</p>
             </div>
             <div className="flex items-center gap-1">
               <Button
@@ -265,6 +283,16 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                 placeholder="0"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Imagen (opcional)</Label>
+              <ImageUpload
+                value={formData.image_url}
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+                folder="items"
+                aspectRatio="wide"
+                placeholder="Foto del plato"
               />
             </div>
             <div className="space-y-3">

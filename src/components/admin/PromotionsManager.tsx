@@ -33,10 +33,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Eye, EyeOff, Sparkles, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Sparkles, Loader2, ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import type { Promotion, Section } from '@/types/menu';
 
 interface PromotionsManagerProps {
@@ -48,6 +49,7 @@ const defaultFormData = {
   title: '',
   description: '',
   price_text: '',
+  image_url: null as string | null,
   linked_section_id: '',
   linked_item_id: '',
 };
@@ -71,6 +73,7 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
       title: promo.title,
       description: promo.description || '',
       price_text: promo.price_text,
+      image_url: promo.image_url || null,
       linked_section_id: promo.linked_section_id || '',
       linked_item_id: promo.linked_item_id || '',
     });
@@ -102,6 +105,7 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
       title: formData.title,
       description: formData.description || undefined,
       price_text: formData.price_text,
+      image_url: formData.image_url,
       linked_section_id: linkType === 'section' ? formData.linked_section_id || undefined : undefined,
       linked_item_id: linkType === 'item' ? formData.linked_item_id || undefined : undefined,
     };
@@ -167,20 +171,33 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
             )}
           >
             <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  <h3 className="font-medium text-foreground">{promo.title}</h3>
-                  {!promo.is_active && (
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-500/10 text-yellow-500">
-                      Inactivo
-                    </span>
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                {promo.image_url ? (
+                  <img
+                    src={promo.image_url}
+                    alt={promo.title}
+                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                    <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <h3 className="font-medium text-foreground">{promo.title}</h3>
+                    {!promo.is_active && (
+                      <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-500/10 text-yellow-500">
+                        Inactivo
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-primary font-semibold">{promo.price_text}</p>
+                  {promo.description && (
+                    <p className="text-sm text-muted-foreground mt-1">{promo.description}</p>
                   )}
                 </div>
-                <p className="text-sm text-primary font-semibold">{promo.price_text}</p>
-                {promo.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{promo.description}</p>
-                )}
               </div>
               <div className="flex items-center gap-1">
                 <Button
@@ -258,6 +275,16 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                 placeholder="Descripción de la promo"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Imagen (opcional)</Label>
+              <ImageUpload
+                value={formData.image_url}
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+                folder="promotions"
+                aspectRatio="wide"
+                placeholder="Imagen de promoción"
               />
             </div>
             <div className="space-y-2">
