@@ -208,6 +208,7 @@ export function useCreateItem() {
       name: string; 
       description?: string; 
       price: number;
+      image_url?: string | null;
       is_recommended?: boolean;
       is_vegan?: boolean;
       is_spicy?: boolean;

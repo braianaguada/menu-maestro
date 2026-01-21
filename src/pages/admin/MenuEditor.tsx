@@ -35,6 +35,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { SectionsManager } from '@/components/admin/SectionsManager';
 import { PromotionsManager } from '@/components/admin/PromotionsManager';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { cn } from '@/lib/utils';
 
 export default function MenuEditor() {
@@ -52,6 +53,7 @@ export default function MenuEditor() {
     slug?: string;
     theme?: MenuTheme;
     status?: 'draft' | 'published';
+    logo_url?: string | null;
   }>({});
 
   const [priceDialog, setPriceDialog] = useState(false);
@@ -62,6 +64,7 @@ export default function MenuEditor() {
     slug: editData.slug ?? menu?.slug ?? '',
     theme: editData.theme ?? menu?.theme ?? 'elegant',
     status: editData.status ?? menu?.status ?? 'draft',
+    logo_url: editData.logo_url !== undefined ? editData.logo_url : (menu?.logo_url ?? null),
   };
 
   const hasChanges = Object.keys(editData).length > 0;
@@ -264,6 +267,21 @@ export default function MenuEditor() {
             <h2 className="font-display text-xl font-semibold text-foreground">
               Configuración del menú
             </h2>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label>Logo del local</Label>
+                <div className="max-w-[200px]">
+                  <ImageUpload
+                    value={currentData.logo_url}
+                    onChange={(url) => setEditData({ ...editData, logo_url: url })}
+                    folder="logos"
+                    aspectRatio="square"
+                    placeholder="Subir logo"
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
