@@ -53,6 +53,8 @@ export interface Promotion {
   sort_order: number;
   linked_section_id: string | null;
   linked_item_id: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
   created_at: string;
   updated_at: string;
 }

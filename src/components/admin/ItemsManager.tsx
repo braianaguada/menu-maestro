@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import {
   useItems,
   useCreateItem,
   useUpdateItem,
   useDeleteItem,
 } from '@/hooks/useAdminMenus';
+import { useReorderMutation } from '@/hooks/useSortableList';
+import { SortableItem } from './SortableItem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -52,11 +68,40 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
   const createItem = useCreateItem();
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
+  const reorderMutation = useReorderMutation('items', [['admin-items', sectionId]]);
 
+  const [localItems, setLocalItems] = useState<Item[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [formData, setFormData] = useState(defaultFormData);
+
+  useEffect(() => {
+    if (items) {
+      setLocalItems(items);
+    }
+  }, [items]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = localItems.findIndex(i => i.id === active.id);
+    const newIndex = localItems.findIndex(i => i.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newItems = [...localItems];
+      const [removed] = newItems.splice(oldIndex, 1);
+      newItems.splice(newIndex, 0, removed);
+      setLocalItems(newItems);
+      reorderMutation.mutate(newItems.map((item, i) => ({ id: item.id, sort_order: i })));
+    }
+  };
 
   const openEditDialog = (item: Item) => {
     setEditingItem(item);
@@ -169,77 +214,89 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
 
   return (
     <div className="space-y-2">
-      {items && items.length > 0 ? (
-        items.map((item) => (
-          <div
-            key={item.id}
-            className={cn(
-              "flex items-center justify-between p-3 rounded-lg bg-background/50",
-              !item.is_visible && "opacity-50"
-            )}
-          >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              {item.image_url ? (
-                <img
-                  src={item.image_url}
-                  alt={item.name}
-                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={localItems.map(i => i.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {localItems.length > 0 ? (
+            localItems.map((item) => (
+              <SortableItem key={item.id} id={item.id}>
+                <div
+                  className={cn(
+                    "flex items-center justify-between p-3 rounded-lg bg-background/50",
+                    !item.is_visible && "opacity-50"
+                  )}
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                        <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-foreground">{item.name}</span>
+                        {item.is_recommended && (
+                          <Star className="w-3.5 h-3.5 text-primary" />
+                        )}
+                        {item.is_vegan && (
+                          <Leaf className="w-3.5 h-3.5 text-green-500" />
+                        )}
+                        {item.is_spicy && (
+                          <Flame className="w-3.5 h-3.5 text-red-500" />
+                        )}
+                      </div>
+                      <p className="text-sm text-primary font-medium">{formatPrice(item.price)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleVisibility(item)}
+                    >
+                      {item.is_visible ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <EyeOff className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openEditDialog(item)}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeleteId(item.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-foreground">{item.name}</span>
-                  {item.is_recommended && (
-                    <Star className="w-3.5 h-3.5 text-primary" />
-                  )}
-                  {item.is_vegan && (
-                    <Leaf className="w-3.5 h-3.5 text-green-500" />
-                  )}
-                  {item.is_spicy && (
-                    <Flame className="w-3.5 h-3.5 text-red-500" />
-                  )}
-                </div>
-                <p className="text-sm text-primary font-medium">{formatPrice(item.price)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => toggleVisibility(item)}
-              >
-                {item.is_visible ? (
-                  <Eye className="w-4 h-4" />
-                ) : (
-                  <EyeOff className="w-4 h-4" />
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => openEditDialog(item)}
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDeleteId(item.id)}
-              >
-                <Trash2 className="w-4 h-4 text-destructive" />
-              </Button>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p className="text-sm text-muted-foreground text-center py-4">
-          Sin ítems en esta sección
-        </p>
-      )}
+              </SortableItem>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Sin ítems en esta sección
+            </p>
+          )}
+        </SortableContext>
+      </DndContext>
 
       <Button onClick={openCreateDialog} variant="ghost" size="sm" className="w-full">
         <Plus className="w-4 h-4 mr-2" />

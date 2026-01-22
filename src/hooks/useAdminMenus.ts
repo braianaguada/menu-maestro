@@ -292,8 +292,11 @@ export function useCreatePromotion() {
       title: string; 
       description?: string; 
       price_text: string;
+      image_url?: string | null;
       linked_section_id?: string;
       linked_item_id?: string;
+      starts_at?: string | null;
+      ends_at?: string | null;
       sort_order?: number;
     }) => {
       const { data: promo, error } = await supabase
