@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import {
   useSections,
   useCreateSection,
   useUpdateSection,
   useDeleteSection,
 } from '@/hooks/useAdminMenus';
+import { useReorderMutation } from '@/hooks/useSortableList';
+import { SortableItem } from './SortableItem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,12 +62,41 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
   const createSection = useCreateSection();
   const updateSection = useUpdateSection();
   const deleteSection = useDeleteSection();
+  const reorderMutation = useReorderMutation('sections', [['admin-sections', menuId]]);
 
+  const [localSections, setLocalSections] = useState<Section[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', description: '' });
   const [openSections, setOpenSections] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (sections) {
+      setLocalSections(sections);
+    }
+  }, [sections]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = localSections.findIndex(s => s.id === active.id);
+    const newIndex = localSections.findIndex(s => s.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newItems = [...localSections];
+      const [removed] = newItems.splice(oldIndex, 1);
+      newItems.splice(newIndex, 0, removed);
+      setLocalSections(newItems);
+      reorderMutation.mutate(newItems.map((s, i) => ({ id: s.id, sort_order: i })));
+    }
+  };
 
   const toggleSection = (id: string) => {
     setOpenSections(prev => 
@@ -138,78 +183,90 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
 
   return (
     <div className="space-y-4">
-      {sections && sections.length > 0 ? (
-        sections.map((section) => (
-          <Collapsible
-            key={section.id}
-            open={openSections.includes(section.id)}
-            onOpenChange={() => toggleSection(section.id)}
-          >
-            <div className={cn(
-              "gradient-card border rounded-xl overflow-hidden",
-              section.is_visible ? "border-border/50" : "border-yellow-500/30 opacity-75"
-            )}>
-              <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <ChevronDown className={cn(
-                      "w-5 h-5 text-muted-foreground transition-transform",
-                      openSections.includes(section.id) && "rotate-180"
-                    )} />
-                    <div>
-                      <h3 className="font-medium text-foreground">{section.name}</h3>
-                      {section.description && (
-                        <p className="text-sm text-muted-foreground">{section.description}</p>
-                      )}
-                    </div>
-                    {!section.is_visible && (
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-500/10 text-yellow-500">
-                        Oculto
-                      </span>
-                    )}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={localSections.map(s => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {localSections.length > 0 ? (
+            localSections.map((section) => (
+              <SortableItem key={section.id} id={section.id}>
+                <Collapsible
+                  open={openSections.includes(section.id)}
+                  onOpenChange={() => toggleSection(section.id)}
+                >
+                  <div className={cn(
+                    "gradient-card border rounded-xl overflow-hidden",
+                    section.is_visible ? "border-border/50" : "border-yellow-500/30 opacity-75"
+                  )}>
+                    <CollapsibleTrigger asChild>
+                      <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <ChevronDown className={cn(
+                            "w-5 h-5 text-muted-foreground transition-transform",
+                            openSections.includes(section.id) && "rotate-180"
+                          )} />
+                          <div>
+                            <h3 className="font-medium text-foreground">{section.name}</h3>
+                            {section.description && (
+                              <p className="text-sm text-muted-foreground">{section.description}</p>
+                            )}
+                          </div>
+                          {!section.is_visible && (
+                            <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-500/10 text-yellow-500">
+                              Oculto
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => toggleVisibility(section)}
+                          >
+                            {section.is_visible ? (
+                              <Eye className="w-4 h-4" />
+                            ) : (
+                              <EyeOff className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditDialog(section)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteId(section.id)}
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="border-t border-border/50 p-4 bg-muted/20">
+                        <ItemsManager sectionId={section.id} />
+                      </div>
+                    </CollapsibleContent>
                   </div>
-                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleVisibility(section)}
-                    >
-                      {section.is_visible ? (
-                        <Eye className="w-4 h-4" />
-                      ) : (
-                        <EyeOff className="w-4 h-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(section)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setDeleteId(section.id)}
-                    >
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="border-t border-border/50 p-4 bg-muted/20">
-                  <ItemsManager sectionId={section.id} />
-                </div>
-              </CollapsibleContent>
+                </Collapsible>
+              </SortableItem>
+            ))
+          ) : (
+            <div className="gradient-card border border-border/50 rounded-xl p-8 text-center">
+              <p className="text-muted-foreground mb-4">No hay secciones aún</p>
             </div>
-          </Collapsible>
-        ))
-      ) : (
-        <div className="gradient-card border border-border/50 rounded-xl p-8 text-center">
-          <p className="text-muted-foreground mb-4">No hay secciones aún</p>
-        </div>
-      )}
+          )}
+        </SortableContext>
+      </DndContext>
 
       <Button onClick={openCreateDialog} variant="outline" className="w-full">
         <Plus className="w-4 h-4 mr-2" />

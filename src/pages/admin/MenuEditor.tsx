@@ -23,7 +23,6 @@ import {
 import { 
   ArrowLeft, 
   Save, 
-  Eye, 
   Settings, 
   LayoutList, 
   Sparkles,
@@ -36,6 +35,7 @@ import { toast } from 'sonner';
 import { SectionsManager } from '@/components/admin/SectionsManager';
 import { PromotionsManager } from '@/components/admin/PromotionsManager';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { QRCodeGenerator } from '@/components/admin/QRCodeGenerator';
 import { cn } from '@/lib/utils';
 
 export default function MenuEditor() {
@@ -146,12 +146,15 @@ export default function MenuEditor() {
 
         <div className="flex items-center gap-2">
           {currentData.status === 'published' && (
-            <Button variant="outline" size="sm" asChild>
-              <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Ver menú
-              </a>
-            </Button>
+            <>
+              <QRCodeGenerator menuSlug={currentData.slug} menuName={currentData.name} />
+              <Button variant="outline" size="sm" asChild>
+                <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Ver menú
+                </a>
+              </Button>
+            </>
           )}
           {hasChanges && (
             <Button onClick={handleSave} disabled={updateMenu.isPending}>
