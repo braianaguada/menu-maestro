@@ -1,16 +1,34 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
-import { MenuHeader } from '@/components/menu/MenuHeader';
-import { PromotionsCarousel } from '@/components/menu/PromotionsCarousel';
-import { MenuSection } from '@/components/menu/MenuSection';
+import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
+import { getThemeConfig, normalizeTheme } from '@/themes/menuThemes';
+import { EditorialHeader } from '@/components/menu/EditorialHeader';
+import { EditorialPromosSection } from '@/components/menu/EditorialPromosSection';
+import { EditorialMenuSection } from '@/components/menu/EditorialMenuSection';
+import { StickySectionsNav } from '@/components/menu/StickySectionsNav';
+import { BackToTopButton } from '@/components/menu/BackToTopButton';
+import { EditorialFooter } from '@/components/menu/EditorialFooter';
 import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
+
+  // Memoize section IDs for observer
+  const sectionIds = useMemo(() => 
+    menu?.sections.map(s => s.id) || [], 
+    [menu?.sections]
+  );
+
+  // Active section observer with scroll helpers
+  const { activeSectionId, scrollToSection, scrollToItem } = useActiveSectionObserver({
+    sectionIds,
+    offset: 100,
+  });
 
   // Track page view on mount
   useEffect(() => {
@@ -22,34 +40,23 @@ export default function PublicMenu() {
   // Apply theme class
   useEffect(() => {
     if (menu?.theme) {
-      document.documentElement.classList.remove('theme-light', 'theme-modern');
-      if (menu.theme !== 'elegant') {
-        document.documentElement.classList.add(`theme-${menu.theme}`);
-      }
+      const themeConfig = getThemeConfig(menu.theme);
+      document.documentElement.classList.remove(
+        'theme-editorial', 'theme-modern', 'theme-light', 'theme-bistro'
+      );
+      document.documentElement.classList.add(themeConfig.className);
     }
     return () => {
-      document.documentElement.classList.remove('theme-light', 'theme-modern');
+      document.documentElement.classList.remove(
+        'theme-editorial', 'theme-modern', 'theme-light', 'theme-bistro'
+      );
     };
   }, [menu?.theme]);
 
-  const scrollToElement = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Add highlight effect
-      element.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
-      setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
-      }, 2000);
-    }
-  };
-
-  const handleNavigateToSection = (sectionId: string) => {
-    scrollToElement(`section-${sectionId}`);
-  };
-
-  const handleNavigateToItem = (itemId: string) => {
-    scrollToElement(`item-${itemId}`);
+  // Handle PDF download
+  const handleDownloadPdf = () => {
+    const theme = menu?.theme ? normalizeTheme(menu.theme) : 'editorial';
+    window.open(`/m/${slug}/print?theme=${theme}`, '_blank');
   };
 
   if (isLoading) {
@@ -60,44 +67,58 @@ export default function PublicMenu() {
     return <MenuNotFound />;
   }
 
-  const activePromotions = menu.promotions.filter(p => p.is_active);
+  // Filter active promotions based on schedule
+  const now = new Date();
+  const activePromotions = menu.promotions.filter(p => {
+    if (!p.is_active) return false;
+    if (p.starts_at && new Date(p.starts_at) > now) return false;
+    if (p.ends_at && new Date(p.ends_at) < now) return false;
+    return true;
+  });
+
+  const visibleSections = menu.sections.filter(s => s.items.length > 0);
 
   return (
-    <div className={cn("min-h-screen gradient-dark")}>
-      <MenuHeader name={menu.name} logoUrl={menu.logo_url} />
+    <div className={cn("min-h-screen bg-background")}>
+      {/* Header - Hero */}
+      <EditorialHeader name={menu.name} logoUrl={menu.logo_url} />
+
+      {/* Sticky Section Navigation */}
+      <StickySectionsNav
+        sections={visibleSections}
+        activeSectionId={activeSectionId}
+        onSectionClick={scrollToSection}
+      />
 
       {/* Promotions Carousel */}
       {activePromotions.length > 0 && (
-        <PromotionsCarousel
+        <EditorialPromosSection
           promotions={activePromotions}
-          onNavigateToSection={handleNavigateToSection}
-          onNavigateToItem={handleNavigateToItem}
+          onNavigateToSection={scrollToSection}
+          onNavigateToItem={scrollToItem}
         />
       )}
 
       {/* Menu Sections */}
-      <main className="container max-w-2xl mx-auto px-4 pb-12">
-        {menu.sections.map((section) => (
-          <MenuSection key={section.id} section={section} />
+      <main className="container max-w-3xl mx-auto px-4 md:px-6 pb-12">
+        {visibleSections.map((section) => (
+          <EditorialMenuSection key={section.id} section={section} />
         ))}
 
-        {menu.sections.length === 0 && (
-          <div className="py-16 text-center">
-            <p className="text-muted-foreground">
+        {visibleSections.length === 0 && (
+          <div className="py-20 text-center">
+            <p className="text-muted-foreground font-body">
               Este menú aún no tiene secciones.
             </p>
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="py-6 border-t border-border/50">
-        <div className="container max-w-2xl mx-auto px-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            Menú digital creado con ❤️
-          </p>
-        </div>
-      </footer>
+      {/* Footer with PDF download */}
+      <EditorialFooter onDownloadPdf={handleDownloadPdf} />
+
+      {/* Back to Top Button */}
+      <BackToTopButton threshold={600} />
     </div>
   );
 }

@@ -2,178 +2,282 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Import Google Fonts - Premium typography */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap');
 
-/* Design System - Digital Menu Premium */
+/* Print styles */
+@import './styles/print.css';
+
+/* ============================================
+   PREMIUM EDITORIAL MENU DESIGN SYSTEM
+   ============================================ */
 
 @layer base {
-  :root {
-    /* Elegant Theme (Default) - Dark with gold accents */
-    --background: 20 14% 8%;
-    --foreground: 40 20% 95%;
+  /* ----------------------------------------
+     THEME 1: EDITORIAL (Default)
+     Premium editorial style with warm ivory tones
+     ---------------------------------------- */
+  :root,
+  .theme-editorial {
+    --background: 40 30% 97%;
+    --foreground: 30 15% 12%;
 
-    --card: 20 12% 12%;
-    --card-foreground: 40 20% 95%;
+    --card: 40 40% 99%;
+    --card-foreground: 30 15% 12%;
 
-    --popover: 20 12% 10%;
-    --popover-foreground: 40 20% 95%;
+    --popover: 40 40% 99%;
+    --popover-foreground: 30 15% 12%;
 
-    --primary: 38 70% 50%;
-    --primary-foreground: 20 14% 8%;
+    --primary: 30 45% 28%;
+    --primary-foreground: 40 30% 97%;
 
-    --secondary: 20 10% 18%;
-    --secondary-foreground: 40 20% 90%;
+    --secondary: 35 20% 93%;
+    --secondary-foreground: 30 15% 20%;
 
-    --muted: 20 10% 16%;
-    --muted-foreground: 30 10% 55%;
+    --muted: 35 15% 94%;
+    --muted-foreground: 30 10% 45%;
 
-    --accent: 38 60% 45%;
-    --accent-foreground: 20 14% 8%;
+    --accent: 30 40% 32%;
+    --accent-foreground: 40 30% 97%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 10% 20%;
-    --input: 20 10% 18%;
-    --ring: 38 70% 50%;
+    --border: 35 15% 88%;
+    --input: 35 15% 90%;
+    --ring: 30 45% 28%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     /* Custom tokens */
-    --gold: 38 70% 50%;
-    --gold-light: 40 65% 60%;
-    --gold-dark: 36 75% 40%;
-    --cream: 40 30% 92%;
-    --charcoal: 20 14% 12%;
-    
+    --gold: 30 45% 28%;
+    --gold-light: 32 40% 40%;
+    --gold-dark: 28 50% 22%;
+    --cream: 40 35% 96%;
+    --charcoal: 30 15% 12%;
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    --font-body: 'Manrope', 'Inter', system-ui, sans-serif;
+
     /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(38 70% 50%), hsl(40 65% 60%));
-    --gradient-dark: linear-gradient(180deg, hsl(20 14% 8%), hsl(20 12% 6%));
-    --gradient-card: linear-gradient(145deg, hsl(20 12% 14%), hsl(20 12% 10%));
-    
+    --gradient-gold: linear-gradient(135deg, hsl(30 45% 28%), hsl(32 40% 40%));
+    --gradient-dark: linear-gradient(180deg, hsl(40 30% 97%), hsl(35 25% 94%));
+    --gradient-card: linear-gradient(145deg, hsl(40 40% 99%), hsl(35 30% 97%));
+
     /* Shadows */
-    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 8px 24px -8px hsl(0 0% 0% / 0.4);
-    --shadow-lg: 0 16px 48px -16px hsl(0 0% 0% / 0.5);
-    --shadow-gold: 0 4px 20px -4px hsl(38 70% 50% / 0.25);
+    --shadow-sm: 0 1px 3px -1px hsl(30 15% 12% / 0.06);
+    --shadow-md: 0 4px 12px -4px hsl(30 15% 12% / 0.08);
+    --shadow-lg: 0 12px 32px -12px hsl(30 15% 12% / 0.12);
+    --shadow-gold: 0 4px 16px -4px hsl(30 45% 28% / 0.15);
+
+    --sidebar-background: 40 40% 99%;
+    --sidebar-foreground: 30 15% 20%;
+    --sidebar-primary: 30 45% 28%;
+    --sidebar-primary-foreground: 40 30% 97%;
+    --sidebar-accent: 35 20% 94%;
+    --sidebar-accent-foreground: 30 15% 20%;
+    --sidebar-border: 35 15% 88%;
+    --sidebar-ring: 30 45% 28%;
+  }
+
+  /* ----------------------------------------
+     THEME 2: MODERN DARK
+     Sleek dark with teal accents for cocktail bars
+     ---------------------------------------- */
+  .theme-modern {
+    --background: 220 20% 7%;
+    --foreground: 210 15% 95%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 210 15% 95%;
+
+    --popover: 220 18% 9%;
+    --popover-foreground: 210 15% 95%;
+
+    --primary: 172 60% 48%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 15% 90%;
+
+    --muted: 220 15% 13%;
+    --muted-foreground: 215 12% 55%;
+
+    --accent: 172 55% 42%;
+    --accent-foreground: 220 20% 7%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 16%;
+    --input: 220 15% 14%;
+    --ring: 172 60% 48%;
+
+    /* Custom tokens */
+    --gold: 172 60% 48%;
+    --gold-light: 170 55% 58%;
+    --gold-dark: 174 65% 38%;
+    --charcoal: 220 20% 8%;
 
     /* Typography */
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    --sidebar-background: 20 12% 10%;
-    --sidebar-foreground: 40 20% 90%;
-    --sidebar-primary: 38 70% 50%;
-    --sidebar-primary-foreground: 20 14% 8%;
-    --sidebar-accent: 20 10% 16%;
-    --sidebar-accent-foreground: 40 20% 90%;
-    --sidebar-border: 20 10% 18%;
-    --sidebar-ring: 38 70% 50%;
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(172 60% 48%), hsl(170 55% 58%));
+    --gradient-dark: linear-gradient(180deg, hsl(220 20% 7%), hsl(220 18% 5%));
+    --gradient-card: linear-gradient(145deg, hsl(220 18% 12%), hsl(220 18% 8%));
+
+    /* Shadows */
+    --shadow-sm: 0 2px 6px -2px hsl(0 0% 0% / 0.35);
+    --shadow-md: 0 6px 20px -6px hsl(0 0% 0% / 0.45);
+    --shadow-lg: 0 16px 40px -16px hsl(0 0% 0% / 0.55);
+    --shadow-gold: 0 4px 20px -4px hsl(172 60% 48% / 0.25);
+
+    --sidebar-background: 220 18% 9%;
+    --sidebar-foreground: 210 15% 90%;
+    --sidebar-primary: 172 60% 48%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 13%;
+    --sidebar-accent-foreground: 210 15% 90%;
+    --sidebar-border: 220 15% 14%;
+    --sidebar-ring: 172 60% 48%;
   }
 
-  /* Light Theme */
+  /* ----------------------------------------
+     THEME 3: MINIMAL LIGHT
+     Clean ivory, airy, for cafés/fine dining
+     ---------------------------------------- */
   .theme-light {
-    --background: 40 30% 97%;
-    --foreground: 20 20% 15%;
+    --background: 45 35% 98%;
+    --foreground: 25 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 20 20% 15%;
+    --card-foreground: 25 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 20% 15%;
+    --popover-foreground: 25 20% 15%;
 
-    --primary: 25 80% 35%;
-    --primary-foreground: 40 30% 97%;
+    --primary: 22 75% 42%;
+    --primary-foreground: 45 35% 98%;
 
-    --secondary: 35 25% 92%;
-    --secondary-foreground: 20 20% 20%;
+    --secondary: 40 25% 94%;
+    --secondary-foreground: 25 20% 20%;
 
-    --muted: 35 20% 94%;
-    --muted-foreground: 20 10% 45%;
+    --muted: 40 20% 95%;
+    --muted-foreground: 25 12% 48%;
 
-    --accent: 25 70% 40%;
-    --accent-foreground: 40 30% 97%;
+    --accent: 22 70% 38%;
+    --accent-foreground: 45 35% 98%;
 
-    --border: 30 20% 88%;
-    --input: 30 15% 90%;
-    --ring: 25 80% 35%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --gold: 25 80% 35%;
-    --gold-light: 28 70% 45%;
-    --gold-dark: 22 85% 28%;
-    --charcoal: 20 20% 15%;
+    --border: 35 20% 90%;
+    --input: 35 18% 92%;
+    --ring: 22 75% 42%;
 
-    --gradient-gold: linear-gradient(135deg, hsl(25 80% 35%), hsl(28 70% 45%));
-    --gradient-dark: linear-gradient(180deg, hsl(40 30% 97%), hsl(35 25% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(35 20% 98%));
+    /* Custom tokens */
+    --gold: 22 75% 42%;
+    --gold-light: 24 68% 52%;
+    --gold-dark: 20 80% 34%;
+    --charcoal: 25 20% 15%;
 
-    --shadow-sm: 0 2px 8px -2px hsl(20 20% 15% / 0.08);
-    --shadow-md: 0 8px 24px -8px hsl(20 20% 15% / 0.12);
-    --shadow-lg: 0 16px 48px -16px hsl(20 20% 15% / 0.16);
-    --shadow-gold: 0 4px 20px -4px hsl(25 80% 35% / 0.2);
+    /* Typography */
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(22 75% 42%), hsl(24 68% 52%));
+    --gradient-dark: linear-gradient(180deg, hsl(45 35% 98%), hsl(40 30% 96%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(40 25% 98%));
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px -1px hsl(25 20% 15% / 0.06);
+    --shadow-md: 0 4px 12px -4px hsl(25 20% 15% / 0.08);
+    --shadow-lg: 0 12px 32px -12px hsl(25 20% 15% / 0.12);
+    --shadow-gold: 0 4px 16px -4px hsl(22 75% 42% / 0.18);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 20 20% 20%;
-    --sidebar-primary: 25 80% 35%;
-    --sidebar-primary-foreground: 40 30% 97%;
-    --sidebar-accent: 35 25% 94%;
-    --sidebar-accent-foreground: 20 20% 20%;
-    --sidebar-border: 30 20% 88%;
-    --sidebar-ring: 25 80% 35%;
+    --sidebar-foreground: 25 20% 20%;
+    --sidebar-primary: 22 75% 42%;
+    --sidebar-primary-foreground: 45 35% 98%;
+    --sidebar-accent: 40 25% 95%;
+    --sidebar-accent-foreground: 25 20% 20%;
+    --sidebar-border: 35 20% 90%;
+    --sidebar-ring: 22 75% 42%;
   }
 
-  /* Modern Dark Theme */
-  .theme-modern {
-    --background: 220 15% 8%;
-    --foreground: 210 20% 96%;
+  /* ----------------------------------------
+     THEME 4: BOLD BISTRO
+     Warm terracotta & olive, rustic premium
+     ---------------------------------------- */
+  .theme-bistro {
+    --background: 38 25% 12%;
+    --foreground: 40 25% 94%;
 
-    --card: 220 14% 11%;
-    --card-foreground: 210 20% 96%;
+    --card: 38 22% 15%;
+    --card-foreground: 40 25% 94%;
 
-    --popover: 220 14% 10%;
-    --popover-foreground: 210 20% 96%;
+    --popover: 38 22% 14%;
+    --popover-foreground: 40 25% 94%;
 
-    --primary: 170 80% 45%;
-    --primary-foreground: 220 15% 8%;
+    --primary: 18 65% 52%;
+    --primary-foreground: 38 25% 10%;
 
-    --secondary: 220 12% 16%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 38 18% 20%;
+    --secondary-foreground: 40 25% 88%;
 
-    --muted: 220 12% 14%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 38 15% 18%;
+    --muted-foreground: 35 15% 55%;
 
-    --accent: 170 70% 40%;
-    --accent-foreground: 220 15% 8%;
+    --accent: 85 35% 45%;
+    --accent-foreground: 38 25% 10%;
 
-    --border: 220 12% 18%;
-    --input: 220 12% 16%;
-    --ring: 170 80% 45%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --gold: 170 80% 45%;
-    --gold-light: 168 70% 55%;
-    --gold-dark: 172 85% 35%;
-    --charcoal: 220 15% 10%;
+    --border: 38 15% 22%;
+    --input: 38 15% 20%;
+    --ring: 18 65% 52%;
 
-    --gradient-gold: linear-gradient(135deg, hsl(170 80% 45%), hsl(168 70% 55%));
-    --gradient-dark: linear-gradient(180deg, hsl(220 15% 8%), hsl(220 14% 6%));
-    --gradient-card: linear-gradient(145deg, hsl(220 14% 13%), hsl(220 14% 9%));
+    /* Custom tokens */
+    --gold: 18 65% 52%;
+    --gold-light: 20 60% 62%;
+    --gold-dark: 16 70% 42%;
+    --charcoal: 38 25% 10%;
+    --olive: 85 35% 45%;
 
-    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.4);
-    --shadow-md: 0 8px 24px -8px hsl(0 0% 0% / 0.5);
-    --shadow-lg: 0 16px 48px -16px hsl(0 0% 0% / 0.6);
-    --shadow-gold: 0 4px 20px -4px hsl(170 80% 45% / 0.25);
+    /* Typography */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
 
-    --sidebar-background: 220 14% 10%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 170 80% 45%;
-    --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 12% 14%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 220 12% 16%;
-    --sidebar-ring: 170 80% 45%;
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(18 65% 52%), hsl(20 60% 62%));
+    --gradient-dark: linear-gradient(180deg, hsl(38 25% 12%), hsl(38 22% 9%));
+    --gradient-card: linear-gradient(145deg, hsl(38 22% 17%), hsl(38 22% 13%));
+
+    /* Shadows */
+    --shadow-sm: 0 2px 6px -2px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 6px 18px -6px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 14px 36px -14px hsl(0 0% 0% / 0.5);
+    --shadow-gold: 0 4px 18px -4px hsl(18 65% 52% / 0.25);
+
+    --sidebar-background: 38 22% 14%;
+    --sidebar-foreground: 40 25% 88%;
+    --sidebar-primary: 18 65% 52%;
+    --sidebar-primary-foreground: 38 25% 10%;
+    --sidebar-accent: 38 18% 18%;
+    --sidebar-accent-foreground: 40 25% 88%;
+    --sidebar-border: 38 15% 20%;
+    --sidebar-ring: 18 65% 52%;
   }
 }
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
 
 @layer base {
   * {
@@ -193,6 +297,10 @@
     font-family: var(--font-display);
   }
 }
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
 
 @layer utilities {
   .font-display {
@@ -260,12 +368,19 @@
 
   /* Glass effect */
   .glass {
-    background: hsl(var(--card) / 0.8);
+    background: hsl(var(--card) / 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
   /* Text truncate with lines */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -281,7 +396,10 @@
   }
 }
 
-/* Animations */
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -314,11 +432,11 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 .animate-slide-in-left {
-  animation: slideInLeft 0.4s ease-out forwards;
+  animation: slideInLeft 0.3s ease-out forwards;
 }
 
 .animate-shimmer {

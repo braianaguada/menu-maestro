@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import PublicMenu from "./pages/PublicMenu";
+import PrintMenu from "./pages/PrintMenu";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/m/:slug" element={<PublicMenu />} />
+          <Route path="/m/:slug/print" element={<PrintMenu />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
