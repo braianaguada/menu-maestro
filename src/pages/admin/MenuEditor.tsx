@@ -312,7 +312,7 @@ export default function MenuEditor() {
               </div>
 
               <div className="space-y-2">
-                <Label>Tema</Label>
+                <Label>Tema visual</Label>
                 <Select
                   value={currentData.theme}
                   onValueChange={(v) => setEditData({ ...editData, theme: v as MenuTheme })}
@@ -321,9 +321,30 @@ export default function MenuEditor() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="elegant">Elegante (Oscuro)</SelectItem>
-                    <SelectItem value="light">Claro</SelectItem>
-                    <SelectItem value="modern">Moderno</SelectItem>
+                    <SelectItem value="editorial">
+                      <div className="flex flex-col">
+                        <span>Editorial</span>
+                        <span className="text-xs text-muted-foreground">Marfil premium, serif clásico</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="modern">
+                      <div className="flex flex-col">
+                        <span>Modern Dark</span>
+                        <span className="text-xs text-muted-foreground">Oscuro elegante, cocktail bar</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="light">
+                      <div className="flex flex-col">
+                        <span>Minimal Light</span>
+                        <span className="text-xs text-muted-foreground">Claro aireado, cafetería</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="bistro">
+                      <div className="flex flex-col">
+                        <span>Bold Bistro</span>
+                        <span className="text-xs text-muted-foreground">Terracota cálido, rústico</span>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
