@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -22,32 +22,70 @@ const navItems = [
 ];
 
 export function AdminLayout() {
-  const { user, loading, signOut, isAuthenticated } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authVerified, setAuthVerified] = useState(false);
+  const [verifying, setVerifying] = useState(true);
 
+  // Server-side auth verification on mount - prevents UI flash
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/auth');
-    }
-  }, [loading, isAuthenticated, navigate]);
+    let mounted = true;
+    
+    const verifyAuth = async () => {
+      try {
+        // Direct server verification - not relying on cached state
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+        
+        if (error || !session) {
+          navigate('/auth', { replace: true });
+          return;
+        }
+        
+        // Double-check with user fetch to ensure token is valid
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (!mounted) return;
+        
+        if (userError || !user) {
+          navigate('/auth', { replace: true });
+          return;
+        }
+        
+        setAuthVerified(true);
+      } catch {
+        if (mounted) {
+          navigate('/auth', { replace: true });
+        }
+      } finally {
+        if (mounted) {
+          setVerifying(false);
+        }
+      }
+    };
+    
+    verifyAuth();
+    
+    return () => {
+      mounted = false;
+    };
+  }, [navigate]);
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/auth');
+    navigate('/auth', { replace: true });
   };
 
-  if (loading) {
+  // Show loading state during verification - prevents admin UI flash
+  if (verifying || !authVerified) {
     return (
       <div className="min-h-screen gradient-dark flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return null;
   }
 
   return (
