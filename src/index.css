@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts - Premium typography */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap');
+/* Import Google Fonts - Premium gastronomy typography (Cassis-inspired) */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Bebas+Neue&family=Oswald:wght@400;500;600;700&display=swap');
 
 /* Print styles */
 @import './styles/print.css';
@@ -19,57 +19,61 @@
      ---------------------------------------- */
   :root,
   .theme-editorial {
-    --background: 40 32% 96%;
-    --foreground: 25 18% 14%;
+    /* Cassis-inspired warm sand/cream palette */
+    --background: 42 30% 94%;
+    --foreground: 30 20% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 25 18% 14%;
+    --card: 40 25% 98%;
+    --card-foreground: 30 20% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 25 18% 14%;
+    --popover: 40 25% 98%;
+    --popover-foreground: 30 20% 12%;
 
-    --primary: 32 42% 32%;
-    --primary-foreground: 40 32% 96%;
+    /* Golden brown accent (Cassis signature) */
+    --primary: 35 55% 38%;
+    --primary-foreground: 42 30% 96%;
 
-    --secondary: 40 25% 92%;
-    --secondary-foreground: 25 18% 22%;
+    --secondary: 40 22% 90%;
+    --secondary-foreground: 30 20% 18%;
 
-    --muted: 40 18% 94%;
-    --muted-foreground: 25 10% 50%;
+    --muted: 40 16% 92%;
+    --muted-foreground: 30 12% 45%;
 
-    --accent: 32 38% 38%;
-    --accent-foreground: 40 32% 96%;
+    --accent: 35 50% 42%;
+    --accent-foreground: 42 30% 96%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 15% 90%;
-    --input: 40 15% 92%;
-    --ring: 32 42% 32%;
+    --border: 40 12% 88%;
+    --input: 40 12% 90%;
+    --ring: 35 55% 38%;
 
-    --radius: 0.375rem;
+    --radius: 0.25rem;
 
-    /* Custom tokens */
-    --gold: 32 42% 32%;
-    --gold-light: 35 38% 44%;
-    --gold-dark: 30 48% 24%;
-    --cream: 40 35% 97%;
-    --charcoal: 25 18% 14%;
+    /* Custom Cassis tokens */
+    --gold: 35 55% 38%;
+    --gold-light: 38 48% 52%;
+    --gold-dark: 32 62% 28%;
+    --cream: 42 30% 96%;
+    --sand: 42 30% 94%;
+    --charcoal: 30 20% 12%;
 
-    /* Typography */
-    --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    /* Typography - Cassis style */
+    --font-display: 'Oswald', 'Bebas Neue', 'Playfair Display', sans-serif;
     --font-body: 'Manrope', 'Inter', system-ui, sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
 
     /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(32 42% 32%), hsl(35 38% 44%));
-    --gradient-dark: linear-gradient(180deg, hsl(40 32% 96%), hsl(40 28% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(40 25% 98%));
+    --gradient-gold: linear-gradient(135deg, hsl(35 55% 38%), hsl(38 48% 52%));
+    --gradient-dark: linear-gradient(180deg, hsl(42 30% 94%), hsl(40 26% 92%));
+    --gradient-card: linear-gradient(145deg, hsl(40 25% 99%), hsl(40 22% 96%));
 
-    /* Shadows - more refined */
-    --shadow-sm: 0 1px 2px -1px hsl(25 18% 14% / 0.04);
-    --shadow-md: 0 4px 8px -2px hsl(25 18% 14% / 0.08);
-    --shadow-lg: 0 16px 24px -8px hsl(25 18% 14% / 0.12);
-    --shadow-gold: 0 8px 16px -4px hsl(32 42% 32% / 0.12);
+    /* Refined shadows */
+    --shadow-sm: 0 1px 2px -1px hsl(30 20% 12% / 0.03);
+    --shadow-md: 0 4px 8px -2px hsl(30 20% 12% / 0.06);
+    --shadow-lg: 0 12px 20px -6px hsl(30 20% 12% / 0.1);
+    --shadow-gold: 0 6px 14px -3px hsl(35 55% 38% / 0.1);
 
     /* Spacing system (8px base) */
     --spacing-xs: 0.25rem;
@@ -80,14 +84,14 @@
     --spacing-2xl: 2.5rem;
     --spacing-3xl: 3rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 25 18% 20%;
-    --sidebar-primary: 32 42% 32%;
-    --sidebar-primary-foreground: 40 32% 96%;
-    --sidebar-accent: 40 25% 94%;
-    --sidebar-accent-foreground: 25 18% 20%;
-    --sidebar-border: 40 15% 90%;
-    --sidebar-ring: 32 42% 32%;
+    --sidebar-background: 40 25% 98%;
+    --sidebar-foreground: 30 20% 16%;
+    --sidebar-primary: 35 55% 38%;
+    --sidebar-primary-foreground: 42 30% 96%;
+    --sidebar-accent: 40 22% 92%;
+    --sidebar-accent-foreground: 30 20% 16%;
+    --sidebar-border: 40 12% 88%;
+    --sidebar-ring: 35 55% 38%;
   }
 
   /* ----------------------------------------
@@ -353,51 +357,76 @@
     font-family: var(--font-body);
   }
 
-  /* Premium typography utilities */
+  /* Premium Cassis-inspired typography utilities */
   .heading-hero {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 3.5rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
   }
 
   .heading-section {
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .heading-subsection {
+    font-family: var(--font-display);
+    font-size: clamp(0.875rem, 2vw, 1rem);
     font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
   }
 
   .heading-item {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    line-height: 1.3;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+    text-transform: uppercase;
   }
 
   .text-price {
-    font-family: 'Courier New', monospace;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-tabular-nums: auto;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
   }
 
   .text-body {
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    letter-spacing: 0;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    letter-spacing: 0.005em;
+    color: hsl(var(--muted-foreground));
   }
 
   .text-caption {
     font-family: var(--font-body);
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     line-height: 1.4;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Cassis-style accent heading */
+  .heading-accent {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 500;
+    font-style: italic;
     letter-spacing: 0.01em;
+    line-height: 1.2;
   }
 
   /* Color utilities */

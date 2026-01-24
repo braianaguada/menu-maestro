@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EditorialPromoCard } from './EditorialPromoCard';
 import type { Promotion } from '@/types/menu';
@@ -22,7 +22,7 @@ export function EditorialPromosSection({
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = 360;
+      const scrollAmount = 340;
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
@@ -41,13 +41,12 @@ export function EditorialPromosSection({
   };
 
   return (
-    <section className="py-8 md:py-12">
-      <div className="container max-w-3xl mx-auto px-4 md:px-6">
-        {/* Header - Editorial style */}
-        <div className="flex items-center gap-3 mb-6">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-tight">
-            Promociones
+    <section className="py-10 md:py-14 border-b border-border/30">
+      <div className="container max-w-4xl mx-auto px-6 md:px-8">
+        {/* Header - Cassis bold style */}
+        <div className="mb-6 md:mb-8">
+          <h2 className="heading-section text-primary">
+            NUEVOS PLATOS
           </h2>
         </div>
       </div>
@@ -55,15 +54,15 @@ export function EditorialPromosSection({
       {/* Carousel */}
       <div className="relative">
         {/* Nav buttons - desktop only */}
-        {promotions.length > 1 && (
+        {promotions.length > 2 && (
           <>
             <button
               onClick={() => scroll('left')}
               className={cn(
                 "hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-10",
-                "w-11 h-11 items-center justify-center rounded-full",
-                "bg-background/90 backdrop-blur-sm border border-border/50 shadow-lg",
-                "hover:bg-background transition-colors"
+                "w-10 h-10 items-center justify-center",
+                "bg-background border border-border/50 shadow-menu-md",
+                "hover:bg-secondary transition-colors"
               )}
               aria-label="Anterior"
             >
@@ -73,9 +72,9 @@ export function EditorialPromosSection({
               onClick={() => scroll('right')}
               className={cn(
                 "hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-10",
-                "w-11 h-11 items-center justify-center rounded-full",
-                "bg-background/90 backdrop-blur-sm border border-border/50 shadow-lg",
-                "hover:bg-background transition-colors"
+                "w-10 h-10 items-center justify-center",
+                "bg-background border border-border/50 shadow-menu-md",
+                "hover:bg-secondary transition-colors"
               )}
               aria-label="Siguiente"
             >
@@ -87,7 +86,7 @@ export function EditorialPromosSection({
         {/* Scrollable content */}
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto snap-x-mandatory scrollbar-hide px-4 md:px-8 pb-4"
+          className="flex gap-6 overflow-x-auto snap-x-mandatory scrollbar-hide px-6 md:px-8 pb-4"
         >
           {promotions.map((promo) => (
             <EditorialPromoCard

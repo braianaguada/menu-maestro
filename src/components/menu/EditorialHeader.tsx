@@ -9,32 +9,30 @@ interface EditorialHeaderProps {
 export function EditorialHeader({ name, logoUrl, className }: EditorialHeaderProps) {
   return (
     <header className={cn(
-      "relative py-16 md:py-20 lg:py-24",
+      "relative py-12 md:py-16 lg:py-20",
       "bg-background",
       className
     )}>
-      <div className="container max-w-2xl mx-auto px-4 md:px-6 text-center">
-        {/* Logo */}
+      <div className="container max-w-4xl mx-auto px-6 md:px-8">
+        {/* Logo - Cassis style: subtle, top left aligned */}
         {logoUrl && (
-          <div className="mb-8 md:mb-10 flex justify-center">
+          <div className="mb-6 md:mb-8">
             <img
               src={logoUrl}
               alt={`${name} logo`}
-              className="h-14 md:h-16 lg:h-20 w-auto object-contain opacity-90"
+              className="h-10 md:h-12 lg:h-14 w-auto object-contain"
             />
           </div>
         )}
 
-        {/* Restaurant Name - Premium Hero Typography */}
+        {/* Restaurant Name - Cassis Bold Condensed Style */}
         <h1 className="heading-hero text-foreground">
           {name}
         </h1>
 
-        {/* Elegant Decorative Separator */}
-        <div className="mt-8 md:mt-10 flex items-center justify-center gap-2 md:gap-3">
-          <div className="h-px w-8 md:w-12 bg-primary/40 transition-smooth" />
-          <div className="w-1 h-1 rounded-full bg-primary/60" />
-          <div className="h-px w-8 md:w-12 bg-primary/40 transition-smooth" />
+        {/* Minimal accent line - Cassis style */}
+        <div className="mt-6 md:mt-8">
+          <div className="h-[2px] w-16 md:w-20 bg-primary" />
         </div>
       </div>
     </header>
