@@ -9,32 +9,32 @@ interface EditorialHeaderProps {
 export function EditorialHeader({ name, logoUrl, className }: EditorialHeaderProps) {
   return (
     <header className={cn(
-      "relative py-12 md:py-16 lg:py-20",
+      "relative py-16 md:py-20 lg:py-24",
       "bg-background",
       className
     )}>
-      <div className="container max-w-3xl mx-auto px-4 md:px-6 text-center">
+      <div className="container max-w-2xl mx-auto px-4 md:px-6 text-center">
         {/* Logo */}
         {logoUrl && (
-          <div className="mb-6 flex justify-center">
+          <div className="mb-8 md:mb-10 flex justify-center">
             <img
               src={logoUrl}
               alt={`${name} logo`}
-              className="h-16 md:h-20 lg:h-24 w-auto object-contain"
+              className="h-14 md:h-16 lg:h-20 w-auto object-contain opacity-90"
             />
           </div>
         )}
-        
-        {/* Restaurant Name - Hero Typography */}
-        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-tight">
+
+        {/* Restaurant Name - Premium Hero Typography */}
+        <h1 className="heading-hero text-foreground">
           {name}
         </h1>
-        
-        {/* Decorative separator */}
-        <div className="mt-8 flex items-center justify-center gap-3">
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary/50" />
-          <div className="w-2 h-2 rounded-full bg-primary/50" />
-          <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary/50" />
+
+        {/* Elegant Decorative Separator */}
+        <div className="mt-8 md:mt-10 flex items-center justify-center gap-2 md:gap-3">
+          <div className="h-px w-8 md:w-12 bg-primary/40 transition-smooth" />
+          <div className="w-1 h-1 rounded-full bg-primary/60" />
+          <div className="h-px w-8 md:w-12 bg-primary/40 transition-smooth" />
         </div>
       </div>
     </header>

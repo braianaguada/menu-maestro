@@ -25,63 +25,63 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
       id={`item-${item.id}`}
       style={style}
       className={cn(
-        "group py-5 border-b border-border/20 last:border-b-0",
-        "transition-colors duration-200 hover:bg-muted/20",
+        "group py-6 md:py-7 border-b border-border/30 last:border-b-0",
+        "transition-smooth hover:bg-muted/15",
         className
       )}
     >
-      <div className="flex gap-5">
-        {/* Image (optional) - Editorial style */}
+      <div className="flex gap-5 md:gap-6">
+        {/* Image (optional) - Editorial refined */}
         {item.image_url && (
-          <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 overflow-hidden rounded-lg">
+          <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 overflow-hidden rounded-lg shadow-menu-sm group-hover:shadow-menu-md transition-smooth">
             <img
               src={item.image_url}
               alt={item.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
               loading="lazy"
             />
           </div>
         )}
 
         {/* Content */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
           {/* Name and Price Row */}
-          <div className="flex items-baseline justify-between gap-4 mb-1">
-            <h4 className="font-display text-lg md:text-xl font-medium text-foreground leading-tight tracking-tight">
+          <div className="flex items-baseline justify-between gap-4">
+            <h4 className="heading-item text-foreground">
               {item.name}
             </h4>
-            <span className="flex-shrink-0 font-display text-lg md:text-xl font-medium text-foreground tabular-nums">
+            <span className="flex-shrink-0 text-price text-foreground">
               {formatPrice(item.price)}
             </span>
           </div>
 
-          {/* Dotted line separator */}
-          <div className="h-px bg-gradient-to-r from-border/40 via-border/20 to-transparent mb-2" />
+          {/* Subtle separator */}
+          <div className="h-px bg-border/25 w-full" />
 
           {/* Description */}
           {item.description && (
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+            <p className="text-body text-muted-foreground line-clamp-2">
               {item.description}
             </p>
           )}
 
-          {/* Tags - subtle editorial style */}
+          {/* Tags - refined editorial style */}
           {hasTags && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               {item.is_recommended && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
+                <span className="inline-flex items-center gap-1 text-caption font-medium text-primary opacity-90 hover-subtle">
                   <Star className="w-3 h-3" />
                   Recomendado
                 </span>
               )}
               {item.is_vegan && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-accent">
+                <span className="inline-flex items-center gap-1 text-caption font-medium text-accent opacity-90 hover-subtle">
                   <Leaf className="w-3 h-3" />
                   Vegano
                 </span>
               )}
               {item.is_spicy && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-destructive">
+                <span className="inline-flex items-center gap-1 text-caption font-medium text-destructive opacity-90 hover-subtle">
                   <Flame className="w-3 h-3" />
                   Picante
                 </span>
