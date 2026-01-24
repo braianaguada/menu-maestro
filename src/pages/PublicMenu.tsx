@@ -12,6 +12,7 @@ import { EditorialFooter } from '@/components/menu/EditorialFooter';
 import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
+import menuPatternLight from '@/assets/menu-pattern-light.jpg';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
@@ -79,9 +80,23 @@ export default function PublicMenu() {
   const visibleSections = menu.sections.filter(s => s.items.length > 0);
 
   return (
-    <div className={cn("min-h-screen bg-background")}>
-      {/* Header - Hero */}
-      <EditorialHeader name={menu.name} logoUrl={menu.logo_url} />
+    <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
+      {/* Decorative pattern background - fixed position */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `url(${menuPatternLight})`,
+          backgroundSize: '700px',
+          backgroundRepeat: 'repeat',
+          opacity: 0.18,
+        }}
+        aria-hidden="true"
+      />
+      
+      {/* Content wrapper */}
+      <div className="relative z-10">
+        {/* Header - Hero */}
+        <EditorialHeader name={menu.name} logoUrl={menu.logo_url} />
 
       {/* Sticky Section Navigation */}
       <StickySectionsNav
@@ -119,6 +134,7 @@ export default function PublicMenu() {
 
       {/* Back to Top Button */}
       <BackToTopButton threshold={600} />
+      </div>
     </div>
   );
 }
