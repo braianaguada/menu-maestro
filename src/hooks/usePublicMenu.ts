@@ -2,14 +2,20 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { PublicMenu, Menu, Section, Item, Promotion } from '@/types/menu';
 
+// Explicit column selection for public menu queries - excludes user_id for privacy
+const PUBLIC_MENU_COLUMNS = 'id, name, slug, logo_url, status, theme, created_at, updated_at';
+const PUBLIC_SECTION_COLUMNS = 'id, menu_id, name, description, sort_order, is_visible, created_at, updated_at';
+const PUBLIC_ITEM_COLUMNS = 'id, section_id, name, description, price, image_url, sort_order, is_visible, is_spicy, is_vegan, is_recommended, created_at, updated_at';
+const PUBLIC_PROMO_COLUMNS = 'id, menu_id, title, description, price_text, image_url, is_active, starts_at, ends_at, linked_item_id, linked_section_id, sort_order, created_at, updated_at';
+
 export function usePublicMenu(slug: string) {
   return useQuery({
     queryKey: ['public-menu', slug],
     queryFn: async (): Promise<PublicMenu | null> => {
-      // Fetch menu by slug
+      // Fetch menu by slug - explicitly select only public columns (excludes user_id)
       const { data: menu, error: menuError } = await supabase
         .from('menus')
-        .select('*')
+        .select(PUBLIC_MENU_COLUMNS)
         .eq('slug', slug)
         .eq('status', 'published')
         .maybeSingle();
@@ -17,31 +23,31 @@ export function usePublicMenu(slug: string) {
       if (menuError) throw menuError;
       if (!menu) return null;
 
-      // Fetch sections with items
+      // Fetch sections - explicitly select only public columns
       const { data: sections, error: sectionsError } = await supabase
         .from('sections')
-        .select('*')
+        .select(PUBLIC_SECTION_COLUMNS)
         .eq('menu_id', menu.id)
         .eq('is_visible', true)
         .order('sort_order', { ascending: true });
 
       if (sectionsError) throw sectionsError;
 
-      // Fetch all items for these sections
+      // Fetch all items for these sections - explicitly select only public columns
       const sectionIds = sections?.map(s => s.id) || [];
       const { data: items, error: itemsError } = await supabase
         .from('items')
-        .select('*')
+        .select(PUBLIC_ITEM_COLUMNS)
         .in('section_id', sectionIds)
         .eq('is_visible', true)
         .order('sort_order', { ascending: true });
 
       if (itemsError) throw itemsError;
 
-      // Fetch active promotions
+      // Fetch active promotions - explicitly select only public columns
       const { data: promotions, error: promosError } = await supabase
         .from('promotions')
-        .select('*')
+        .select(PUBLIC_PROMO_COLUMNS)
         .eq('menu_id', menu.id)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -56,6 +62,8 @@ export function usePublicMenu(slug: string) {
 
       return {
         ...menu,
+        // Add a placeholder user_id for type compatibility (never exposed from DB)
+        user_id: '',
         theme: menu.theme as 'elegant' | 'light' | 'modern',
         status: menu.status as 'draft' | 'published',
         sections: sectionsWithItems,
