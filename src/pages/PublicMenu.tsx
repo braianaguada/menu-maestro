@@ -12,7 +12,7 @@ import { EditorialFooter } from '@/components/menu/EditorialFooter';
 import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
-import menuPatternLight from '@/assets/menu-pattern-light.jpg';
+import menuPatternCassis from '@/assets/menu-pattern-cassis.jpg';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
@@ -81,14 +81,24 @@ export default function PublicMenu() {
 
   return (
     <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
-      {/* Decorative pattern background - fixed position */}
+      {/* Cassis-style decorative background pattern */}
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{
-          backgroundImage: `url(${menuPatternLight})`,
-          backgroundSize: '700px',
+          backgroundImage: `url(${menuPatternCassis})`,
+          backgroundSize: '900px auto',
+          backgroundPosition: 'center top',
           backgroundRepeat: 'repeat',
-          opacity: 0.18,
+          opacity: 0.12,
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Subtle gradient overlay for depth */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center top, transparent 0%, hsl(var(--background)) 70%)',
         }}
         aria-hidden="true"
       />
@@ -98,42 +108,42 @@ export default function PublicMenu() {
         {/* Header - Hero */}
         <EditorialHeader name={menu.name} logoUrl={menu.logo_url} />
 
-      {/* Sticky Section Navigation */}
-      <StickySectionsNav
-        sections={visibleSections}
-        activeSectionId={activeSectionId}
-        onSectionClick={scrollToSection}
-      />
-
-      {/* Promotions Carousel */}
-      {activePromotions.length > 0 && (
-        <EditorialPromosSection
-          promotions={activePromotions}
-          onNavigateToSection={scrollToSection}
-          onNavigateToItem={scrollToItem}
+        {/* Sticky Section Navigation */}
+        <StickySectionsNav
+          sections={visibleSections}
+          activeSectionId={activeSectionId}
+          onSectionClick={scrollToSection}
         />
-      )}
 
-      {/* Menu Sections */}
-      <main className="container max-w-3xl mx-auto px-4 md:px-6 pb-12">
-        {visibleSections.map((section) => (
-          <EditorialMenuSection key={section.id} section={section} />
-        ))}
-
-        {visibleSections.length === 0 && (
-          <div className="py-20 text-center">
-            <p className="text-muted-foreground font-body">
-              Este menú aún no tiene secciones.
-            </p>
-          </div>
+        {/* Promotions Carousel */}
+        {activePromotions.length > 0 && (
+          <EditorialPromosSection
+            promotions={activePromotions}
+            onNavigateToSection={scrollToSection}
+            onNavigateToItem={scrollToItem}
+          />
         )}
-      </main>
 
-      {/* Footer with PDF download */}
-      <EditorialFooter onDownloadPdf={handleDownloadPdf} />
+        {/* Menu Sections */}
+        <main className="container max-w-3xl mx-auto px-5 md:px-8 pb-16">
+          {visibleSections.map((section) => (
+            <EditorialMenuSection key={section.id} section={section} />
+          ))}
 
-      {/* Back to Top Button */}
-      <BackToTopButton threshold={600} />
+          {visibleSections.length === 0 && (
+            <div className="py-24 text-center">
+              <p className="text-muted-foreground font-body text-sm uppercase tracking-wider">
+                Este menú aún no tiene secciones.
+              </p>
+            </div>
+          )}
+        </main>
+
+        {/* Footer with PDF download */}
+        <EditorialFooter onDownloadPdf={handleDownloadPdf} />
+
+        {/* Back to Top Button */}
+        <BackToTopButton threshold={600} />
       </div>
     </div>
   );
