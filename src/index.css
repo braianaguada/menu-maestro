@@ -10,314 +10,256 @@
 
 /* ============================================
    PREMIUM EDITORIAL MENU DESIGN SYSTEM
+   Inspired by Cassis Restaurant Menu
    ============================================ */
 
 @layer base {
   /* ----------------------------------------
      THEME 1: EDITORIAL (Default)
-     Premium editorial style with warm ivory tones
+     Cassis-inspired warm ivory/cream palette
      ---------------------------------------- */
   :root,
   .theme-editorial {
-    /* Cassis-inspired warm sand/cream palette */
-    --background: 42 30% 94%;
-    --foreground: 30 20% 12%;
+    /* Warm cream background - exactly like Cassis PDF */
+    --background: 45 35% 93%;
+    --foreground: 25 30% 15%;
 
-    --card: 40 25% 98%;
-    --card-foreground: 30 20% 12%;
+    --card: 45 40% 96%;
+    --card-foreground: 25 30% 15%;
 
-    --popover: 40 25% 98%;
-    --popover-foreground: 30 20% 12%;
+    --popover: 45 40% 96%;
+    --popover-foreground: 25 30% 15%;
 
-    /* Golden brown accent (Cassis signature) */
-    --primary: 35 55% 38%;
-    --primary-foreground: 42 30% 96%;
+    /* Rich burgundy/wine accent */
+    --primary: 350 45% 35%;
+    --primary-foreground: 45 35% 96%;
 
-    --secondary: 40 22% 90%;
-    --secondary-foreground: 30 20% 18%;
+    --secondary: 45 25% 88%;
+    --secondary-foreground: 25 30% 20%;
 
-    --muted: 40 16% 92%;
-    --muted-foreground: 30 12% 45%;
+    --muted: 45 20% 90%;
+    --muted-foreground: 25 15% 45%;
 
-    --accent: 35 50% 42%;
-    --accent-foreground: 42 30% 96%;
+    /* Olive green accent for tags */
+    --accent: 82 35% 38%;
+    --accent-foreground: 45 35% 96%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 12% 88%;
-    --input: 40 12% 90%;
-    --ring: 35 55% 38%;
+    --border: 45 20% 85%;
+    --input: 45 20% 88%;
+    --ring: 350 45% 35%;
 
-    --radius: 0.25rem;
+    --radius: 0.125rem;
 
     /* Custom Cassis tokens */
-    --gold: 35 55% 38%;
-    --gold-light: 38 48% 52%;
-    --gold-dark: 32 62% 28%;
-    --cream: 42 30% 96%;
-    --sand: 42 30% 94%;
-    --charcoal: 30 20% 12%;
+    --gold: 35 50% 42%;
+    --gold-light: 38 45% 55%;
+    --gold-dark: 32 55% 32%;
+    --cream: 45 35% 96%;
+    --sand: 45 35% 93%;
+    --charcoal: 25 30% 15%;
+    --wine: 350 45% 35%;
+    --olive: 82 35% 38%;
 
-    /* Typography - Cassis style */
-    --font-display: 'Oswald', 'Bebas Neue', 'Playfair Display', sans-serif;
+    /* Typography - Cassis style: condensed bold headers */
+    --font-display: 'Oswald', 'Bebas Neue', sans-serif;
     --font-body: 'Manrope', 'Inter', system-ui, sans-serif;
     --font-accent: 'Playfair Display', Georgia, serif;
 
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(35 55% 38%), hsl(38 48% 52%));
-    --gradient-dark: linear-gradient(180deg, hsl(42 30% 94%), hsl(40 26% 92%));
-    --gradient-card: linear-gradient(145deg, hsl(40 25% 99%), hsl(40 22% 96%));
+    /* Subtle shadows for print-like feel */
+    --shadow-sm: 0 1px 2px hsl(25 30% 15% / 0.03);
+    --shadow-md: 0 2px 4px hsl(25 30% 15% / 0.05);
+    --shadow-lg: 0 4px 8px hsl(25 30% 15% / 0.08);
+    --shadow-gold: 0 4px 12px hsl(350 45% 35% / 0.12);
 
-    /* Refined shadows */
-    --shadow-sm: 0 1px 2px -1px hsl(30 20% 12% / 0.03);
-    --shadow-md: 0 4px 8px -2px hsl(30 20% 12% / 0.06);
-    --shadow-lg: 0 12px 20px -6px hsl(30 20% 12% / 0.1);
-    --shadow-gold: 0 6px 14px -3px hsl(35 55% 38% / 0.1);
-
-    /* Spacing system (8px base) */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 2.5rem;
-    --spacing-3xl: 3rem;
-
-    --sidebar-background: 40 25% 98%;
-    --sidebar-foreground: 30 20% 16%;
-    --sidebar-primary: 35 55% 38%;
-    --sidebar-primary-foreground: 42 30% 96%;
-    --sidebar-accent: 40 22% 92%;
-    --sidebar-accent-foreground: 30 20% 16%;
-    --sidebar-border: 40 12% 88%;
-    --sidebar-ring: 35 55% 38%;
+    --sidebar-background: 45 40% 96%;
+    --sidebar-foreground: 25 30% 18%;
+    --sidebar-primary: 350 45% 35%;
+    --sidebar-primary-foreground: 45 35% 96%;
+    --sidebar-accent: 45 25% 90%;
+    --sidebar-accent-foreground: 25 30% 18%;
+    --sidebar-border: 45 20% 85%;
+    --sidebar-ring: 350 45% 35%;
   }
 
   /* ----------------------------------------
      THEME 2: MODERN DARK
-     Sleek dark with teal accents for cocktail bars
+     Sleek dark with cyan accents
      ---------------------------------------- */
   .theme-modern {
-    --background: 220 22% 6%;
-    --foreground: 210 18% 94%;
+    --background: 220 25% 8%;
+    --foreground: 210 20% 94%;
 
-    --card: 220 20% 10%;
-    --card-foreground: 210 18% 94%;
+    --card: 220 22% 12%;
+    --card-foreground: 210 20% 94%;
 
-    --popover: 220 20% 9%;
-    --popover-foreground: 210 18% 94%;
+    --popover: 220 22% 10%;
+    --popover-foreground: 210 20% 94%;
 
-    --primary: 175 62% 46%;
-    --primary-foreground: 220 22% 6%;
+    --primary: 180 70% 45%;
+    --primary-foreground: 220 25% 6%;
 
-    --secondary: 220 18% 14%;
-    --secondary-foreground: 210 18% 90%;
+    --secondary: 220 20% 16%;
+    --secondary-foreground: 210 20% 88%;
 
-    --muted: 220 18% 12%;
-    --muted-foreground: 215 14% 52%;
+    --muted: 220 18% 14%;
+    --muted-foreground: 215 16% 50%;
 
-    --accent: 175 58% 40%;
-    --accent-foreground: 220 22% 6%;
+    --accent: 180 65% 38%;
+    --accent-foreground: 220 25% 6%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 18% 16%;
-    --input: 220 18% 14%;
-    --ring: 175 62% 46%;
+    --border: 220 18% 18%;
+    --input: 220 18% 16%;
+    --ring: 180 70% 45%;
 
-    --radius: 0.375rem;
+    --radius: 0.25rem;
 
-    /* Custom tokens */
-    --gold: 175 62% 46%;
-    --gold-light: 172 58% 56%;
-    --gold-dark: 178 68% 36%;
-    --charcoal: 220 22% 5%;
+    --gold: 180 70% 45%;
+    --gold-light: 178 65% 55%;
+    --gold-dark: 182 75% 35%;
+    --charcoal: 220 25% 6%;
 
-    /* Typography */
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: 'Oswald', 'Bebas Neue', sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
 
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(175 62% 46%), hsl(172 58% 56%));
-    --gradient-dark: linear-gradient(180deg, hsl(220 22% 6%), hsl(220 22% 4%));
-    --gradient-card: linear-gradient(145deg, hsl(220 20% 12%), hsl(220 20% 8%));
+    --shadow-sm: 0 2px 6px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 6px 12px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 12px 24px hsl(0 0% 0% / 0.5);
+    --shadow-gold: 0 6px 16px hsl(180 70% 45% / 0.2);
 
-    /* Shadows - refined for dark theme */
-    --shadow-sm: 0 2px 6px -2px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 8px 16px -4px hsl(0 0% 0% / 0.4);
-    --shadow-lg: 0 20px 40px -12px hsl(0 0% 0% / 0.5);
-    --shadow-gold: 0 8px 20px -4px hsl(175 62% 46% / 0.2);
-
-    /* Spacing system (8px base) */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 2.5rem;
-    --spacing-3xl: 3rem;
-
-    --sidebar-background: 220 20% 9%;
-    --sidebar-foreground: 210 18% 90%;
-    --sidebar-primary: 175 62% 46%;
-    --sidebar-primary-foreground: 220 22% 6%;
-    --sidebar-accent: 220 18% 12%;
-    --sidebar-accent-foreground: 210 18% 90%;
-    --sidebar-border: 220 18% 14%;
-    --sidebar-ring: 175 62% 46%;
+    --sidebar-background: 220 22% 10%;
+    --sidebar-foreground: 210 20% 88%;
+    --sidebar-primary: 180 70% 45%;
+    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-accent: 220 18% 14%;
+    --sidebar-accent-foreground: 210 20% 88%;
+    --sidebar-border: 220 18% 16%;
+    --sidebar-ring: 180 70% 45%;
   }
 
   /* ----------------------------------------
      THEME 3: MINIMAL LIGHT
-     Clean ivory, airy, for cafés/fine dining
+     Clean white with copper accents
      ---------------------------------------- */
   .theme-light {
-    --background: 45 32% 97%;
-    --foreground: 20 22% 16%;
+    --background: 40 30% 97%;
+    --foreground: 20 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 20 22% 16%;
+    --card-foreground: 20 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 22% 16%;
+    --popover-foreground: 20 25% 15%;
 
-    --primary: 24 72% 38%;
-    --primary-foreground: 45 32% 97%;
+    --primary: 22 75% 42%;
+    --primary-foreground: 40 30% 97%;
 
-    --secondary: 40 28% 93%;
-    --secondary-foreground: 20 22% 22%;
+    --secondary: 40 25% 92%;
+    --secondary-foreground: 20 25% 20%;
 
-    --muted: 40 22% 95%;
-    --muted-foreground: 20 14% 48%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 20 15% 48%;
 
-    --accent: 24 68% 34%;
-    --accent-foreground: 45 32% 97%;
+    --accent: 22 70% 36%;
+    --accent-foreground: 40 30% 97%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 18% 90%;
-    --input: 40 18% 92%;
-    --ring: 24 72% 38%;
+    --border: 40 18% 88%;
+    --input: 40 18% 90%;
+    --ring: 22 75% 42%;
 
-    --radius: 0.375rem;
+    --radius: 0.25rem;
 
-    /* Custom tokens */
-    --gold: 24 72% 38%;
-    --gold-light: 26 68% 50%;
-    --gold-dark: 22 78% 30%;
-    --charcoal: 20 22% 16%;
+    --gold: 22 75% 42%;
+    --gold-light: 24 70% 52%;
+    --gold-dark: 20 80% 32%;
+    --charcoal: 20 25% 15%;
 
-    /* Typography */
-    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-display: 'Oswald', 'Bebas Neue', sans-serif;
     --font-body: 'Manrope', system-ui, sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
 
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(24 72% 38%), hsl(26 68% 50%));
-    --gradient-dark: linear-gradient(180deg, hsl(45 32% 97%), hsl(40 28% 95%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(40 25% 98%));
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px -1px hsl(20 22% 16% / 0.04);
-    --shadow-md: 0 4px 8px -2px hsl(20 22% 16% / 0.08);
-    --shadow-lg: 0 16px 24px -8px hsl(20 22% 16% / 0.12);
-    --shadow-gold: 0 8px 16px -4px hsl(24 72% 38% / 0.12);
-
-    /* Spacing system (8px base) */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 2.5rem;
-    --spacing-3xl: 3rem;
+    --shadow-sm: 0 1px 2px hsl(20 25% 15% / 0.04);
+    --shadow-md: 0 3px 6px hsl(20 25% 15% / 0.06);
+    --shadow-lg: 0 8px 16px hsl(20 25% 15% / 0.1);
+    --shadow-gold: 0 6px 14px hsl(22 75% 42% / 0.12);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 20 22% 20%;
-    --sidebar-primary: 24 72% 38%;
-    --sidebar-primary-foreground: 45 32% 97%;
-    --sidebar-accent: 40 28% 95%;
-    --sidebar-accent-foreground: 20 22% 20%;
-    --sidebar-border: 40 18% 90%;
-    --sidebar-ring: 24 72% 38%;
+    --sidebar-foreground: 20 25% 18%;
+    --sidebar-primary: 22 75% 42%;
+    --sidebar-primary-foreground: 40 30% 97%;
+    --sidebar-accent: 40 25% 94%;
+    --sidebar-accent-foreground: 20 25% 18%;
+    --sidebar-border: 40 18% 88%;
+    --sidebar-ring: 22 75% 42%;
   }
 
   /* ----------------------------------------
      THEME 4: BOLD BISTRO
-     Warm terracotta & olive, rustic premium
+     Warm terracotta & olive
      ---------------------------------------- */
   .theme-bistro {
-    --background: 38 28% 11%;
-    --foreground: 40 28% 93%;
+    --background: 35 25% 12%;
+    --foreground: 40 25% 92%;
 
-    --card: 38 25% 14%;
-    --card-foreground: 40 28% 93%;
+    --card: 35 22% 16%;
+    --card-foreground: 40 25% 92%;
 
-    --popover: 38 25% 13%;
-    --popover-foreground: 40 28% 93%;
+    --popover: 35 22% 14%;
+    --popover-foreground: 40 25% 92%;
 
-    --primary: 18 62% 48%;
-    --primary-foreground: 38 28% 9%;
+    --primary: 16 65% 50%;
+    --primary-foreground: 35 25% 10%;
 
-    --secondary: 38 20% 18%;
-    --secondary-foreground: 40 28% 88%;
+    --secondary: 35 18% 20%;
+    --secondary-foreground: 40 25% 86%;
 
-    --muted: 38 18% 16%;
-    --muted-foreground: 35 18% 52%;
+    --muted: 35 16% 18%;
+    --muted-foreground: 35 18% 50%;
 
-    --accent: 82 38% 42%;
-    --accent-foreground: 38 28% 9%;
+    --accent: 85 40% 45%;
+    --accent-foreground: 35 25% 10%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 38 18% 20%;
-    --input: 38 18% 18%;
-    --ring: 18 62% 48%;
+    --border: 35 16% 22%;
+    --input: 35 16% 20%;
+    --ring: 16 65% 50%;
 
-    --radius: 0.375rem;
+    --radius: 0.25rem;
 
-    /* Custom tokens */
-    --gold: 18 62% 48%;
-    --gold-light: 20 58% 60%;
-    --gold-dark: 16 68% 38%;
-    --charcoal: 38 28% 9%;
-    --olive: 82 38% 42%;
+    --gold: 16 65% 50%;
+    --gold-light: 18 60% 60%;
+    --gold-dark: 14 70% 40%;
+    --charcoal: 35 25% 10%;
+    --olive: 85 40% 45%;
 
-    /* Typography */
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: 'Oswald', 'Bebas Neue', sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
 
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(18 62% 48%), hsl(20 58% 60%));
-    --gradient-dark: linear-gradient(180deg, hsl(38 28% 11%), hsl(38 28% 9%));
-    --gradient-card: linear-gradient(145deg, hsl(38 25% 16%), hsl(38 25% 12%));
+    --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.25);
+    --shadow-md: 0 6px 12px hsl(0 0% 0% / 0.35);
+    --shadow-lg: 0 14px 28px hsl(0 0% 0% / 0.45);
+    --shadow-gold: 0 6px 16px hsl(16 65% 50% / 0.2);
 
-    /* Shadows - refined for dark theme */
-    --shadow-sm: 0 2px 6px -2px hsl(0 0% 0% / 0.28);
-    --shadow-md: 0 8px 16px -4px hsl(0 0% 0% / 0.38);
-    --shadow-lg: 0 20px 40px -12px hsl(0 0% 0% / 0.48);
-    --shadow-gold: 0 8px 20px -4px hsl(18 62% 48% / 0.2);
-
-    /* Spacing system (8px base) */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 2.5rem;
-    --spacing-3xl: 3rem;
-
-    --sidebar-background: 38 25% 13%;
-    --sidebar-foreground: 40 28% 88%;
-    --sidebar-primary: 18 62% 48%;
-    --sidebar-primary-foreground: 38 28% 9%;
-    --sidebar-accent: 38 20% 16%;
-    --sidebar-accent-foreground: 40 28% 88%;
-    --sidebar-border: 38 18% 18%;
-    --sidebar-ring: 18 62% 48%;
+    --sidebar-background: 35 22% 14%;
+    --sidebar-foreground: 40 25% 86%;
+    --sidebar-primary: 16 65% 50%;
+    --sidebar-primary-foreground: 35 25% 10%;
+    --sidebar-accent: 35 18% 18%;
+    --sidebar-accent-foreground: 40 25% 86%;
+    --sidebar-border: 35 16% 20%;
+    --sidebar-ring: 16 65% 50%;
   }
 }
 
@@ -345,7 +287,7 @@
 }
 
 /* ============================================
-   UTILITY CLASSES
+   CASSIS-STYLE TYPOGRAPHY UTILITIES
    ============================================ */
 
 @layer utilities {
@@ -357,76 +299,94 @@
     font-family: var(--font-body);
   }
 
-  /* Premium Cassis-inspired typography utilities */
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  /* Hero heading - COME CASSIS style */
   .heading-hero {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-size: clamp(3rem, 10vw, 5rem);
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  /* Section heading - DESAYUNO, PICOTEO style */
+  .heading-section {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: 0.05em;
     line-height: 1;
     text-transform: uppercase;
   }
 
-  .heading-section {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 1.1;
-    text-transform: uppercase;
-  }
-
+  /* Subsection label - "De 08:00 a 11:00" style */
   .heading-subsection {
-    font-family: var(--font-display);
-    font-size: clamp(0.875rem, 2vw, 1rem);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     line-height: 1.3;
     text-transform: uppercase;
     color: hsl(var(--muted-foreground));
   }
 
+  /* Menu item name - Bold uppercase like Cassis */
   .heading-item {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1.25;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
     text-transform: uppercase;
   }
 
+  /* Price styling - tabular for alignment */
   .text-price {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     font-variant-numeric: tabular-nums;
   }
 
+  /* Body/description text */
   .text-body {
     font-family: var(--font-body);
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 0.8125rem;
+    line-height: 1.55;
     letter-spacing: 0.005em;
     color: hsl(var(--muted-foreground));
   }
 
+  /* Caption/small text */
   .text-caption {
     font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     line-height: 1.4;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  /* Cassis-style accent heading */
+  /* Accent heading - italic serif for special items */
   .heading-accent {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
     font-weight: 500;
     font-style: italic;
     letter-spacing: 0.01em;
     line-height: 1.2;
+  }
+
+  /* Page numbers like Cassis */
+  .text-page-number {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
   }
 
   /* Color utilities */
@@ -438,20 +398,28 @@
     background-color: hsl(var(--gold));
   }
 
-  /* Gradients */
+  .text-wine {
+    color: hsl(var(--wine, var(--primary)));
+  }
+
+  .text-olive {
+    color: hsl(var(--olive, var(--accent)));
+  }
+
+  /* Gradient utilities */
   .gradient-gold {
-    background: var(--gradient-gold);
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold-light)));
   }
 
   .gradient-dark {
-    background: var(--gradient-dark);
+    background: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
   }
 
   .gradient-card {
-    background: var(--gradient-card);
+    background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--background)));
   }
 
-  /* Refined shadows */
+  /* Shadow utilities */
   .shadow-menu-sm {
     box-shadow: var(--shadow-sm);
   }
@@ -468,7 +436,7 @@
     box-shadow: var(--shadow-gold);
   }
 
-  /* Separator line utilities */
+  /* Separator utilities */
   .divider-subtle {
     background-color: hsl(var(--border));
     height: 1px;
@@ -488,7 +456,7 @@
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Hover effect utilities */
+  /* Hover effects */
   .hover-lift {
     @apply transition-smooth;
   }
@@ -498,113 +466,95 @@
     box-shadow: var(--shadow-lg);
   }
 
-  .hover-subtle {
-    @apply transition-smooth-fast;
+  /* Modern landing page utilities */
+  .gradient-hero {
+    background: linear-gradient(135deg, 
+      hsl(260 80% 60% / 0.15) 0%, 
+      hsl(200 90% 50% / 0.1) 50%, 
+      hsl(330 80% 60% / 0.1) 100%
+    );
   }
 
-  .hover-subtle:hover {
-    opacity: 0.85;
+  .gradient-cta {
+    background: linear-gradient(135deg, 
+      hsl(200 90% 55%) 0%, 
+      hsl(260 80% 60%) 100%
+    );
   }
 
-  /* Scroll snap for carousel */
-  .snap-x-mandatory {
-    scroll-snap-type: x mandatory;
+  .glow-effect {
+    box-shadow: 
+      0 0 40px hsl(200 90% 55% / 0.25),
+      0 0 80px hsl(260 80% 60% / 0.15);
   }
 
-  .snap-start {
-    scroll-snap-align: start;
+  /* Blur orb decorations */
+  .blur-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
   }
 
-  /* Hide scrollbar but keep functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  .blur-orb-cyan {
+    background: hsl(180 80% 50% / 0.3);
   }
 
-  /* Glass effect */
-  .glass {
-    background: hsl(var(--card) / 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .blur-orb-purple {
+    background: hsl(280 80% 60% / 0.25);
   }
 
-  /* Text truncate with lines */
-  .line-clamp-1 {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .blur-orb-pink {
+    background: hsl(330 80% 55% / 0.2);
   }
 }
 
 /* ============================================
-   ANIMATIONS
+   COMPONENT STYLES
    ============================================ */
 
-@keyframes fadeIn {
-  from {
+@layer components {
+  /* Cassis-style section divider */
+  .cassis-divider {
+    @apply w-full h-px bg-border my-6;
+  }
+
+  /* Menu item row like Cassis */
+  .menu-item-row {
+    @apply flex items-baseline justify-between gap-4 py-3;
+    border-bottom: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  .menu-item-row:last-child {
+    border-bottom: none;
+  }
+
+  /* Cassis navigation chip */
+  .nav-chip {
+    @apply px-3 py-1.5 text-xs font-semibold uppercase tracking-wider;
+    @apply transition-all duration-200;
+    font-family: var(--font-body);
+  }
+
+  .nav-chip-active {
+    @apply text-primary border-b-2 border-primary;
+  }
+
+  /* Landing page button styles */
+  .btn-glow {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, hsl(200 90% 55%), hsl(260 80% 60%));
+  }
+
+  .btn-glow::before {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(135deg, hsl(200 90% 60%), hsl(260 80% 65%));
     opacity: 0;
-    transform: translateY(8px);
+    transition: opacity 0.3s;
   }
-  to {
+
+  .btn-glow:hover::before {
     opacity: 1;
-    transform: translateY(0);
   }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.3s ease-out forwards;
-}
-
-.animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    hsl(var(--muted)) 0%,
-    hsl(var(--muted-foreground) / 0.1) 50%,
-    hsl(var(--muted)) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
 }

@@ -25,51 +25,56 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
       style={style}
       className={cn(
         "group py-4 md:py-5",
+        "border-b border-border/40 last:border-b-0",
         "transition-smooth",
         className
       )}
     >
       {/* Cassis-style layout: Name + Price on same line, description below */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         {/* Name and Price Row - Cassis style */}
         <div className="flex items-baseline justify-between gap-4">
-          <h4 className="heading-item text-foreground flex-1 min-w-0">
-            {item.name}
-            {/* Tags inline with name - Cassis style */}
+          <div className="flex-1 min-w-0 flex items-baseline gap-2">
+            <h4 className="heading-item text-foreground">
+              {item.name}
+            </h4>
+            {/* Tags inline - small icons */}
             {hasTags && (
-              <span className="inline-flex items-center gap-1.5 ml-2 align-middle">
+              <span className="inline-flex items-center gap-1">
                 {item.is_recommended && (
-                  <Star className="w-3 h-3 text-primary inline" />
+                  <Star className="w-3 h-3 text-primary fill-primary" />
                 )}
                 {item.is_vegan && (
-                  <Leaf className="w-3 h-3 text-accent inline" />
+                  <Leaf className="w-3 h-3 text-accent" />
                 )}
                 {item.is_spicy && (
-                  <Flame className="w-3 h-3 text-destructive inline" />
+                  <Flame className="w-3 h-3 text-destructive" />
                 )}
               </span>
             )}
-          </h4>
+          </div>
+          {/* Dotted line connector like classic menus */}
+          <span className="flex-1 border-b border-dotted border-border/50 mx-2 min-w-8" />
           <span className="flex-shrink-0 text-price text-foreground">
             {formatPrice(item.price)}
           </span>
         </div>
 
-        {/* Description - Cassis style: detailed, lowercase, muted */}
+        {/* Description - Cassis style: lowercase, muted, detailed */}
         {item.description && (
-          <p className="text-body pr-16">
+          <p className="text-body pr-20">
             {item.description}
           </p>
         )}
       </div>
 
-      {/* Optional image - smaller, inline for featured items only */}
+      {/* Optional image - for featured items only */}
       {item.image_url && (
-        <div className="mt-3 w-full max-w-xs overflow-hidden rounded-sm">
+        <div className="mt-4 w-full max-w-sm overflow-hidden rounded">
           <img
             src={item.image_url}
             alt={item.name}
-            className="w-full h-32 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             loading="lazy"
           />
         </div>
