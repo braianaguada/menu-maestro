@@ -89,7 +89,10 @@ export function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen gradient-dark">
+    <div className="min-h-screen gradient-dark relative overflow-hidden">
+      <div className="blur-orb blur-orb-cyan w-[480px] h-[480px] -top-40 -right-48 opacity-30" />
+      <div className="blur-orb blur-orb-purple w-[420px] h-[420px] top-1/3 -left-40 opacity-25" />
+      <div className="blur-orb blur-orb-pink w-[360px] h-[360px] bottom-10 right-1/4 opacity-20" />
       {/* Mobile Header */}
       <header className="lg:hidden sticky top-0 z-50 glass border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -144,7 +147,7 @@ export function AdminLayout() {
         )}
       </header>
 
-      <div className="flex">
+      <div className="flex relative z-10">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 min-h-screen border-r border-border/50 bg-card/30">
           <div className="p-6 border-b border-border/50">

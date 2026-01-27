@@ -8,6 +8,17 @@ interface EditorialMenuItemProps {
   style?: React.CSSProperties;
 }
 
+const fallbackImages = [
+  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=1200&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1200&auto=format&fit=crop',
+];
+
+const getFallbackImage = (name: string) =>
+  fallbackImages[Math.abs(name.length) % fallbackImages.length];
+
 export function EditorialMenuItem({ item, className, style }: EditorialMenuItemProps) {
   const formatPrice = (price: number) => {
     // Format with dots for thousands (Chilean/Cassis style)
@@ -18,67 +29,79 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
   };
 
   const hasTags = item.is_recommended || item.is_vegan || item.is_spicy;
+  const imageUrl = item.image_url || getFallbackImage(item.name);
 
   return (
     <article
       id={`item-${item.id}`}
       style={style}
       className={cn(
-        "group py-4 md:py-5",
-        "border-b border-border/40 last:border-b-0",
-        "transition-smooth",
+        "group menu-card p-5",
         className
       )}
     >
-      {/* Cassis-style layout: Name + Price on same line, description below */}
-      <div className="flex flex-col gap-1">
-        {/* Name and Price Row - Cassis style */}
-        <div className="flex items-baseline justify-between gap-4">
-          <div className="flex-1 min-w-0 flex items-baseline gap-2">
-            <h4 className="heading-item text-foreground">
-              {item.name}
-            </h4>
-            {/* Tags inline - small icons */}
-            {hasTags && (
-              <span className="inline-flex items-center gap-1">
-                {item.is_recommended && (
-                  <Star className="w-3 h-3 text-primary fill-primary" />
-                )}
-                {item.is_vegan && (
-                  <Leaf className="w-3 h-3 text-accent" />
-                )}
-                {item.is_spicy && (
-                  <Flame className="w-3 h-3 text-destructive" />
-                )}
+      <div className="flex flex-col gap-4">
+        <div className="relative overflow-hidden rounded-xl">
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className="h-44 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+          <div className="absolute left-4 bottom-4 flex items-center gap-2">
+            <span className="menu-price bg-white/15 text-white border border-white/20">
+              ${formatPrice(item.price)}
+            </span>
+            {item.is_recommended && (
+              <span className="menu-tag bg-white/15 text-white border border-white/20">
+                <Star className="w-3 h-3 fill-white" />
+                Recomendado
               </span>
             )}
           </div>
-          {/* Dotted line connector like classic menus */}
-          <span className="flex-1 border-b border-dotted border-border/50 mx-2 min-w-8" />
-          <span className="flex-shrink-0 text-price text-foreground">
-            {formatPrice(item.price)}
-          </span>
         </div>
 
-        {/* Description - Cassis style: lowercase, muted, detailed */}
-        {item.description && (
-          <p className="text-body pr-20">
-            {item.description}
-          </p>
-        )}
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <h4 className="text-lg font-semibold text-foreground">
+              {item.name}
+            </h4>
+            <span className="menu-price">
+              ${formatPrice(item.price)}
+            </span>
+          </div>
+
+          {item.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {item.description}
+            </p>
+          )}
+
+          {hasTags && (
+            <div className="flex flex-wrap gap-2">
+              {item.is_vegan && (
+                <span className="menu-tag">
+                  <Leaf className="w-3 h-3 text-accent" />
+                  Vegano
+                </span>
+              )}
+              {item.is_spicy && (
+                <span className="menu-tag">
+                  <Flame className="w-3 h-3 text-destructive" />
+                  Picante
+                </span>
+              )}
+              {item.is_recommended && (
+                <span className="menu-tag">
+                  <Star className="w-3 h-3 text-primary" />
+                  Favorito
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Optional image - for featured items only */}
-      {item.image_url && (
-        <div className="mt-4 w-full max-w-sm overflow-hidden rounded">
-          <img
-            src={item.image_url}
-            alt={item.name}
-            className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            loading="lazy"
-          />
-        </div>
-      )}
     </article>
   );
 }

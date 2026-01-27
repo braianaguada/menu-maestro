@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
 import { getThemeConfig } from '@/themes/menuThemes';
@@ -12,11 +12,9 @@ import { EditorialFooter } from '@/components/menu/EditorialFooter';
 import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
-import menuPatternCassis from '@/assets/menu-pattern-cassis.jpg';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
 
@@ -63,6 +61,23 @@ export default function PublicMenu() {
     };
   }, [menu?.theme]);
 
+  // Filter active promotions based on schedule
+  const activePromotions = useMemo(() => {
+    if (!menu) return [];
+    const now = new Date(nowTimestamp);
+    return menu.promotions.filter(p => {
+      if (!p.is_active) return false;
+      if (p.starts_at && new Date(p.starts_at) > now) return false;
+      if (p.ends_at && new Date(p.ends_at) < now) return false;
+      return true;
+    });
+  }, [menu, nowTimestamp]);
+
+  const visibleSections = useMemo(() => {
+    if (!menu) return [];
+    return menu.sections.filter(s => s.items.length > 0);
+  }, [menu]);
+
   if (isLoading) {
     return <MenuLoading />;
   }
@@ -71,39 +86,13 @@ export default function PublicMenu() {
     return <MenuNotFound />;
   }
 
-  // Filter active promotions based on schedule
-  const activePromotions = useMemo(() => {
-    const now = new Date(nowTimestamp);
-    return menu.promotions.filter(p => {
-      if (!p.is_active) return false;
-      if (p.starts_at && new Date(p.starts_at) > now) return false;
-      if (p.ends_at && new Date(p.ends_at) < now) return false;
-      return true;
-    });
-  }, [menu.promotions, nowTimestamp]);
-
-  const visibleSections = menu.sections.filter(s => s.items.length > 0);
-
   return (
     <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
-      {/* Cassis-style decorative background pattern */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none"
         style={{
-          backgroundImage: `url(${menuPatternCassis})`,
-          backgroundSize: '900px auto',
-          backgroundPosition: 'center top',
-          backgroundRepeat: 'repeat',
-          opacity: 0.12,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Subtle gradient overlay for depth */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center top, transparent 0%, hsl(var(--background)) 70%)',
+          background:
+            'radial-gradient(circle at top, hsl(var(--primary) / 0.15), transparent 45%), radial-gradient(circle at 20% 20%, hsl(var(--accent) / 0.12), transparent 40%)',
         }}
         aria-hidden="true"
       />
@@ -130,7 +119,7 @@ export default function PublicMenu() {
         )}
 
         {/* Menu Sections */}
-        <main className="container max-w-3xl mx-auto px-5 md:px-8 pb-16">
+        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-24 md:pb-16">
           {visibleSections.map((section) => (
             <EditorialMenuSection key={section.id} section={section} />
           ))}
