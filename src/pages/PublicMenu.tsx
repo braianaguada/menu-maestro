@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
-import { getThemeConfig, normalizeTheme } from '@/themes/menuThemes';
+import { getThemeConfig } from '@/themes/menuThemes';
 import { EditorialHeader } from '@/components/menu/EditorialHeader';
 import { EditorialPromosSection } from '@/components/menu/EditorialPromosSection';
 import { EditorialMenuSection } from '@/components/menu/EditorialMenuSection';
@@ -62,12 +62,6 @@ export default function PublicMenu() {
       );
     };
   }, [menu?.theme]);
-
-  // Handle PDF download
-  const handleDownloadPdf = () => {
-    const theme = menu?.theme ? normalizeTheme(menu.theme) : 'editorial';
-    window.open(`/m/${slug}/print?theme=${theme}`, '_blank');
-  };
 
   if (isLoading) {
     return <MenuLoading />;
@@ -150,8 +144,8 @@ export default function PublicMenu() {
           )}
         </main>
 
-        {/* Footer with PDF download */}
-        <EditorialFooter onDownloadPdf={handleDownloadPdf} />
+        {/* Footer */}
+        <EditorialFooter />
 
         {/* Back to Top Button */}
         <BackToTopButton threshold={600} />
