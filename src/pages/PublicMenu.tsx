@@ -119,7 +119,7 @@ export default function PublicMenu() {
         )}
 
         {/* Menu Sections */}
-        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-24 md:pb-16">
+        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-16">
           {visibleSections.map((section) => (
             <EditorialMenuSection key={section.id} section={section} />
           ))}
