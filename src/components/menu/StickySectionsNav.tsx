@@ -31,9 +31,14 @@ export function StickySectionsNav({
   // Scroll active chip into view
   useEffect(() => {
     if (activeSectionId && scrollRef.current) {
-      const activeChip = scrollRef.current.querySelector(`[data-section-id="${activeSectionId}"]`);
+      const container = scrollRef.current;
+      const activeChip = container.querySelector(`[data-section-id="${activeSectionId}"]`);
       if (activeChip) {
-        activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        const chipElement = activeChip as HTMLElement;
+        const targetLeft = chipElement.offsetLeft
+          - container.clientWidth / 2
+          + chipElement.clientWidth / 2;
+        container.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
       }
     }
   }, [activeSectionId]);
