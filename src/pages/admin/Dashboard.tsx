@@ -61,7 +61,7 @@ export default function Dashboard() {
         </h2>
         <div className="flex flex-wrap gap-3">
           <Button asChild>
-            <Link to="/admin/menus/new">
+            <Link to="/admin/menus?create=1">
               <Plus className="w-4 h-4 mr-2" />
               Crear nuevo menú
             </Link>
@@ -121,7 +121,7 @@ export default function Dashboard() {
             <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
             <p className="text-muted-foreground mb-4">No tienes menús aún</p>
             <Button asChild>
-              <Link to="/admin/menus/new">
+              <Link to="/admin/menus?create=1">
                 <Plus className="w-4 h-4 mr-2" />
                 Crear mi primer menú
               </Link>

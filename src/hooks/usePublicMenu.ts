@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { PublicMenu, Menu, Section, Item, Promotion } from '@/types/menu';
+import { demoMenu } from '@/data/demoMenu';
 
 // Explicit column selection for public menu queries - excludes user_id for privacy
 const PUBLIC_MENU_COLUMNS = 'id, name, slug, logo_url, status, theme, created_at, updated_at';
@@ -12,6 +13,10 @@ export function usePublicMenu(slug: string) {
   return useQuery({
     queryKey: ['public-menu', slug],
     queryFn: async (): Promise<PublicMenu | null> => {
+      if (slug === 'demo') {
+        return demoMenu;
+      }
+
       // Fetch menu by slug - explicitly select only public columns (excludes user_id)
       const { data: menu, error: menuError } = await supabase
         .from('menus')

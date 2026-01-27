@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useMenus, useCreateMenu, useDeleteMenu } from '@/hooks/useAdminMenus';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,10 +38,19 @@ export default function MenusList() {
   const { data: menus, isLoading } = useMenus();
   const createMenu = useCreateMenu();
   const deleteMenu = useDeleteMenu();
+  const [searchParams, setSearchParams] = useSearchParams();
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', slug: '', theme: 'elegant' });
+
+  useEffect(() => {
+    if (searchParams.get('create') === '1') {
+      setDialogOpen(true);
+      searchParams.delete('create');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleCreate = async () => {
     if (!formData.name || !formData.slug) {
