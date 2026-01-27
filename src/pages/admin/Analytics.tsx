@@ -43,6 +43,13 @@ export default function Analytics() {
   const totalClicks = topPromos?.reduce((sum, p) => sum + p.clicks, 0) || 0;
   const ctr = totalViews > 0 ? Math.round((totalClicks / totalViews) * 1000) / 10 : 0;
   const avgViewsPerMenu = totalMenus > 0 ? Math.round(totalViews / totalMenus) : 0;
+  const avgClicksPerMenu = totalMenus > 0 ? Math.round(totalClicks / totalMenus) : 0;
+  const draftMenus = menus?.filter(m => m.status === 'draft').length || 0;
+
+  const topPromosChart = (topPromos || []).slice(0, 6).map((promo) => ({
+    title: promo.title.length > 16 ? `${promo.title.slice(0, 16)}…` : promo.title,
+    clicks: promo.clicks,
+  }));
 
   return (
     <div className="max-w-5xl">
@@ -72,7 +79,7 @@ export default function Analytics() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4 mb-8">
         <StatCard
           icon={Eye}
           label="Visitas Totales"
@@ -102,6 +109,13 @@ export default function Analytics() {
           color="yellow"
         />
         <StatCard
+          icon={BarChart3}
+          label="Borradores"
+          value={draftMenus}
+          loading={isLoading}
+          color="yellow"
+        />
+        <StatCard
           icon={MousePointerClick}
           label="CTR Promos"
           value={ctr}
@@ -115,6 +129,13 @@ export default function Analytics() {
           value={avgViewsPerMenu}
           loading={isLoading}
           color="accent"
+        />
+        <StatCard
+          icon={MousePointerClick}
+          label="Clicks/menú"
+          value={avgClicksPerMenu}
+          loading={isLoading}
+          color="primary"
         />
       </div>
 
@@ -170,10 +191,44 @@ export default function Analytics() {
       </div>
 
       {/* Top Promos */}
-      <div className="gradient-card border border-border/50 rounded-xl p-6">
-        <h2 className="font-display text-lg font-semibold text-foreground mb-4">
-          Top Promociones (últimos 30 días)
-        </h2>
+      <div className="gradient-card border border-border/50 rounded-xl p-6 space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-semibold text-foreground">
+            Top Promociones (últimos 30 días)
+          </h2>
+          <Button variant="outline" size="sm">
+            Exportar CSV
+          </Button>
+        </div>
+
+        {promosLoading ? (
+          <Skeleton className="h-[240px] w-full rounded-lg" />
+        ) : topPromosChart.length > 0 ? (
+          <ChartContainer config={chartConfig} className="h-[240px] w-full">
+            <BarChart data={topPromosChart}>
+              <XAxis
+                dataKey="title"
+                stroke="hsl(var(--muted-foreground))"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="hsl(var(--muted-foreground))"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                allowDecimals={false}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="clicks" fill="hsl(var(--accent))" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <div className="h-[240px] flex items-center justify-center text-muted-foreground">
+            No hay datos de promociones aún
+          </div>
+        )}
         
         {promosLoading ? (
           <div className="space-y-3">

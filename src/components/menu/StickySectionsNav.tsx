@@ -35,17 +35,18 @@ export function StickySectionsNav({
   return (
     <nav
       className={cn(
-        "fixed bottom-4 left-0 right-0 z-40 md:sticky md:top-0 md:bottom-auto",
+        "fixed bottom-4 left-0 right-0 z-40",
+        "md:top-5 md:bottom-auto md:left-1/2 md:right-auto md:-translate-x-1/2",
         "transition-all duration-300"
       )}
     >
-      <div className="container max-w-5xl mx-auto px-4 md:px-0">
+      <div className="mx-auto max-w-5xl px-4 md:px-0">
         <div
           ref={scrollRef}
           className={cn(
-            "flex gap-2 overflow-x-auto scrollbar-hide py-3 px-4 md:px-8",
-            "rounded-full md:rounded-none border border-border/40 md:border-0",
-            "bg-background/85 backdrop-blur-xl shadow-menu-lg md:shadow-none"
+            "flex gap-2 overflow-x-auto scrollbar-hide py-3 px-4 md:px-6",
+            "rounded-full border border-border/40",
+            "bg-background/85 backdrop-blur-xl shadow-menu-lg"
           )}
         >
           {sections.map((section) => (

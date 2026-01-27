@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { parseISO, isValid } from 'date-fns';
 import { useParams } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
@@ -67,8 +68,14 @@ export default function PublicMenu() {
     const now = new Date(nowTimestamp);
     return menu.promotions.filter(p => {
       if (!p.is_active) return false;
-      if (p.starts_at && new Date(p.starts_at) > now) return false;
-      if (p.ends_at && new Date(p.ends_at) < now) return false;
+      if (p.starts_at) {
+        const startsAt = parseISO(p.starts_at);
+        if (isValid(startsAt) && startsAt > now) return false;
+      }
+      if (p.ends_at) {
+        const endsAt = parseISO(p.ends_at);
+        if (isValid(endsAt) && endsAt < now) return false;
+      }
       return true;
     });
   }, [menu, nowTimestamp]);
@@ -119,7 +126,7 @@ export default function PublicMenu() {
         )}
 
         {/* Menu Sections */}
-        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-16">
+        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-24 md:pb-16">
           {visibleSections.map((section) => (
             <EditorialMenuSection key={section.id} section={section} />
           ))}
