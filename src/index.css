@@ -1,12 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Import Google Fonts - Premium gastronomy typography (Cassis-inspired) */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Bebas+Neue&family=Oswald:wght@400;500;600;700&display=swap');
 
 /* Print styles */
 @import './styles/print.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* ============================================
    PREMIUM EDITORIAL MENU DESIGN SYSTEM
@@ -89,54 +89,54 @@
      Sleek dark with cyan accents
      ---------------------------------------- */
   .theme-modern {
-    --background: 220 25% 8%;
-    --foreground: 210 20% 94%;
+    --background: 230 24% 8%;
+    --foreground: 210 20% 96%;
 
-    --card: 220 22% 12%;
-    --card-foreground: 210 20% 94%;
+    --card: 230 20% 12%;
+    --card-foreground: 210 20% 96%;
 
-    --popover: 220 22% 10%;
-    --popover-foreground: 210 20% 94%;
+    --popover: 230 20% 10%;
+    --popover-foreground: 210 20% 96%;
 
-    --primary: 180 70% 45%;
-    --primary-foreground: 220 25% 6%;
+    --primary: 22 92% 54%;
+    --primary-foreground: 230 25% 6%;
 
-    --secondary: 220 20% 16%;
+    --secondary: 230 18% 18%;
     --secondary-foreground: 210 20% 88%;
 
-    --muted: 220 18% 14%;
-    --muted-foreground: 215 16% 50%;
+    --muted: 230 16% 15%;
+    --muted-foreground: 215 18% 56%;
 
-    --accent: 180 65% 38%;
-    --accent-foreground: 220 25% 6%;
+    --accent: 262 78% 62%;
+    --accent-foreground: 230 25% 6%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 18% 18%;
-    --input: 220 18% 16%;
-    --ring: 180 70% 45%;
+    --border: 230 18% 18%;
+    --input: 230 18% 16%;
+    --ring: 22 92% 54%;
 
-    --radius: 0.25rem;
+    --radius: 0.85rem;
 
-    --gold: 180 70% 45%;
-    --gold-light: 178 65% 55%;
-    --gold-dark: 182 75% 35%;
+    --gold: 22 92% 54%;
+    --gold-light: 32 90% 62%;
+    --gold-dark: 16 90% 44%;
     --charcoal: 220 25% 6%;
 
     --font-display: 'Oswald', 'Bebas Neue', sans-serif;
     --font-body: 'Inter', system-ui, sans-serif;
     --font-accent: 'Playfair Display', Georgia, serif;
 
-    --shadow-sm: 0 2px 6px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 6px 12px hsl(0 0% 0% / 0.4);
-    --shadow-lg: 0 12px 24px hsl(0 0% 0% / 0.5);
-    --shadow-gold: 0 6px 16px hsl(180 70% 45% / 0.2);
+    --shadow-sm: 0 8px 20px hsl(230 30% 5% / 0.25);
+    --shadow-md: 0 16px 32px hsl(230 30% 5% / 0.35);
+    --shadow-lg: 0 24px 48px hsl(230 30% 5% / 0.45);
+    --shadow-gold: 0 12px 28px hsl(22 92% 54% / 0.22);
 
     --sidebar-background: 220 22% 10%;
     --sidebar-foreground: 210 20% 88%;
-    --sidebar-primary: 180 70% 45%;
-    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-primary: 22 92% 54%;
+    --sidebar-primary-foreground: 230 25% 6%;
     --sidebar-accent: 220 18% 14%;
     --sidebar-accent-foreground: 210 20% 88%;
     --sidebar-border: 220 18% 16%;
@@ -507,6 +507,30 @@
   .blur-orb-pink {
     background: hsl(330 80% 55% / 0.2);
   }
+
+  /* Modern menu utilities */
+  .text-gradient-accent {
+    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--accent)));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .glass-surface {
+    background: hsl(var(--background) / 0.6);
+    backdrop-filter: blur(14px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .menu-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .menu-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 }
 
 /* ============================================
@@ -556,5 +580,22 @@
 
   .btn-glow:hover::before {
     opacity: 1;
+  }
+
+  .menu-card {
+    @apply rounded-2xl border border-border/40 bg-card/80 shadow-menu-sm;
+    @apply transition-smooth hover:shadow-menu-lg hover:-translate-y-0.5;
+  }
+
+  .menu-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+
+  .menu-price {
+    @apply inline-flex items-center rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary;
+  }
+
+  .menu-tag {
+    @apply inline-flex items-center gap-1 rounded-full bg-secondary/80 px-2.5 py-1 text-xs font-medium text-foreground;
   }
 }

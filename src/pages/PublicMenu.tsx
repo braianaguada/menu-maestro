@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
 import { getThemeConfig } from '@/themes/menuThemes';
@@ -12,11 +12,9 @@ import { EditorialFooter } from '@/components/menu/EditorialFooter';
 import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
-import menuPatternCassis from '@/assets/menu-pattern-cassis.jpg';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
 
@@ -90,24 +88,11 @@ export default function PublicMenu() {
 
   return (
     <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
-      {/* Cassis-style decorative background pattern */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none"
         style={{
-          backgroundImage: `url(${menuPatternCassis})`,
-          backgroundSize: '900px auto',
-          backgroundPosition: 'center top',
-          backgroundRepeat: 'repeat',
-          opacity: 0.12,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Subtle gradient overlay for depth */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center top, transparent 0%, hsl(var(--background)) 70%)',
+          background:
+            'radial-gradient(circle at top, hsl(var(--primary) / 0.15), transparent 45%), radial-gradient(circle at 20% 20%, hsl(var(--accent) / 0.12), transparent 40%)',
         }}
         aria-hidden="true"
       />
@@ -134,7 +119,7 @@ export default function PublicMenu() {
         )}
 
         {/* Menu Sections */}
-        <main className="container max-w-3xl mx-auto px-5 md:px-8 pb-16">
+        <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-16">
           {visibleSections.map((section) => (
             <EditorialMenuSection key={section.id} section={section} />
           ))}
