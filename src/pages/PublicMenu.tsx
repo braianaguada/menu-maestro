@@ -41,7 +41,7 @@ export default function PublicMenu() {
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setNowTimestamp(Date.now());
-    }, 20000);
+    }, 5000);
 
     return () => window.clearInterval(intervalId);
   }, []);

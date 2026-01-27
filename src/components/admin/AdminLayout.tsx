@@ -7,6 +7,7 @@ import {
   LayoutDashboard, 
   FileText, 
   BarChart3,
+  CreditCard,
   LogOut,
   Loader2,
   Menu as MenuIcon,
@@ -19,6 +20,7 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/menus', label: 'Mis Menús', icon: FileText },
   { href: '/admin/analytics', label: 'Analítica', icon: BarChart3 },
+  { href: '/admin/subscription', label: 'Suscripción', icon: CreditCard },
 ];
 
 export function AdminLayout() {

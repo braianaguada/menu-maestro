@@ -30,9 +30,13 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const size = 1024; // High resolution
+    const size = 1200;
+    const headerHeight = 220;
+    const footerHeight = 180;
+    const qrSize = 760;
+    const padding = 100;
     canvas.width = size;
-    canvas.height = size;
+    canvas.height = headerHeight + qrSize + footerHeight;
 
     // Convert SVG to data URL
     const svgData = new XMLSerializer().serializeToString(svg);
@@ -41,9 +45,41 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
 
     const img = new Image();
     img.onload = () => {
+      // Background
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, size, size);
-      ctx.drawImage(img, 0, 0, size, size);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Header band
+      const headerGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      headerGradient.addColorStop(0, '#111827');
+      headerGradient.addColorStop(1, '#1f2937');
+      ctx.fillStyle = headerGradient;
+      ctx.fillRect(0, 0, canvas.width, headerHeight);
+
+      // Header text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 60px Inter, system-ui, sans-serif';
+      ctx.fillText(menuName, padding, 130);
+      ctx.font = '28px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#d1d5db';
+      ctx.fillText('Menú digital · Escaneá para ver la carta', padding, 180);
+
+      // QR container
+      const qrX = (canvas.width - qrSize) / 2;
+      const qrY = headerHeight + 40;
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(qrX - 24, qrY - 24, qrSize + 48, qrSize + 48);
+      ctx.fillStyle = '#e5e7eb';
+      ctx.fillRect(qrX - 24, qrY - 24, qrSize + 48, 8);
+      ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+      // Footer URL
+      ctx.fillStyle = '#111827';
+      ctx.font = '32px Inter, system-ui, sans-serif';
+      ctx.fillText('Abrí el menú en:', padding, headerHeight + qrSize + 100);
+      ctx.fillStyle = '#f97316';
+      ctx.font = 'bold 30px Inter, system-ui, sans-serif';
+      ctx.fillText(menuUrl, padding, headerHeight + qrSize + 145);
 
       const pngUrl = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
@@ -70,18 +106,27 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
           <DialogTitle>Código QR - {menuName}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-6 py-4">
-          <div 
+          <div
             ref={qrRef}
-            className="p-6 bg-white rounded-xl shadow-sm"
+            className="w-full rounded-2xl border border-border/60 bg-gradient-to-br from-background via-background to-muted/20 p-6 text-center shadow-menu-sm"
           >
-            <QRCodeSVG
-              value={menuUrl}
-              size={256}
-              level="H"
-              includeMargin={false}
-              bgColor="#ffffff"
-              fgColor="#000000"
-            />
+            <div className="mb-4">
+              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Menú digital</p>
+              <h3 className="text-lg font-semibold text-foreground">{menuName}</h3>
+            </div>
+            <div className="mx-auto inline-flex items-center justify-center rounded-2xl bg-white p-4 shadow-md">
+              <QRCodeSVG
+                value={menuUrl}
+                size={220}
+                level="H"
+                includeMargin={false}
+                bgColor="#ffffff"
+                fgColor="#111827"
+              />
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Escaneá para ver la carta completa
+            </p>
           </div>
 
           <div className="text-center space-y-2">

@@ -13,6 +13,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import MenusList from "./pages/admin/MenusList";
 import MenuEditor from "./pages/admin/MenuEditor";
 import Analytics from "./pages/admin/Analytics";
+import Subscription from "./pages/admin/Subscription";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="menus" element={<MenusList />} />
             <Route path="menus/:menuId" element={<MenuEditor />} />
             <Route path="analytics" element={<Analytics />} />
+            <Route path="subscription" element={<Subscription />} />
           </Route>
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

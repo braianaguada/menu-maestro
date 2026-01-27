@@ -45,11 +45,35 @@ export default function Analytics() {
   const avgViewsPerMenu = totalMenus > 0 ? Math.round(totalViews / totalMenus) : 0;
   const avgClicksPerMenu = totalMenus > 0 ? Math.round(totalClicks / totalMenus) : 0;
   const draftMenus = menus?.filter(m => m.status === 'draft').length || 0;
+  const menuStatusData = [
+    { label: 'Publicados', value: publishedMenus },
+    { label: 'Borradores', value: draftMenus },
+  ];
 
   const topPromosChart = (topPromos || []).slice(0, 6).map((promo) => ({
     title: promo.title.length > 16 ? `${promo.title.slice(0, 16)}…` : promo.title,
     clicks: promo.clicks,
   }));
+
+  const handleExportCSV = () => {
+    if (!topPromos || topPromos.length === 0) return;
+    const header = ['Promoción', 'Menú', 'Clicks'];
+    const rows = topPromos.map((promo) => [
+      `"${promo.title.replace(/"/g, '""')}"`,
+      `"${promo.menu_name.replace(/"/g, '""')}"`,
+      promo.clicks,
+    ]);
+    const csv = [header.join(','), ...rows.map((row) => row.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `promociones-${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="max-w-5xl">
@@ -86,6 +110,13 @@ export default function Analytics() {
           value={totalViews}
           loading={isLoading}
           color="primary"
+        />
+        <StatCard
+          icon={BarChart3}
+          label="Menús Totales"
+          value={totalMenus}
+          loading={isLoading}
+          color="accent"
         />
         <StatCard
           icon={MousePointerClick}
@@ -139,55 +170,88 @@ export default function Analytics() {
         />
       </div>
 
-      {/* Views Chart */}
-      <div className="gradient-card border border-border/50 rounded-xl p-6 mb-8">
-        <h2 className="font-display text-lg font-semibold text-foreground mb-4">
-          Visitas por día
-        </h2>
-        
-        {viewsLoading ? (
-          <Skeleton className="h-[300px] w-full rounded-lg" />
-        ) : viewsData?.dailyViews && viewsData.dailyViews.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-[300px] w-full">
-            <AreaChart data={viewsData.dailyViews}>
-              <defs>
-                <linearGradient id="viewsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis 
-                dataKey="date" 
-                tickFormatter={formatDate}
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis 
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                allowDecimals={false}
-              />
-              <ChartTooltip 
-                content={<ChartTooltipContent labelFormatter={(value) => format(parseISO(value as string), 'EEEE, d MMM', { locale: es })} />}
-              />
-              <Area
-                type="monotone"
-                dataKey="views"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                fill="url(#viewsGradient)"
-              />
-            </AreaChart>
-          </ChartContainer>
-        ) : (
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            No hay datos de visitas aún
-          </div>
-        )}
+      <div className="grid gap-6 lg:grid-cols-[2fr_1fr] mb-8">
+        {/* Views Chart */}
+        <div className="gradient-card border border-border/50 rounded-xl p-6">
+          <h2 className="font-display text-lg font-semibold text-foreground mb-4">
+            Visitas por día
+          </h2>
+          
+          {viewsLoading ? (
+            <Skeleton className="h-[300px] w-full rounded-lg" />
+          ) : viewsData?.dailyViews && viewsData.dailyViews.length > 0 ? (
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <AreaChart data={viewsData.dailyViews}>
+                <defs>
+                  <linearGradient id="viewsGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={formatDate}
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis 
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent labelFormatter={(value) => format(parseISO(value as string), 'EEEE, d MMM', { locale: es })} />}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="views"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2}
+                  fill="url(#viewsGradient)"
+                />
+              </AreaChart>
+            </ChartContainer>
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+              No hay datos de visitas aún
+            </div>
+          )}
+        </div>
+
+        {/* Menu Status */}
+        <div className="gradient-card border border-border/50 rounded-xl p-6">
+          <h2 className="font-display text-lg font-semibold text-foreground mb-4">
+            Estado de menús
+          </h2>
+          {isLoading ? (
+            <Skeleton className="h-[300px] w-full rounded-lg" />
+          ) : (
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <BarChart data={menuStatusData}>
+                <XAxis
+                  dataKey="label"
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          )}
+        </div>
       </div>
 
       {/* Top Promos */}
@@ -196,7 +260,7 @@ export default function Analytics() {
           <h2 className="font-display text-lg font-semibold text-foreground">
             Top Promociones (últimos 30 días)
           </h2>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={!topPromos?.length}>
             Exportar CSV
           </Button>
         </div>
