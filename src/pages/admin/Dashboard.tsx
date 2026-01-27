@@ -1,14 +1,38 @@
-import { Link } from 'react-router-dom';
-import { useMenus } from '@/hooks/useAdminMenus';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMenus, useCreateMenu } from '@/hooks/useAdminMenus';
 import { Button } from '@/components/ui/button';
 import { FileText, Plus, Eye, ExternalLink } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { data: menus, isLoading } = useMenus();
+  const createMenu = useCreateMenu();
+  const navigate = useNavigate();
 
   const publishedMenus = menus?.filter(m => m.status === 'published') || [];
   const draftMenus = menus?.filter(m => m.status === 'draft') || [];
+
+  const handleCreateMenu = async () => {
+    const slugSuffix = Math.random().toString(36).slice(2, 7);
+    const draftPayload = {
+      name: 'Nuevo menú',
+      slug: `menu-${slugSuffix}`,
+      theme: 'elegant',
+    };
+
+    try {
+      const newMenu = await createMenu.mutateAsync(draftPayload);
+      toast.success('Menú creado');
+      navigate(`/admin/menus/${newMenu.id}`);
+    } catch (error: any) {
+      if (error.message?.includes('duplicate')) {
+        toast.error('No pudimos generar un slug único, intenta nuevamente');
+      } else {
+        toast.error('Error al crear el menú');
+      }
+    }
+  };
 
   return (
     <div className="max-w-4xl">
@@ -60,11 +84,9 @@ export default function Dashboard() {
           Acciones rápidas
         </h2>
         <div className="flex flex-wrap gap-3">
-          <Button asChild>
-            <Link to="/admin/menus/new">
-              <Plus className="w-4 h-4 mr-2" />
-              Crear nuevo menú
-            </Link>
+          <Button onClick={handleCreateMenu} disabled={createMenu.isPending}>
+            <Plus className="w-4 h-4 mr-2" />
+            {createMenu.isPending ? 'Creando...' : 'Crear nuevo menú'}
           </Button>
           <Button variant="outline" asChild>
             <Link to="/admin/menus">
@@ -120,11 +142,9 @@ export default function Dashboard() {
           <div className="text-center py-8">
             <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
             <p className="text-muted-foreground mb-4">No tienes menús aún</p>
-            <Button asChild>
-              <Link to="/admin/menus/new">
-                <Plus className="w-4 h-4 mr-2" />
-                Crear mi primer menú
-              </Link>
+            <Button onClick={handleCreateMenu} disabled={createMenu.isPending}>
+              <Plus className="w-4 h-4 mr-2" />
+              {createMenu.isPending ? 'Creando...' : 'Crear mi primer menú'}
             </Button>
           </div>
         )}

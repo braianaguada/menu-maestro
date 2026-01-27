@@ -49,14 +49,14 @@ export function StickySectionsNav({
     <nav
       className={cn(
         "sticky top-0 z-40 transition-all duration-300",
-        "bg-background/95 backdrop-blur-sm border-b border-border/30",
+        "bg-background/80 backdrop-blur-lg border-b border-border/30",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
       )}
     >
-      <div className="container max-w-3xl mx-auto">
+      <div className="container max-w-5xl mx-auto">
         <div
           ref={scrollRef}
-          className="flex gap-0 overflow-x-auto scrollbar-hide py-3 px-5 md:px-8"
+          className="flex gap-2 overflow-x-auto scrollbar-hide py-3 px-5 md:px-8"
         >
           {sections.map((section) => (
             <button
@@ -64,21 +64,14 @@ export function StickySectionsNav({
               data-section-id={section.id}
               onClick={() => onSectionClick(section.id)}
               className={cn(
-                "flex-shrink-0 px-3 py-2 text-caption font-semibold transition-smooth-fast",
-                "whitespace-nowrap relative",
+                "flex-shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide",
+                "transition-smooth-fast border",
                 activeSectionId === section.id
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground border-primary shadow-gold"
+                  : "bg-background/60 text-muted-foreground border-border/40 hover:text-foreground hover:border-primary/40"
               )}
             >
               {section.name}
-              {/* Active underline indicator */}
-              <span 
-                className={cn(
-                  "absolute bottom-1 left-3 right-3 h-0.5 bg-primary transition-transform duration-200",
-                  activeSectionId === section.id ? "scale-x-100" : "scale-x-0"
-                )}
-              />
             </button>
           ))}
         </div>
