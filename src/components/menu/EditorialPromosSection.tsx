@@ -41,13 +41,18 @@ export function EditorialPromosSection({
   };
 
   return (
-    <section className="py-10 md:py-14 border-b border-border/30">
-      <div className="container max-w-4xl mx-auto px-6 md:px-8">
-        {/* Header - Cassis bold style */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="heading-section text-primary">
-            NUEVOS PLATOS
-          </h2>
+    <section className="py-12 md:py-16">
+      <div className="container max-w-5xl mx-auto px-6 md:px-8">
+        <div className="mb-8 md:mb-10 flex items-end justify-between gap-6">
+          <div>
+            <p className="menu-chip">Promociones destacadas</p>
+            <h2 className="mt-4 text-2xl md:text-3xl font-display font-semibold text-foreground">
+              Experiencias con precio especial
+            </h2>
+          </div>
+          <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
+            Deslizá para ver más
+          </div>
         </div>
       </div>
 
@@ -61,7 +66,7 @@ export function EditorialPromosSection({
               className={cn(
                 "hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-10",
                 "w-10 h-10 items-center justify-center",
-                "bg-background border border-border/50 shadow-menu-md",
+                "glass-surface shadow-menu-md rounded-full",
                 "hover:bg-secondary transition-colors"
               )}
               aria-label="Anterior"
@@ -73,7 +78,7 @@ export function EditorialPromosSection({
               className={cn(
                 "hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-10",
                 "w-10 h-10 items-center justify-center",
-                "bg-background border border-border/50 shadow-menu-md",
+                "glass-surface shadow-menu-md rounded-full",
                 "hover:bg-secondary transition-colors"
               )}
               aria-label="Siguiente"
