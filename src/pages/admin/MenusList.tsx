@@ -28,10 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, ExternalLink, Trash2, Edit, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Plus, ExternalLink, Trash2, Edit, FileDown, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { normalizeTheme } from '@/themes/menuThemes';
 
 export default function MenusList() {
   const { data: menus, isLoading } = useMenus();
@@ -202,6 +203,16 @@ export default function MenusList() {
                       </a>
                     </Button>
                   )}
+                  <Button variant="ghost" size="icon" asChild>
+                    <a
+                      href={`/m/${menu.slug}/print?theme=${normalizeTheme(menu.theme)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Descargar PDF de ${menu.name}`}
+                    >
+                      <FileDown className="w-4 h-4" />
+                    </a>
+                  </Button>
                   <Button variant="ghost" size="icon" asChild>
                     <Link to={`/admin/menus/${menu.id}`}>
                       <Edit className="w-4 h-4" />

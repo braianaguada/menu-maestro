@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
-import { getThemeConfig, normalizeTheme } from '@/themes/menuThemes';
+import { getThemeConfig } from '@/themes/menuThemes';
 import { EditorialHeader } from '@/components/menu/EditorialHeader';
 import { EditorialPromosSection } from '@/components/menu/EditorialPromosSection';
 import { EditorialMenuSection } from '@/components/menu/EditorialMenuSection';
@@ -18,6 +18,7 @@ export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
+  const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
 
   // Memoize section IDs for observer
   const sectionIds = useMemo(() => 
@@ -38,6 +39,14 @@ export default function PublicMenu() {
     }
   }, [menu?.id]);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNowTimestamp(Date.now());
+    }, 20000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   // Apply theme class
   useEffect(() => {
     if (menu?.theme) {
@@ -54,12 +63,6 @@ export default function PublicMenu() {
     };
   }, [menu?.theme]);
 
-  // Handle PDF download
-  const handleDownloadPdf = () => {
-    const theme = menu?.theme ? normalizeTheme(menu.theme) : 'editorial';
-    window.open(`/m/${slug}/print?theme=${theme}`, '_blank');
-  };
-
   if (isLoading) {
     return <MenuLoading />;
   }
@@ -69,13 +72,15 @@ export default function PublicMenu() {
   }
 
   // Filter active promotions based on schedule
-  const now = new Date();
-  const activePromotions = menu.promotions.filter(p => {
-    if (!p.is_active) return false;
-    if (p.starts_at && new Date(p.starts_at) > now) return false;
-    if (p.ends_at && new Date(p.ends_at) < now) return false;
-    return true;
-  });
+  const activePromotions = useMemo(() => {
+    const now = new Date(nowTimestamp);
+    return menu.promotions.filter(p => {
+      if (!p.is_active) return false;
+      if (p.starts_at && new Date(p.starts_at) > now) return false;
+      if (p.ends_at && new Date(p.ends_at) < now) return false;
+      return true;
+    });
+  }, [menu.promotions, nowTimestamp]);
 
   const visibleSections = menu.sections.filter(s => s.items.length > 0);
 
@@ -139,8 +144,8 @@ export default function PublicMenu() {
           )}
         </main>
 
-        {/* Footer with PDF download */}
-        <EditorialFooter onDownloadPdf={handleDownloadPdf} />
+        {/* Footer */}
+        <EditorialFooter />
 
         {/* Back to Top Button */}
         <BackToTopButton threshold={600} />
