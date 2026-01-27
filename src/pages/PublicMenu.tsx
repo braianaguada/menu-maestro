@@ -63,16 +63,9 @@ export default function PublicMenu() {
     };
   }, [menu?.theme]);
 
-  if (isLoading) {
-    return <MenuLoading />;
-  }
-
-  if (error || !menu) {
-    return <MenuNotFound />;
-  }
-
   // Filter active promotions based on schedule
   const activePromotions = useMemo(() => {
+    if (!menu) return [];
     const now = new Date(nowTimestamp);
     return menu.promotions.filter(p => {
       if (!p.is_active) return false;
@@ -80,9 +73,20 @@ export default function PublicMenu() {
       if (p.ends_at && new Date(p.ends_at) < now) return false;
       return true;
     });
-  }, [menu.promotions, nowTimestamp]);
+  }, [menu, nowTimestamp]);
 
-  const visibleSections = menu.sections.filter(s => s.items.length > 0);
+  const visibleSections = useMemo(() => {
+    if (!menu) return [];
+    return menu.sections.filter(s => s.items.length > 0);
+  }, [menu]);
+
+  if (isLoading) {
+    return <MenuLoading />;
+  }
+
+  if (error || !menu) {
+    return <MenuNotFound />;
+  }
 
   return (
     <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
