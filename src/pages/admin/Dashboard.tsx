@@ -84,9 +84,11 @@ export default function Dashboard() {
           Acciones rápidas
         </h2>
         <div className="flex flex-wrap gap-3">
-          <Button onClick={handleCreateMenu} disabled={createMenu.isPending}>
-            <Plus className="w-4 h-4 mr-2" />
-            {createMenu.isPending ? 'Creando...' : 'Crear nuevo menú'}
+          <Button asChild>
+            <Link to="/admin/menus?create=1">
+              <Plus className="w-4 h-4 mr-2" />
+              Crear nuevo menú
+            </Link>
           </Button>
           <Button variant="outline" asChild>
             <Link to="/admin/menus">
@@ -142,9 +144,11 @@ export default function Dashboard() {
           <div className="text-center py-8">
             <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
             <p className="text-muted-foreground mb-4">No tienes menús aún</p>
-            <Button onClick={handleCreateMenu} disabled={createMenu.isPending}>
-              <Plus className="w-4 h-4 mr-2" />
-              {createMenu.isPending ? 'Creando...' : 'Crear mi primer menú'}
+            <Button asChild>
+              <Link to="/admin/menus?create=1">
+                <Plus className="w-4 h-4 mr-2" />
+                Crear mi primer menú
+              </Link>
             </Button>
           </div>
         )}

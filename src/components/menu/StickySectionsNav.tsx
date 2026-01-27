@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import type { Section } from '@/types/menu';
 
@@ -14,19 +14,6 @@ export function StickySectionsNav({
   onSectionClick 
 }: StickySectionsNavProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  // Show nav after scrolling past header
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY > 100);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Scroll active chip into view
   useEffect(() => {
@@ -48,15 +35,18 @@ export function StickySectionsNav({
   return (
     <nav
       className={cn(
-        "sticky top-0 z-40 transition-all duration-300",
-        "bg-background/80 backdrop-blur-lg border-b border-border/30",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"
+        "fixed bottom-4 left-0 right-0 z-40 md:sticky md:top-0 md:bottom-auto",
+        "transition-all duration-300"
       )}
     >
-      <div className="container max-w-5xl mx-auto">
+      <div className="container max-w-5xl mx-auto px-4 md:px-0">
         <div
           ref={scrollRef}
-          className="flex gap-2 overflow-x-auto scrollbar-hide py-3 px-5 md:px-8"
+          className={cn(
+            "flex gap-2 overflow-x-auto scrollbar-hide py-3 px-4 md:px-8",
+            "rounded-full md:rounded-none border border-border/40 md:border-0",
+            "bg-background/85 backdrop-blur-xl shadow-menu-lg md:shadow-none"
+          )}
         >
           {sections.map((section) => (
             <button

@@ -37,7 +37,12 @@ export default function Analytics() {
     return format(parseISO(dateStr), 'd MMM', { locale: es });
   };
 
+  const totalMenus = menus?.length || 0;
+  const publishedMenus = menus?.filter(m => m.status === 'published').length || 0;
+  const totalViews = viewsData?.totalViews || 0;
   const totalClicks = topPromos?.reduce((sum, p) => sum + p.clicks, 0) || 0;
+  const ctr = totalViews > 0 ? Math.round((totalClicks / totalViews) * 1000) / 10 : 0;
+  const avgViewsPerMenu = totalMenus > 0 ? Math.round(totalViews / totalMenus) : 0;
 
   return (
     <div className="max-w-5xl">
@@ -67,11 +72,11 @@ export default function Analytics() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         <StatCard
           icon={Eye}
           label="Visitas Totales"
-          value={viewsData?.totalViews || 0}
+          value={totalViews}
           loading={isLoading}
           color="primary"
         />
@@ -85,16 +90,31 @@ export default function Analytics() {
         <StatCard
           icon={BarChart3}
           label="Menús Activos"
-          value={menus?.filter(m => m.status === 'published').length || 0}
+          value={publishedMenus}
           loading={isLoading}
           color="green"
         />
         <StatCard
           icon={TrendingUp}
           label="Promedio/día"
-          value={viewsData?.totalViews ? Math.round(viewsData.totalViews / days) : 0}
+          value={totalViews ? Math.round(totalViews / days) : 0}
           loading={isLoading}
           color="yellow"
+        />
+        <StatCard
+          icon={MousePointerClick}
+          label="CTR Promos"
+          value={ctr}
+          loading={isLoading}
+          suffix="%"
+          color="primary"
+        />
+        <StatCard
+          icon={BarChart3}
+          label="Visitas/menú"
+          value={avgViewsPerMenu}
+          loading={isLoading}
+          color="accent"
         />
       </div>
 
@@ -204,11 +224,12 @@ interface StatCardProps {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number;
+  suffix?: string;
   loading?: boolean;
   color: 'primary' | 'accent' | 'green' | 'yellow';
 }
 
-function StatCard({ icon: Icon, label, value, loading, color }: StatCardProps) {
+function StatCard({ icon: Icon, label, value, suffix, loading, color }: StatCardProps) {
   const colorClasses = {
     primary: 'bg-primary/10 text-primary',
     accent: 'bg-accent/10 text-accent',
@@ -226,7 +247,10 @@ function StatCard({ icon: Icon, label, value, loading, color }: StatCardProps) {
       {loading ? (
         <Skeleton className="h-8 w-16 mb-1" />
       ) : (
-        <p className="text-2xl font-bold text-foreground">{value.toLocaleString()}</p>
+        <p className="text-2xl font-bold text-foreground">
+          {value.toLocaleString()}
+          {suffix && <span className="text-sm font-semibold text-muted-foreground ml-1">{suffix}</span>}
+        </p>
       )}
       <p className="text-sm text-muted-foreground">{label}</p>
     </div>
