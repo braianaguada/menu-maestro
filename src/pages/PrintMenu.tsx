@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { usePublicMenu } from '@/hooks/usePublicMenu';
-import { getThemeConfig, normalizeTheme } from '@/themes/menuThemes';
+import { getThemeConfig } from '@/themes/menuThemes';
 import { cn } from '@/lib/utils';
 import type { Section, Item, Promotion } from '@/types/menu';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 // Print-specific item component
 function PrintMenuItem({ item }: { item: Item }) {
@@ -77,6 +79,7 @@ export default function PrintMenu() {
   const [searchParams] = useSearchParams();
   const themeParam = searchParams.get('theme') || 'editorial';
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   // Apply theme
   useEffect(() => {
@@ -98,6 +101,35 @@ export default function PrintMenu() {
       return () => clearTimeout(timer);
     }
   }, [menu, isLoading, error]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Verificando acceso...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="text-center space-y-4 max-w-md">
+          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            Acceso restringido
+          </p>
+          <h1 className="text-3xl font-display font-semibold text-foreground">
+            Descarga disponible solo para administradores
+          </h1>
+          <p className="text-muted-foreground">
+            Iniciá sesión para exportar el menú en PDF.
+          </p>
+          <Button asChild>
+            <Link to="/auth">Ir a iniciar sesión</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

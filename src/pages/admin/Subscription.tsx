@@ -41,11 +41,14 @@ export default function Subscription() {
   return (
     <div className="max-w-6xl space-y-10">
       <div>
-        <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">
+          Planes
+        </p>
+        <h1 className="font-display text-4xl font-semibold text-foreground mb-2">
           Suscripción
         </h1>
-        <p className="text-muted-foreground">
-          Elegí el plan que mejor se adapte a tu operación. Pagos seguros con Stripe.
+        <p className="text-muted-foreground max-w-2xl">
+          Elegí el plan que mejor se adapte a tu operación. Pagos seguros y escalables.
         </p>
       </div>
 

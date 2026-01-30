@@ -108,16 +108,16 @@ export default function MenuEditor() {
 
   if (menusLoading) {
     return (
-      <div className="max-w-4xl space-y-6">
+      <div className="max-w-5xl space-y-6">
         <Skeleton className="h-10 w-48" />
-        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-2xl" />
       </div>
     );
   }
 
   if (!menu) {
     return (
-      <div className="max-w-4xl">
+      <div className="max-w-5xl">
         <p className="text-muted-foreground">Menú no encontrado</p>
         <Button asChild className="mt-4">
           <Link to="/admin/menus">Volver a mis menús</Link>
@@ -127,9 +127,9 @@ export default function MenuEditor() {
   }
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-5xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link to="/admin/menus">
@@ -137,14 +137,17 @@ export default function MenuEditor() {
             </Link>
           </Button>
           <div>
-            <h1 className="font-display text-2xl font-bold text-foreground">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              Editor de menú
+            </p>
+            <h1 className="font-display text-3xl font-semibold text-foreground">
               {currentData.name}
             </h1>
             <p className="text-sm text-muted-foreground">/m/{currentData.slug}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {currentData.status === 'published' && (
             <>
               <QRCodeGenerator menuSlug={currentData.slug} menuName={currentData.name} />
@@ -173,7 +176,7 @@ export default function MenuEditor() {
 
       {/* Tabs */}
       <Tabs defaultValue="sections" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid rounded-full bg-card/60 border border-border/50">
           <TabsTrigger value="sections" className="gap-2">
             <LayoutList className="w-4 h-4" />
             <span className="hidden sm:inline">Secciones</span>
@@ -190,7 +193,7 @@ export default function MenuEditor() {
 
         {/* Sections Tab */}
         <TabsContent value="sections">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <h2 className="font-display text-xl font-semibold text-foreground">
               Secciones e ítems
             </h2>
@@ -266,7 +269,7 @@ export default function MenuEditor() {
 
         {/* Settings Tab */}
         <TabsContent value="settings">
-          <div className="gradient-card border border-border/50 rounded-xl p-6 space-y-6">
+          <div className="gradient-card border border-border/50 rounded-2xl p-6 space-y-6">
             <h2 className="font-display text-xl font-semibold text-foreground">
               Configuración del menú
             </h2>

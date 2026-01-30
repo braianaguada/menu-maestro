@@ -31,14 +31,14 @@ export function EditorialHeader({ name, logoUrl, className }: EditorialHeaderPro
           className="h-full w-full object-cover"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/40 to-background" />
       </div>
 
       <div className="relative z-10">
-        <div className="container max-w-5xl mx-auto px-5 md:px-8 pt-16 pb-20 md:pt-24 md:pb-24">
-          <div className="max-w-2xl space-y-6">
+        <div className="container max-w-5xl mx-auto px-5 md:px-8 pt-20 pb-20 md:pt-28 md:pb-24">
+          <div className="max-w-3xl space-y-6">
             <span className="menu-chip text-white/80 border-white/20 bg-white/10">
-              Menú digital
+              Menú degustación
             </span>
 
             {logoUrl && (
@@ -50,25 +50,27 @@ export function EditorialHeader({ name, logoUrl, className }: EditorialHeaderPro
             )}
 
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-white leading-tight">
+              <p className="text-xs uppercase tracking-[0.4em] text-white/70">
+                Cocina contemporánea
+              </p>
+              <h1 className="text-4xl md:text-6xl font-display font-semibold text-white leading-tight">
                 {name}
               </h1>
-              <p className="text-white/70 text-base md:text-lg leading-relaxed">
-                Sabores contemporáneos, ingredientes frescos y una experiencia premium pensada
-                para sorprender a cada mesa.
+              <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl">
+                Un recorrido sensorial inspirado en ingredientes nobles, técnicas precisas y un
+                servicio pensado para ocasiones memorables.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <span className="menu-chip border-white/20 bg-white/10 text-white/80">
-                Experiencia gourmet
-              </span>
-              <span className="menu-chip border-white/20 bg-white/10 text-white/80">
-                Platos de autor
-              </span>
-              <span className="menu-chip border-white/20 bg-white/10 text-white/80">
-                Cocina estacional
-              </span>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {['Experiencia gourmet', 'Platos de autor', 'Cocina estacional'].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.2em] text-white/70"
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
         </div>
