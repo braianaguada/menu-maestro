@@ -100,7 +100,7 @@ export function AdminLayout() {
         <div className="flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-2">
             <UtensilsCrossed className="w-6 h-6 text-primary" />
-            <span className="font-display font-semibold text-foreground">MenuDigital</span>
+            <span className="font-display font-semibold text-foreground">Menu Maestro</span>
           </Link>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -157,7 +157,7 @@ export function AdminLayout() {
               <div className="p-2 rounded-xl bg-primary/10">
                 <UtensilsCrossed className="w-6 h-6 text-primary" />
               </div>
-              <span className="font-display text-xl font-semibold text-foreground">MenuDigital</span>
+              <span className="font-display text-xl font-semibold text-foreground">Menu Maestro</span>
             </Link>
           </div>
 

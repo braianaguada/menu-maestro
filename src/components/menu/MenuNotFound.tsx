@@ -10,11 +10,15 @@ export function MenuNotFound() {
           <UtensilsCrossed className="w-10 h-10" />
         </div>
         <div className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">
+            Menú no disponible
+          </p>
           <h1 className="text-3xl md:text-4xl font-display font-semibold text-foreground">
-            Menú no encontrado
+            Este menú no está publicado
           </h1>
           <p className="text-muted-foreground">
-            El menú que buscás no existe o no está publicado. Probá con otro enlace o volvé al inicio.
+            El enlace puede estar desactivado o no existe. Volvé al inicio o ingresá al dashboard
+            para administrar tus cartas.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

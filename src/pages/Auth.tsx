@@ -94,11 +94,11 @@ export default function Auth() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
             <UtensilsCrossed className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="font-display text-3xl font-bold text-foreground">
-            MenuDigital
+          <h1 className="font-display text-3xl font-semibold text-foreground">
+            Menu Maestro
           </h1>
           <p className="text-muted-foreground mt-2">
-            {isLogin ? 'Ingresa a tu cuenta' : 'Crea tu cuenta'}
+            {isLogin ? 'Accede a tu sala digital' : 'Creá tu cuenta premium'}
           </p>
         </div>
 

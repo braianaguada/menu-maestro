@@ -77,12 +77,15 @@ export default function Analytics() {
 
   return (
     <div className="max-w-5xl">
-      <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-          Analítica
+      <div className="mb-10 space-y-3">
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          Inteligencia
+        </p>
+        <h1 className="font-display text-4xl font-semibold text-foreground">
+          Analítica gastronómica
         </h1>
-        <p className="text-muted-foreground">
-          Estadísticas de visitas y rendimiento de promociones
+        <p className="text-muted-foreground max-w-xl">
+          Rendimiento de visitas y promociones con foco en decisiones rápidas.
         </p>
       </div>
 
@@ -172,7 +175,7 @@ export default function Analytics() {
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr] mb-8">
         {/* Views Chart */}
-        <div className="gradient-card border border-border/50 rounded-xl p-6">
+        <div className="gradient-card border border-border/50 rounded-2xl p-6">
           <h2 className="font-display text-lg font-semibold text-foreground mb-4">
             Visitas por día
           </h2>
@@ -223,7 +226,7 @@ export default function Analytics() {
         </div>
 
         {/* Menu Status */}
-        <div className="gradient-card border border-border/50 rounded-xl p-6">
+        <div className="gradient-card border border-border/50 rounded-2xl p-6">
           <h2 className="font-display text-lg font-semibold text-foreground mb-4">
             Estado de menús
           </h2>
@@ -255,7 +258,7 @@ export default function Analytics() {
       </div>
 
       {/* Top Promos */}
-      <div className="gradient-card border border-border/50 rounded-xl p-6 space-y-6">
+      <div className="gradient-card border border-border/50 rounded-2xl p-6 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-lg font-semibold text-foreground">
             Top Promociones (últimos 30 días)
@@ -357,7 +360,7 @@ function StatCard({ icon: Icon, label, value, suffix, loading, color }: StatCard
   };
 
   return (
-    <div className="gradient-card border border-border/50 rounded-xl p-5">
+    <div className="gradient-card border border-border/50 rounded-2xl p-5">
       <div className="flex items-center gap-3 mb-2">
         <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
           <Icon className="w-5 h-5" />

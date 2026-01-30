@@ -2,10 +2,10 @@ export function MenuLoading() {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/15 via-background to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-background to-background" />
         <div className="relative z-10 container max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24 space-y-6">
           <div className="h-6 w-28 rounded-full bg-muted animate-shimmer" />
-          <div className="h-12 w-72 rounded-xl bg-muted animate-shimmer" />
+          <div className="h-12 w-72 rounded-2xl bg-muted animate-shimmer" />
           <div className="h-4 w-full max-w-md rounded-full bg-muted animate-shimmer" />
           <div className="flex gap-3">
             {[1, 2, 3].map((i) => (
@@ -21,7 +21,7 @@ export function MenuLoading() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[280px] h-[220px] rounded-2xl bg-muted animate-shimmer"
+              className="flex-shrink-0 w-[300px] h-[220px] rounded-3xl bg-muted animate-shimmer"
             />
           ))}
         </div>
@@ -35,7 +35,7 @@ export function MenuLoading() {
               {[1, 2, 3, 4].map((item) => (
                 <div
                   key={item}
-                  className="h-56 rounded-2xl bg-muted animate-shimmer"
+                  className="h-56 rounded-3xl bg-muted animate-shimmer"
                 />
               ))}
             </div>

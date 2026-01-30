@@ -94,7 +94,7 @@ export default function PublicMenu() {
   }
 
   return (
-    <div className={cn("min-h-screen bg-background relative overflow-hidden")}>
+    <div className={cn("min-h-screen bg-background relative overflow-x-hidden")}>
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
