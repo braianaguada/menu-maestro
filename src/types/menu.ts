@@ -1,6 +1,6 @@
 export type MenuStatus = 'draft' | 'published';
 
-export type MenuTheme = 'elegant' | 'light' | 'modern';
+export type MenuTheme = 'editorial' | 'modern' | 'light' | 'bistro' | 'elegant';
 
 export interface Menu {
   id: string;

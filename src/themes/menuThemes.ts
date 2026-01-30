@@ -40,6 +40,7 @@ export const menuThemes: Record<MenuTheme, ThemeConfig> = {
 // Map old theme names to new ones
 export function normalizeTheme(theme: string): MenuTheme {
   const themeMap: Record<string, MenuTheme> = {
+    editorial: 'editorial',
     elegant: 'modern',
     modern: 'modern',
     light: 'light',
