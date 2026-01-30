@@ -16,7 +16,8 @@ import { Plus, ExternalLink, Trash2, Edit, FileDown, Sparkles } from 'lucide-rea
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { normalizeTheme } from '@/themes/menuThemes';
+import { getThemeConfig, normalizeTheme } from '@/themes/menuThemes';
+import { buildDefaultMenuPayload } from '@/lib/menuDefaults';
 
 export default function MenusList() {
   const { data: menus, isLoading } = useMenus();
@@ -27,12 +28,7 @@ export default function MenusList() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const handleQuickCreate = async () => {
-    const slugSuffix = Math.random().toString(36).slice(2, 7);
-    const draftPayload = {
-      name: 'Nuevo menú',
-      slug: `menu-${slugSuffix}`,
-      theme: 'elegant',
-    };
+    const draftPayload = buildDefaultMenuPayload();
 
     try {
       const newMenu = await createMenu.mutateAsync(draftPayload);
@@ -115,7 +111,7 @@ export default function MenusList() {
                       </span>
                     </div>
                     <p className="text-muted-foreground text-sm">
-                      /m/{menu.slug} • Tema: {menu.theme}
+                      /m/{menu.slug} • Tema: {getThemeConfig(normalizeTheme(menu.theme)).name}
                     </p>
                   </div>
                 </div>

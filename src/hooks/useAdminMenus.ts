@@ -23,6 +23,26 @@ export function useMenus() {
   });
 }
 
+export function useMenu(menuId: string | undefined) {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['admin-menu', user?.id, menuId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('menus')
+        .select('*')
+        .eq('id', menuId!)
+        .eq('user_id', user!.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data as Menu | null;
+    },
+    enabled: !!user && !!menuId,
+  });
+}
+
 export function useCreateMenu() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -35,7 +55,7 @@ export function useCreateMenu() {
           user_id: user!.id,
           name: data.name,
           slug: data.slug,
-          theme: data.theme || 'elegant',
+          theme: data.theme || 'editorial',
           status: 'draft',
         })
         .select()
@@ -373,9 +393,8 @@ export function useUpdatePrices() {
           .select('id')
           .eq('menu_id', menuId);
         
-        if (sections && sections.length > 0) {
-          query = query.in('section_id', sections.map(s => s.id));
-        }
+        if (!sections || sections.length === 0) return;
+        query = query.in('section_id', sections.map(s => s.id));
       }
 
       const { data: items, error: fetchError } = await query;
@@ -389,13 +408,17 @@ export function useUpdatePrices() {
         price: Math.round(item.price * multiplier * 100) / 100,
       }));
 
-      for (const update of updates) {
-        const { error } = await supabase
-          .from('items')
-          .update({ price: update.price })
-          .eq('id', update.id);
-        if (error) throw error;
-      }
+      const results = await Promise.all(
+        updates.map((update) =>
+          supabase
+            .from('items')
+            .update({ price: update.price })
+            .eq('id', update.id)
+        )
+      );
+
+      const error = results.find((result) => result.error)?.error;
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-items'] });
