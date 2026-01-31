@@ -91,6 +91,15 @@ export default function MenuEditor() {
     delivery_url: editData.delivery_url ?? menu?.delivery_url ?? '',
     hide_branding: editData.hide_branding ?? menu?.hide_branding ?? false,
   };
+  const previewQuery = currentData.status !== 'published' ? 'preview=1' : '';
+  const buildPreviewUrl = (path: string, params?: Record<string, string>) => {
+    const search = new URLSearchParams(params || {});
+    if (previewQuery) {
+      search.set('preview', '1');
+    }
+    const searchString = search.toString();
+    return searchString ? `${path}?${searchString}` : path;
+  };
 
   const hasChanges = Object.keys(editData).length > 0;
 
@@ -98,7 +107,10 @@ export default function MenuEditor() {
     if (!menuId || !hasChanges) return;
 
     try {
-      await updateMenu.mutateAsync({ id: menuId, ...editData });
+      const payload = Object.fromEntries(
+        Object.entries(editData).filter(([, value]) => value !== undefined)
+      );
+      await updateMenu.mutateAsync({ id: menuId, ...payload });
       setEditData({});
       toast.success('Cambios guardados');
     } catch (error: any) {
@@ -184,7 +196,11 @@ export default function MenuEditor() {
                 logoUrl={currentData.qr_logo_url || undefined}
               />
               <Button variant="outline" size="sm" asChild>
-                <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={buildPreviewUrl(`/m/${currentData.slug}`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Ver menú
                 </a>
@@ -218,7 +234,11 @@ export default function MenuEditor() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" asChild>
-              <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
+              <a
+                href={buildPreviewUrl(`/m/${currentData.slug}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Desktop
               </a>
@@ -236,7 +256,7 @@ export default function MenuEditor() {
             </Button>
             <Button variant="outline" size="sm" asChild>
               <a
-                href={`/m/${currentData.slug}/print?theme=${currentData.theme}`}
+                href={buildPreviewUrl(`/m/${currentData.slug}/print`, { theme: currentData.theme })}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -262,7 +282,7 @@ export default function MenuEditor() {
             >
               <iframe
                 title="Vista previa del menú"
-                src={`/m/${currentData.slug}?view=${previewMode}`}
+                src={buildPreviewUrl(`/m/${currentData.slug}`, { view: previewMode })}
                 className="h-full w-full"
               />
             </div>

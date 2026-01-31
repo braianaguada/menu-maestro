@@ -148,7 +148,8 @@ export default function PrintMenu() {
   const [searchParams] = useSearchParams();
   const themeParam = searchParams.get('theme') || 'editorial';
   const langParam = searchParams.get('lang') || 'es';
-  const { data: menu, isLoading, error } = usePublicMenu(slug || '');
+  const preview = searchParams.get('preview') === '1';
+  const { data: menu, isLoading, error } = usePublicMenu(slug || '', { preview });
   const { isAuthenticated, loading: authLoading } = useAuth();
 
   const getLocalizedValue = (
@@ -275,6 +276,9 @@ export default function PrintMenu() {
     const url = new URL(menuBaseUrl);
     if (langParam) {
       url.searchParams.set('lang', langParam);
+    }
+    if (preview) {
+      url.searchParams.set('preview', '1');
     }
     return url.toString();
   })();

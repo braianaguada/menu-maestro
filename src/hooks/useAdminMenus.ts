@@ -75,15 +75,22 @@ export function useUpdateMenu() {
 
   return useMutation({
     mutationFn: async ({ id, ...data }: Partial<Menu> & { id: string }) => {
-      const { error } = await supabase
+      const { data: menu, error } = await supabase
         .from('menus')
         .update(data)
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .single();
       
       if (error) throw error;
+      return menu as Menu;
     },
-    onSuccess: () => {
+    onSuccess: (menu) => {
       queryClient.invalidateQueries({ queryKey: ['admin-menus'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-menu'] });
+      if (menu?.id) {
+        queryClient.setQueryData(['admin-menu', menu.user_id, menu.id], menu);
+      }
     },
   });
 }

@@ -176,7 +176,8 @@ const copyByLanguage: Record<SupportedLanguage, {
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
-  const { data: menu, isLoading, error } = usePublicMenu(slug || '');
+  const preview = searchParams.get('preview') === '1';
+  const { data: menu, isLoading, error } = usePublicMenu(slug || '', { preview });
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
   const previewMode = searchParams.get('view');
   const isMobilePreview = previewMode === 'mobile';
@@ -263,23 +264,6 @@ export default function PublicMenu() {
 
     return () => window.clearTimeout(timer);
   }, [menu?.promotions, nowTimestamp]);
-
-  useEffect(() => {
-    const paramLang = searchParams.get('lang')?.toLowerCase();
-    if (paramLang && supportedLanguages.includes(paramLang as SupportedLanguage)) {
-      setLanguage(paramLang as SupportedLanguage);
-    }
-  }, [searchParams, supportedLanguages]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = Math.min(window.scrollY * 0.18, 80);
-      document.documentElement.style.setProperty('--hero-parallax', `${offset}px`);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const paramLang = searchParams.get('lang')?.toLowerCase();
@@ -519,78 +503,6 @@ export default function PublicMenu() {
             </div>
           </div>
         )}
-
-        <section className="py-8 md:py-10 section-fade section-fade-delay-1">
-          <div className="container max-w-5xl mx-auto px-6 md:px-8">
-            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="menu-card p-6">
-                <p className="menu-chip">Premium</p>
-                <h2 className="mt-4 text-xl md:text-2xl font-display font-semibold text-foreground">
-                  {copy.experienceTitle}
-                </h2>
-                <p className="mt-3 text-sm md:text-base text-muted-foreground">
-                  {copy.experienceDescription}
-                </p>
-                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  {copy.experienceTags.map((tag) => (
-                    <span key={tag} className="menu-tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="menu-card p-6 space-y-5">
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    {copy.modeLabel}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {(['auto', 'night', 'day'] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        type="button"
-                        onClick={() => setThemeMode(mode)}
-                        className={cn(
-                          'menu-tag border border-border/50 transition-colors',
-                          themeMode === mode && 'bg-primary/15 text-primary border-primary/40'
-                        )}
-                      >
-                        {mode === 'auto' && copy.modeAuto}
-                        {mode === 'night' && copy.modeNight}
-                        {mode === 'day' && copy.modeDay}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    {copy.languageLabel}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {supportedLanguages.map((lang) => (
-                      <button
-                        key={lang}
-                        type="button"
-                        onClick={() => setLanguage(lang)}
-                        className={cn(
-                          'menu-tag border border-border/50 transition-colors',
-                          language === lang && 'bg-primary/15 text-primary border-primary/40'
-                        )}
-                      >
-                        {lang.toUpperCase()}
-                      </button>
-                    ))}
-                    <span className="text-xs text-muted-foreground/80 ml-2 self-center">
-                      {copy.languageAuto}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <section className="py-8 md:py-10 section-fade section-fade-delay-1">
           <div className="container max-w-5xl mx-auto px-6 md:px-8">
