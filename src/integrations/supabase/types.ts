@@ -16,45 +16,75 @@ export type Database = {
     Tables: {
       items: {
         Row: {
+          allergens: string[]
           created_at: string
           description: string | null
+          description_en: string | null
+          description_pt: string | null
           id: string
           image_url: string | null
+          is_dairy_free: boolean
+          is_gluten_free: boolean
           is_recommended: boolean
           is_spicy: boolean
           is_vegan: boolean
           is_visible: boolean
           name: string
+          name_en: string | null
+          name_pt: string | null
+          pairing: string | null
+          pairing_en: string | null
+          pairing_pt: string | null
           price: number
           section_id: string
           sort_order: number
           updated_at: string
         }
         Insert: {
+          allergens?: string[]
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           id?: string
           image_url?: string | null
+          is_dairy_free?: boolean
+          is_gluten_free?: boolean
           is_recommended?: boolean
           is_spicy?: boolean
           is_vegan?: boolean
           is_visible?: boolean
           name: string
+          name_en?: string | null
+          name_pt?: string | null
+          pairing?: string | null
+          pairing_en?: string | null
+          pairing_pt?: string | null
           price: number
           section_id: string
           sort_order?: number
           updated_at?: string
         }
         Update: {
+          allergens?: string[]
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           id?: string
           image_url?: string | null
+          is_dairy_free?: boolean
+          is_gluten_free?: boolean
           is_recommended?: boolean
           is_spicy?: boolean
           is_vegan?: boolean
           is_visible?: boolean
           name?: string
+          name_en?: string | null
+          name_pt?: string | null
+          pairing?: string | null
+          pairing_en?: string | null
+          pairing_pt?: string | null
           price?: number
           section_id?: string
           sort_order?: number
@@ -105,9 +135,21 @@ export type Database = {
       menus: {
         Row: {
           created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          custom_domain: string | null
+          delivery_url: string | null
+          hide_branding: boolean
           id: string
           logo_url: string | null
           name: string
+          name_en: string | null
+          name_pt: string | null
+          auto_image_enabled: boolean
+          pos_url: string | null
+          qr_background_color: string | null
+          qr_logo_url: string | null
+          qr_primary_color: string | null
           slug: string
           status: Database["public"]["Enums"]["menu_status"]
           theme: string
@@ -116,9 +158,21 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          custom_domain?: string | null
+          delivery_url?: string | null
+          hide_branding?: boolean
           id?: string
           logo_url?: string | null
           name: string
+          name_en?: string | null
+          name_pt?: string | null
+          auto_image_enabled?: boolean
+          pos_url?: string | null
+          qr_background_color?: string | null
+          qr_logo_url?: string | null
+          qr_primary_color?: string | null
           slug: string
           status?: Database["public"]["Enums"]["menu_status"]
           theme?: string
@@ -127,9 +181,21 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          custom_domain?: string | null
+          delivery_url?: string | null
+          hide_branding?: boolean
           id?: string
           logo_url?: string | null
           name?: string
+          name_en?: string | null
+          name_pt?: string | null
+          auto_image_enabled?: boolean
+          pos_url?: string | null
+          qr_background_color?: string | null
+          qr_logo_url?: string | null
+          qr_primary_color?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["menu_status"]
           theme?: string
@@ -166,8 +232,12 @@ export type Database = {
       }
       promotions: {
         Row: {
+          ab_group: string | null
+          ab_weight: number
           created_at: string
           description: string | null
+          description_en: string | null
+          description_pt: string | null
           ends_at: string | null
           id: string
           image_url: string | null
@@ -176,14 +246,22 @@ export type Database = {
           linked_section_id: string | null
           menu_id: string
           price_text: string
+          price_text_en: string | null
+          price_text_pt: string | null
           sort_order: number
           starts_at: string | null
           title: string
+          title_en: string | null
+          title_pt: string | null
           updated_at: string
         }
         Insert: {
+          ab_group?: string | null
+          ab_weight?: number
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
@@ -192,14 +270,22 @@ export type Database = {
           linked_section_id?: string | null
           menu_id: string
           price_text: string
+          price_text_en?: string | null
+          price_text_pt?: string | null
           sort_order?: number
           starts_at?: string | null
           title: string
+          title_en?: string | null
+          title_pt?: string | null
           updated_at?: string
         }
         Update: {
+          ab_group?: string | null
+          ab_weight?: number
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
@@ -208,9 +294,13 @@ export type Database = {
           linked_section_id?: string | null
           menu_id?: string
           price_text?: string
+          price_text_en?: string | null
+          price_text_pt?: string | null
           sort_order?: number
           starts_at?: string | null
           title?: string
+          title_en?: string | null
+          title_pt?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -241,30 +331,42 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          description_en: string | null
+          description_pt: string | null
           id: string
           is_visible: boolean
           menu_id: string
           name: string
+          name_en: string | null
+          name_pt: string | null
           sort_order: number
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           id?: string
           is_visible?: boolean
           menu_id: string
           name: string
+          name_en?: string | null
+          name_pt?: string | null
           sort_order?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
+          description_en?: string | null
+          description_pt?: string | null
           id?: string
           is_visible?: boolean
           menu_id?: string
           name?: string
+          name_en?: string | null
+          name_pt?: string | null
           sort_order?: number
           updated_at?: string
         }

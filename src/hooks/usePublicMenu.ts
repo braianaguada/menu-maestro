@@ -3,35 +3,37 @@ import { supabase } from '@/integrations/supabase/client';
 import type { PublicMenu, Menu } from '@/types/menu';
 import { demoMenu } from '@/data/demoMenu';
 
-// Explicit column selection for public menu queries - excludes user_id for privacy
-const PUBLIC_MENU_COLUMNS = 'id, name, slug, logo_url, status, theme, created_at, updated_at';
-const PUBLIC_SECTION_COLUMNS = 'id, menu_id, name, description, sort_order, is_visible, created_at, updated_at';
-const PUBLIC_ITEM_COLUMNS = 'id, section_id, name, description, price, image_url, sort_order, is_visible, is_spicy, is_vegan, is_recommended, created_at, updated_at';
-const PUBLIC_PROMO_COLUMNS = 'id, menu_id, title, description, price_text, image_url, is_active, starts_at, ends_at, linked_item_id, linked_section_id, sort_order, created_at, updated_at';
+type PublicMenuOptions = {
+  preview?: boolean;
+};
 
-export function usePublicMenu(slug: string) {
+export function usePublicMenu(slug: string, options?: PublicMenuOptions) {
   return useQuery({
-    queryKey: ['public-menu', slug],
+    queryKey: ['public-menu', slug, options?.preview],
     queryFn: async (): Promise<PublicMenu | null> => {
       if (slug === 'demo') {
         return demoMenu;
       }
 
-      // Fetch menu by slug - explicitly select only public columns (excludes user_id)
-      const { data: menu, error: menuError } = await supabase
+      // Fetch menu by slug
+      const menuQuery = supabase
         .from('menus')
-        .select(PUBLIC_MENU_COLUMNS)
-        .eq('slug', slug)
-        .eq('status', 'published')
-        .maybeSingle();
+        .select('*')
+        .eq('slug', slug);
+
+      if (!options?.preview) {
+        menuQuery.eq('status', 'published');
+      }
+
+      const { data: menu, error: menuError } = await menuQuery.maybeSingle();
 
       if (menuError) throw menuError;
       if (!menu) return null;
 
-      // Fetch sections - explicitly select only public columns
+      // Fetch sections
       const { data: sections, error: sectionsError } = await supabase
         .from('sections')
-        .select(PUBLIC_SECTION_COLUMNS)
+        .select('*')
         .eq('menu_id', menu.id)
         .eq('is_visible', true)
         .order('sort_order', { ascending: true });
@@ -39,11 +41,11 @@ export function usePublicMenu(slug: string) {
       if (sectionsError) throw sectionsError;
 
       const sectionIds = sections?.map(s => s.id) || [];
-      // Fetch all items for these sections - explicitly select only public columns
+      // Fetch all items for these sections
       const items = sectionIds.length > 0
         ? await supabase
           .from('items')
-          .select(PUBLIC_ITEM_COLUMNS)
+          .select('*')
           .in('section_id', sectionIds)
           .eq('is_visible', true)
           .order('sort_order', { ascending: true })
@@ -51,10 +53,10 @@ export function usePublicMenu(slug: string) {
 
       if (items.error) throw items.error;
 
-      // Fetch active promotions - explicitly select only public columns
+      // Fetch active promotions
       const { data: promotions, error: promosError } = await supabase
         .from('promotions')
-        .select(PUBLIC_PROMO_COLUMNS)
+        .select('*')
         .eq('menu_id', menu.id)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -68,8 +70,10 @@ export function usePublicMenu(slug: string) {
         items: itemsData.filter(item => item.section_id === section.id),
       }));
 
+      const { user_id: _userId, ...publicMenu } = menu as Menu;
+
       return {
-        ...menu,
+        ...publicMenu,
         // Add a placeholder user_id for type compatibility (never exposed from DB)
         user_id: '',
         theme: menu.theme as Menu['theme'],

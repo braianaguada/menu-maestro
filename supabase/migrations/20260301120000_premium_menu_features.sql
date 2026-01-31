@@ -1,0 +1,43 @@
+-- Add premium menu features: translations, auto images, QR branding, A/B testing, allergens
+
+ALTER TABLE public.menus
+  ADD COLUMN IF NOT EXISTS name_en TEXT,
+  ADD COLUMN IF NOT EXISTS name_pt TEXT,
+  ADD COLUMN IF NOT EXISTS custom_domain TEXT,
+  ADD COLUMN IF NOT EXISTS auto_image_enabled BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS qr_primary_color TEXT,
+  ADD COLUMN IF NOT EXISTS qr_background_color TEXT,
+  ADD COLUMN IF NOT EXISTS qr_logo_url TEXT,
+  ADD COLUMN IF NOT EXISTS cta_label TEXT,
+  ADD COLUMN IF NOT EXISTS cta_url TEXT,
+  ADD COLUMN IF NOT EXISTS pos_url TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_url TEXT,
+  ADD COLUMN IF NOT EXISTS hide_branding BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE public.sections
+  ADD COLUMN IF NOT EXISTS name_en TEXT,
+  ADD COLUMN IF NOT EXISTS name_pt TEXT,
+  ADD COLUMN IF NOT EXISTS description_en TEXT,
+  ADD COLUMN IF NOT EXISTS description_pt TEXT;
+
+ALTER TABLE public.items
+  ADD COLUMN IF NOT EXISTS name_en TEXT,
+  ADD COLUMN IF NOT EXISTS name_pt TEXT,
+  ADD COLUMN IF NOT EXISTS description_en TEXT,
+  ADD COLUMN IF NOT EXISTS description_pt TEXT,
+  ADD COLUMN IF NOT EXISTS pairing TEXT,
+  ADD COLUMN IF NOT EXISTS pairing_en TEXT,
+  ADD COLUMN IF NOT EXISTS pairing_pt TEXT,
+  ADD COLUMN IF NOT EXISTS is_gluten_free BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS is_dairy_free BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS allergens TEXT[] NOT NULL DEFAULT '{}';
+
+ALTER TABLE public.promotions
+  ADD COLUMN IF NOT EXISTS title_en TEXT,
+  ADD COLUMN IF NOT EXISTS title_pt TEXT,
+  ADD COLUMN IF NOT EXISTS description_en TEXT,
+  ADD COLUMN IF NOT EXISTS description_pt TEXT,
+  ADD COLUMN IF NOT EXISTS price_text_en TEXT,
+  ADD COLUMN IF NOT EXISTS price_text_pt TEXT,
+  ADD COLUMN IF NOT EXISTS ab_group TEXT,
+  ADD COLUMN IF NOT EXISTS ab_weight INTEGER NOT NULL DEFAULT 50;
