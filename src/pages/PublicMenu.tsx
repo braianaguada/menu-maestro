@@ -7,6 +7,7 @@ import { getThemeConfig } from '@/themes/menuThemes';
 import { EditorialHeader } from '@/components/menu/EditorialHeader';
 import { EditorialPromosSection } from '@/components/menu/EditorialPromosSection';
 import { EditorialMenuSection } from '@/components/menu/EditorialMenuSection';
+import { EditorialHighlightsSection } from '@/components/menu/EditorialHighlightsSection';
 import { StickySectionsNav } from '@/components/menu/StickySectionsNav';
 import { BackToTopButton } from '@/components/menu/BackToTopButton';
 import { EditorialFooter } from '@/components/menu/EditorialFooter';
@@ -85,6 +86,20 @@ export default function PublicMenu() {
     return menu.sections.filter(s => s.items.length > 0);
   }, [menu]);
 
+  const highlightedItems = useMemo(() => {
+    if (visibleSections.length === 0) return [];
+    return visibleSections
+      .flatMap(section =>
+        section.items
+          .filter(item => item.is_recommended)
+          .map(item => ({
+            item,
+            sectionName: section.name,
+          }))
+      )
+      .slice(0, 4);
+  }, [visibleSections]);
+
   if (isLoading) {
     return <MenuLoading />;
   }
@@ -114,6 +129,12 @@ export default function PublicMenu() {
           sections={visibleSections}
           activeSectionId={activeSectionId}
           onSectionClick={scrollToSection}
+        />
+
+        {/* Highlights */}
+        <EditorialHighlightsSection
+          items={highlightedItems}
+          onNavigateToItem={scrollToItem}
         />
 
         {/* Promotions Carousel */}
