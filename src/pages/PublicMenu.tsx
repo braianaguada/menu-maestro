@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { parseISO, isValid } from 'date-fns';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { usePublicMenu, trackMenuView } from '@/hooks/usePublicMenu';
 import { useActiveSectionObserver } from '@/hooks/useActiveSectionObserver';
 import { getThemeConfig } from '@/themes/menuThemes';
@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 
 export default function PublicMenu() {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
 
@@ -35,9 +36,10 @@ export default function PublicMenu() {
   // Track page view on mount
   useEffect(() => {
     if (menu?.id) {
-      trackMenuView(menu.id);
+      const source = searchParams.get('source');
+      trackMenuView(menu.id, source);
     }
-  }, [menu?.id]);
+  }, [menu?.id, searchParams]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
