@@ -28,7 +28,7 @@ export function EditorialHeader({ name, logoUrl, className }: EditorialHeaderPro
         <img
           src={heroImage}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover parallax-hero"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/40 to-background" />

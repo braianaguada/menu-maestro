@@ -122,7 +122,13 @@ export default function PrintMenu() {
   // Apply theme
   useEffect(() => {
     const themeConfig = getThemeConfig(themeParam);
-    document.documentElement.classList.remove('theme-editorial', 'theme-modern', 'theme-light', 'theme-bistro');
+    document.documentElement.classList.remove(
+      'theme-editorial',
+      'theme-modern',
+      'theme-light',
+      'theme-bistro',
+      'theme-noir'
+    );
     document.documentElement.classList.add(themeConfig.className);
 
     return () => {

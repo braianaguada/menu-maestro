@@ -7,7 +7,12 @@ const plans = [
     name: 'Starter',
     price: '$12',
     description: 'Ideal para locales pequeños que están empezando.',
-    features: ['1 menú publicado', 'QR descargable', 'Promociones básicas', 'Soporte por email'],
+    features: [
+      '1 menú publicado',
+      'QR descargable',
+      'Filtros básicos',
+      'Soporte por email',
+    ],
     highlighted: false,
   },
   {
@@ -17,8 +22,10 @@ const plans = [
     features: [
       'Menús ilimitados',
       'Promociones avanzadas',
-      'Analítica en tiempo real',
-      'Exportación CSV',
+      'Analítica avanzada',
+      'Multilenguaje ES/EN/PT',
+      'Filtros premium',
+      'Exportación premium',
       'Soporte prioritario',
     ],
     highlighted: true,
@@ -29,11 +36,40 @@ const plans = [
     description: 'Operaciones multi-local con integraciones personalizadas.',
     features: [
       'Multi-sucursal',
-      'Integraciones a medida',
-      'Reportes avanzados',
+      'Integraciones POS / delivery',
+      'Roles y permisos',
+      'Versionado y rollback',
+      'A/B testing',
       'SLA dedicado',
     ],
     highlighted: false,
+  },
+];
+
+const addons = [
+  {
+    title: 'QR personalizado con branding',
+    description: 'QR dinámico con métricas de escaneo y diseño premium.',
+  },
+  {
+    title: 'Dominio propio + white label light',
+    description: 'Tu marca primero con onboarding visual asistido.',
+  },
+  {
+    title: 'Soporte VIP + onboarding asistido',
+    description: 'Equipo dedicado para operaciones de alto volumen.',
+  },
+  {
+    title: 'Integraciones Enterprise',
+    description: 'Conexión con BI, POS y soluciones de delivery.',
+  },
+  {
+    title: 'Modo offline / PWA',
+    description: 'Menú instantáneo incluso con Wi-Fi débil.',
+  },
+  {
+    title: 'Impresión premium',
+    description: 'PDF elegante con tipografías finas.',
   },
 ];
 
@@ -91,6 +127,28 @@ export default function Subscription() {
             </Button>
           </div>
         ))}
+      </div>
+
+      <div className="gradient-card border border-border/50 rounded-2xl p-6 space-y-6">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">
+            Add-ons premium
+          </p>
+          <h2 className="font-display text-2xl font-semibold text-foreground">
+            Complementos para elevar la marca
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
+            Escalá tu menú con branding, soporte VIP e integraciones de alto ticket.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {addons.map((addon) => (
+            <div key={addon.title} className="rounded-xl border border-border/50 bg-card/60 p-4">
+              <h3 className="text-base font-semibold text-foreground">{addon.title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{addon.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="gradient-card border border-border/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">

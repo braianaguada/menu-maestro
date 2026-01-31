@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
-import { Leaf, Flame, Star } from 'lucide-react';
+import { Leaf, Flame, ShieldCheck, Star } from 'lucide-react';
 import type { Item } from '@/types/menu';
+import { getPairingSuggestion } from '@/lib/menuSuggestions';
 
 interface MenuItemProps {
   item: Item;
@@ -17,6 +18,8 @@ export function MenuItem({ item, className, style }: MenuItemProps) {
       maximumFractionDigits: 0,
     }).format(price);
   };
+  const pairing = item.pairing || getPairingSuggestion(item.name);
+  const showPairing = item.is_recommended || Boolean(item.pairing);
 
   return (
     <div
@@ -69,6 +72,23 @@ export function MenuItem({ item, className, style }: MenuItemProps) {
                     Picante
                   </span>
                 )}
+                {item.is_gluten_free && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                    <ShieldCheck className="w-3 h-3" />
+                    Sin gluten
+                  </span>
+                )}
+                {item.is_dairy_free && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                    <ShieldCheck className="w-3 h-3" />
+                    Sin lactosa
+                  </span>
+                )}
+                {item.allergens?.includes('nuts') && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10 text-destructive text-xs font-medium">
+                    Contiene frutos secos
+                  </span>
+                )}
               </div>
             </div>
 
@@ -84,6 +104,14 @@ export function MenuItem({ item, className, style }: MenuItemProps) {
           {item.description && (
             <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
               {item.description}
+            </p>
+          )}
+          {showPairing && (
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Maridaje sugerido
+              <span className="block text-sm normal-case text-foreground/80 mt-1">
+                {pairing}
+              </span>
             </p>
           )}
         </div>

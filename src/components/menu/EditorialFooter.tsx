@@ -5,6 +5,9 @@ export function EditorialFooter() {
         <p className="text-sm text-muted-foreground">
           Gracias por elegir una experiencia gastronómica de autor.
         </p>
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/80">
+          QR dinámico · Offline/PWA · Impresión premium
+        </p>
         <div className="flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-muted-foreground/70">
           <span className="h-px w-10 bg-border/50" />
           Menu Maestro

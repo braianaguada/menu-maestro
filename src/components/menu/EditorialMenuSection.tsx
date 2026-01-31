@@ -13,7 +13,7 @@ export function EditorialMenuSection({ section, className }: EditorialMenuSectio
   return (
     <section
       id={`section-${section.id}`}
-      className={cn("py-12 md:py-16", className)}
+      className={cn("py-12 md:py-16 section-fade", className)}
     >
       <header className="mb-8 md:mb-10 space-y-3">
         <p className="menu-chip text-muted-foreground">Sección</p>
