@@ -72,6 +72,7 @@ export function useCreateMenu() {
 
 export function useUpdateMenu() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, ...data }: Partial<Menu> & { id: string }) => {
@@ -79,8 +80,7 @@ export function useUpdateMenu() {
         .from('menus')
         .update(data)
         .eq('id', id)
-        .select()
-        .single();
+        .eq('user_id', user!.id);
       
       if (error) throw error;
       return menu as Menu;
@@ -88,9 +88,6 @@ export function useUpdateMenu() {
     onSuccess: (menu) => {
       queryClient.invalidateQueries({ queryKey: ['admin-menus'] });
       queryClient.invalidateQueries({ queryKey: ['admin-menu'] });
-      if (menu?.id) {
-        queryClient.setQueryData(['admin-menu', menu.user_id, menu.id], menu);
-      }
     },
   });
 }
