@@ -388,11 +388,12 @@ export function useUpdatePrices() {
         query = query.eq('section_id', sectionId);
       } else {
         // Get all sections for this menu first
-        const { data: sections } = await supabase
+        const { data: sections, error: sectionsError } = await supabase
           .from('sections')
           .select('id')
           .eq('menu_id', menuId);
         
+        if (sectionsError) throw sectionsError;
         if (!sections || sections.length === 0) return;
         query = query.in('section_id', sections.map(s => s.id));
       }
