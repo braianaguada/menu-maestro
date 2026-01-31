@@ -3,6 +3,13 @@ import { Leaf, Flame, ShieldCheck, Star } from 'lucide-react';
 import type { Item } from '@/types/menu';
 import { getPairingSuggestion } from '@/lib/menuSuggestions';
 
+const allergenLabels: Record<string, string> = {
+  nuts: 'Frutos secos',
+  seafood: 'Mariscos',
+  egg: 'Huevo',
+  soy: 'Soja',
+};
+
 interface EditorialMenuItemProps {
   item: Item;
   className?: string;
@@ -113,11 +120,11 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
                   Sin lactosa
                 </span>
               )}
-              {item.allergens?.includes('nuts') && (
-                <span className="menu-tag text-destructive">
-                  Contiene frutos secos
+              {item.allergens?.map((allergen) => (
+                <span key={allergen} className="menu-tag text-destructive">
+                  Contiene {allergenLabels[allergen] || allergen}
                 </span>
-              )}
+              ))}
               {item.is_recommended && (
                 <span className="menu-tag">
                   <Star className="w-3 h-3 text-primary" />

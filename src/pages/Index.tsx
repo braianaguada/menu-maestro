@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Star, UtensilsCrossed, Wallet, ShieldCheck, Leaf, Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Star, UtensilsCrossed, Wallet, ShieldCheck, Leaf, Check, Moon, Sun } from 'lucide-react';
+import { useUiMode } from '@/hooks/useUiMode';
 
 const premiumExperience = [
   {
@@ -154,8 +155,10 @@ const addons = [
 ];
 
 export default function Index() {
+  const { mode, setMode } = useUiMode();
+
   return (
-    <div className="min-h-screen bg-[hsl(230_22%_6%)] text-white overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Decorative blur orbs */}
       <div className="blur-orb blur-orb-cyan w-[500px] h-[500px] -top-48 -right-48 opacity-40" />
       <div className="blur-orb blur-orb-purple w-[400px] h-[400px] top-1/3 -left-32 opacity-30" />
@@ -170,6 +173,14 @@ export default function Index() {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+              className="text-white/70 hover:text-white"
+            >
+              {mode === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </Button>
             <Link 
               to="/m/demo" 
               className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block"

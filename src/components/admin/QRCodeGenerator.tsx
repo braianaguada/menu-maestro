@@ -14,12 +14,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface QRCodeGeneratorProps {
   menuSlug: string;
   menuName: string;
+  customDomain?: string;
+  primaryColor?: string;
+  backgroundColor?: string;
+  logoUrl?: string;
 }
 
-export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
+export function QRCodeGenerator({
+  menuSlug,
+  menuName,
+  customDomain,
+  primaryColor = '#f97316',
+  backgroundColor = '#ffffff',
+  logoUrl,
+}: QRCodeGeneratorProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState('auto');
-  const menuUrl = `${window.location.origin}/m/${menuSlug}`;
+  const normalizeDomain = (domain?: string) => {
+    if (!domain) return null;
+    const trimmed = domain.trim().replace(/\/$/, '');
+    if (!trimmed) return null;
+    return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
+  };
+  const normalizedDomain = normalizeDomain(customDomain);
+  const menuUrl = normalizedDomain || `${window.location.origin}/m/${menuSlug}`;
 
   const trackedMenuUrl = useMemo(() => {
     const url = new URL(menuUrl);
@@ -57,7 +75,7 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
     const img = new Image();
     img.onload = () => {
       // Background
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = backgroundColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Header band
@@ -79,34 +97,60 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
         180
       );
 
+      const finalizeDownload = () => {
+        const pngUrl = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pngUrl;
+        downloadLink.download = `qr-${menuSlug}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(svgUrl);
+      };
+
       // QR container
       const qrX = (canvas.width - qrSize) / 2;
       const qrY = headerHeight + 40;
-      ctx.fillStyle = '#f8fafc';
+      ctx.fillStyle = backgroundColor;
       ctx.fillRect(qrX - 24, qrY - 24, qrSize + 48, qrSize + 48);
       ctx.fillStyle = '#e5e7eb';
       ctx.fillRect(qrX - 24, qrY - 24, qrSize + 48, 8);
       ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
 
+      if (logoUrl) {
+        const logo = new Image();
+        logo.onload = () => {
+          const logoSize = 140;
+          ctx.fillStyle = backgroundColor;
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, qrY + qrSize / 2, logoSize / 2 + 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.drawImage(
+            logo,
+            canvas.width / 2 - logoSize / 2,
+            qrY + qrSize / 2 - logoSize / 2,
+            logoSize,
+            logoSize
+          );
+          finalizeDownload();
+        };
+        logo.src = logoUrl;
+      }
+
       // Footer URL
       ctx.fillStyle = '#111827';
       ctx.font = '32px Inter, system-ui, sans-serif';
       ctx.fillText('Abrí el menú en:', padding, headerHeight + qrSize + 100);
-      ctx.fillStyle = '#f97316';
+      ctx.fillStyle = primaryColor;
       ctx.font = 'bold 30px Inter, system-ui, sans-serif';
       ctx.fillText(trackedMenuUrl, padding, headerHeight + qrSize + 145);
 
-      const pngUrl = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.href = pngUrl;
-      downloadLink.download = `qr-${menuSlug}.png`;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      URL.revokeObjectURL(svgUrl);
+      if (!logoUrl) {
+        finalizeDownload();
+      }
     };
     img.src = svgUrl;
-  }, [menuSlug, menuName, trackedMenuUrl, language]);
+  }, [menuSlug, menuName, trackedMenuUrl, language, primaryColor, backgroundColor, logoUrl]);
 
   return (
     <Dialog>
@@ -145,15 +189,22 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
               <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Menú digital</p>
               <h3 className="text-lg font-semibold text-foreground">{menuName}</h3>
             </div>
-            <div className="mx-auto inline-flex items-center justify-center rounded-2xl bg-white p-4 shadow-md">
+            <div className="relative mx-auto inline-flex items-center justify-center rounded-2xl bg-white p-4 shadow-md">
               <QRCodeSVG
                 value={trackedMenuUrl}
                 size={220}
                 level="H"
                 includeMargin={false}
-                bgColor="#ffffff"
-                fgColor="#111827"
+                bgColor={backgroundColor}
+                fgColor={primaryColor}
               />
+              {logoUrl && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-full bg-white p-1 shadow-md">
+                    <img src={logoUrl} alt="Logo" className="h-full w-full rounded-full object-cover" />
+                  </div>
+                </div>
+              )}
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
               Escaneá para ver la carta completa

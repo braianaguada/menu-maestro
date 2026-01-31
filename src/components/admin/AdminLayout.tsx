@@ -11,10 +11,13 @@ import {
   LogOut,
   Loader2,
   Menu as MenuIcon,
-  X
+  X,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
+import { useUiMode } from '@/hooks/useUiMode';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -30,6 +33,7 @@ export function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authVerified, setAuthVerified] = useState(false);
   const [verifying, setVerifying] = useState(true);
+  const { mode, setMode } = useUiMode();
 
   // Server-side auth verification on mount - prevents UI flash
   useEffect(() => {
@@ -102,16 +106,24 @@ export function AdminLayout() {
             <UtensilsCrossed className="w-6 h-6 text-primary" />
             <span className="font-display font-semibold text-foreground">Menu Maestro</span>
           </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <MenuIcon className="w-5 h-5" />
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+            >
+              {mode === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <MenuIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -152,13 +164,19 @@ export function AdminLayout() {
       <div className="flex relative z-10">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 min-h-screen border-r border-border/50 bg-card/30">
-          <div className="p-6 border-b border-border/50">
+          <div className="p-6 border-b border-border/50 flex items-center justify-between gap-3">
             <Link to="/admin" className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-primary/10">
                 <UtensilsCrossed className="w-6 h-6 text-primary" />
               </div>
               <span className="font-display text-xl font-semibold text-foreground">Menu Maestro</span>
             </Link>
+            <button
+              onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+            >
+              {mode === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </button>
           </div>
 
           <nav className="flex-1 p-4 space-y-1">

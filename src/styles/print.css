@@ -26,15 +26,15 @@
   /* Body and background */
   html,
   body {
-    background: white !important;
-    color: #1a1a1a !important;
+    background: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
     font-size: 11pt !important;
     line-height: 1.4 !important;
   }
 
   /* Container */
   .print-menu {
-    background: white !important;
+    background: hsl(var(--background)) !important;
     padding: 0 !important;
     margin: 0 !important;
     max-width: 100% !important;
@@ -51,7 +51,7 @@
     font-size: 16pt !important;
     margin-bottom: 6pt !important;
     page-break-after: avoid !important;
-    color: #333 !important;
+    color: hsl(var(--foreground)) !important;
   }
 
   h3, h4 {
@@ -104,11 +104,11 @@
 
   /* Borders and backgrounds */
   .border-b {
-    border-color: #e5e5e5 !important;
+    border-color: hsl(var(--border)) !important;
   }
 
   .bg-muted\/30 {
-    background: #f9f9f9 !important;
+    background: hsl(var(--muted)) !important;
   }
 
   /* Promotions block */

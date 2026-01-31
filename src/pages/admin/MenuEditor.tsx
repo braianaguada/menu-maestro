@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -48,21 +49,47 @@ export default function MenuEditor() {
 
   const [editData, setEditData] = useState<{
     name?: string;
+    name_en?: string | null;
+    name_pt?: string | null;
     slug?: string;
     theme?: MenuTheme;
     status?: 'draft' | 'published';
     logo_url?: string | null;
+    custom_domain?: string | null;
+    auto_image_enabled?: boolean;
+    qr_primary_color?: string | null;
+    qr_background_color?: string | null;
+    qr_logo_url?: string | null;
+    cta_label?: string | null;
+    cta_url?: string | null;
+    pos_url?: string | null;
+    delivery_url?: string | null;
+    hide_branding?: boolean;
   }>({});
 
   const [priceDialog, setPriceDialog] = useState(false);
   const [priceData, setPriceData] = useState({ percentage: '', sectionId: '' });
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('mobile');
 
   const currentData = {
     name: editData.name ?? menu?.name ?? '',
+    name_en: editData.name_en ?? menu?.name_en ?? '',
+    name_pt: editData.name_pt ?? menu?.name_pt ?? '',
     slug: editData.slug ?? menu?.slug ?? '',
     theme: editData.theme ?? menu?.theme ?? 'editorial',
     status: editData.status ?? menu?.status ?? 'draft',
     logo_url: editData.logo_url !== undefined ? editData.logo_url : (menu?.logo_url ?? null),
+    custom_domain: editData.custom_domain ?? menu?.custom_domain ?? '',
+    auto_image_enabled: editData.auto_image_enabled ?? menu?.auto_image_enabled ?? false,
+    qr_primary_color: editData.qr_primary_color ?? menu?.qr_primary_color ?? '#f97316',
+    qr_background_color: editData.qr_background_color ?? menu?.qr_background_color ?? '#ffffff',
+    qr_logo_url: editData.qr_logo_url ?? menu?.qr_logo_url ?? null,
+    cta_label: editData.cta_label ?? menu?.cta_label ?? '',
+    cta_url: editData.cta_url ?? menu?.cta_url ?? '',
+    pos_url: editData.pos_url ?? menu?.pos_url ?? '',
+    delivery_url: editData.delivery_url ?? menu?.delivery_url ?? '',
+    hide_branding: editData.hide_branding ?? menu?.hide_branding ?? false,
   };
 
   const hasChanges = Object.keys(editData).length > 0;
@@ -148,7 +175,14 @@ export default function MenuEditor() {
         <div className="flex flex-wrap items-center gap-2">
           {currentData.status === 'published' && (
             <>
-              <QRCodeGenerator menuSlug={currentData.slug} menuName={currentData.name} />
+              <QRCodeGenerator
+                menuSlug={currentData.slug}
+                menuName={currentData.name}
+                customDomain={currentData.custom_domain || undefined}
+                primaryColor={currentData.qr_primary_color || undefined}
+                backgroundColor={currentData.qr_background_color || undefined}
+                logoUrl={currentData.qr_logo_url || undefined}
+              />
               <Button variant="outline" size="sm" asChild>
                 <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-4 h-4 mr-2" />
@@ -189,11 +223,16 @@ export default function MenuEditor() {
                 Desktop
               </a>
             </Button>
-            <Button variant="outline" size="sm" asChild>
-              <a href={`/m/${currentData.slug}?view=mobile`} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Mobile
-              </a>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPreviewMode('mobile');
+                setPreviewOpen(true);
+              }}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Mobile
             </Button>
             <Button variant="outline" size="sm" asChild>
               <a
@@ -208,6 +247,28 @@ export default function MenuEditor() {
           </div>
         </div>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Vista {previewMode === 'mobile' ? 'móvil' : 'desktop'}</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center">
+            <div
+              className={cn(
+                'border border-border/60 rounded-[2rem] overflow-hidden shadow-menu-lg bg-background',
+                previewMode === 'mobile' ? 'w-[390px] h-[780px]' : 'w-full h-[80vh]'
+              )}
+            >
+              <iframe
+                title="Vista previa del menú"
+                src={`/m/${currentData.slug}?view=${previewMode}`}
+                className="h-full w-full"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Tabs */}
       <Tabs defaultValue="sections" className="space-y-6">
@@ -291,7 +352,7 @@ export default function MenuEditor() {
               </DialogContent>
             </Dialog>
           </div>
-          <SectionsManager menuId={menuId!} />
+          <SectionsManager menuId={menuId!} autoImageEnabled={currentData.auto_image_enabled} />
         </TabsContent>
 
         {/* Promotions Tab */}
@@ -335,6 +396,24 @@ export default function MenuEditor() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="edit-name-en">Nombre (EN)</Label>
+                <Input
+                  id="edit-name-en"
+                  value={currentData.name_en}
+                  onChange={(e) => setEditData({ ...editData, name_en: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-name-pt">Nombre (PT)</Label>
+                <Input
+                  id="edit-name-pt"
+                  value={currentData.name_pt}
+                  onChange={(e) => setEditData({ ...editData, name_pt: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="edit-slug">URL del menú</Label>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">/m/</span>
@@ -347,6 +426,16 @@ export default function MenuEditor() {
                     })}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-domain">Dominio personalizado</Label>
+                <Input
+                  id="edit-domain"
+                  placeholder="https://menu.turestaurante.com"
+                  value={currentData.custom_domain}
+                  onChange={(e) => setEditData({ ...editData, custom_domain: e.target.value })}
+                />
               </div>
 
               <div className="space-y-2">
@@ -407,6 +496,107 @@ export default function MenuEditor() {
                     <SelectItem value="published">Publicado</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Identidad QR</Label>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="qr-primary" className="text-xs text-muted-foreground">
+                      Color primario
+                    </Label>
+                    <Input
+                      id="qr-primary"
+                      type="color"
+                      value={currentData.qr_primary_color || '#f97316'}
+                      onChange={(e) => setEditData({ ...editData, qr_primary_color: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="qr-bg" className="text-xs text-muted-foreground">
+                      Fondo
+                    </Label>
+                    <Input
+                      id="qr-bg"
+                      type="color"
+                      value={currentData.qr_background_color || '#ffffff'}
+                      onChange={(e) => setEditData({ ...editData, qr_background_color: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="mt-3 max-w-[200px]">
+                  <ImageUpload
+                    value={currentData.qr_logo_url}
+                    onChange={(url) => setEditData({ ...editData, qr_logo_url: url })}
+                    folder="logos"
+                    aspectRatio="square"
+                    placeholder="Logo para QR"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label>Automatizaciones premium</Label>
+                <label className="flex items-center gap-2">
+                  <Checkbox
+                    checked={currentData.auto_image_enabled}
+                    onCheckedChange={(checked) =>
+                      setEditData({ ...editData, auto_image_enabled: !!checked })
+                    }
+                  />
+                  <span className="text-sm">
+                    Generar imágenes automáticas si un plato no tiene foto
+                  </span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <Checkbox
+                    checked={currentData.hide_branding}
+                    onCheckedChange={(checked) =>
+                      setEditData({ ...editData, hide_branding: !!checked })
+                    }
+                  />
+                  <span className="text-sm">
+                    Ocultar branding de Menu Maestro (white label light)
+                  </span>
+                </label>
+                <div className="space-y-2">
+                  <Label htmlFor="cta-label">CTA público</Label>
+                  <Input
+                    id="cta-label"
+                    placeholder="Reservar mesa"
+                    value={currentData.cta_label}
+                    onChange={(e) => setEditData({ ...editData, cta_label: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cta-url">Link CTA</Label>
+                  <Input
+                    id="cta-url"
+                    placeholder="https://tureserva.com"
+                    value={currentData.cta_url}
+                    onChange={(e) => setEditData({ ...editData, cta_url: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pos-url">Integración POS</Label>
+                  <Input
+                    id="pos-url"
+                    placeholder="https://pos.turestaurante.com"
+                    value={currentData.pos_url}
+                    onChange={(e) => setEditData({ ...editData, pos_url: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="delivery-url">Integración delivery</Label>
+                  <Input
+                    id="delivery-url"
+                    placeholder="https://delivery.turestaurante.com"
+                    value={currentData.delivery_url}
+                    onChange={(e) => setEditData({ ...editData, delivery_url: e.target.value })}
+                  />
+                </div>
               </div>
             </div>
 

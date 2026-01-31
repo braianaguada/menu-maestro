@@ -16,9 +16,21 @@ import { MenuNotFound } from '@/components/menu/MenuNotFound';
 import { MenuLoading } from '@/components/menu/MenuLoading';
 import { cn } from '@/lib/utils';
 import { getChefNote, getOriginNote, getPairingSuggestion } from '@/lib/menuSuggestions';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 const supportedLanguages = ['es', 'en', 'pt'] as const;
 type SupportedLanguage = typeof supportedLanguages[number];
+
+const getLocalizedValue = (
+  base: string,
+  translations: { en?: string | null; pt?: string | null },
+  language: SupportedLanguage
+) => {
+  if (language === 'en' && translations.en) return translations.en;
+  if (language === 'pt' && translations.pt) return translations.pt;
+  return base;
+};
 
 const copyByLanguage: Record<SupportedLanguage, {
   modeLabel: string;
@@ -166,6 +178,8 @@ export default function PublicMenu() {
   const [searchParams] = useSearchParams();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
+  const previewMode = searchParams.get('view');
+  const isMobilePreview = previewMode === 'mobile';
   const [filters, setFilters] = useState<MenuFiltersState>({
     vegan: false,
     spicy: false,
@@ -188,6 +202,39 @@ export default function PublicMenu() {
   const [themeMode, setThemeMode] = useState<'auto' | 'night' | 'day'>('auto');
   const copy = copyByLanguage[language];
 
+  const localizedMenu = useMemo(() => {
+    if (!menu) return null;
+    return {
+      ...menu,
+      name: getLocalizedValue(menu.name, { en: menu.name_en, pt: menu.name_pt }, language),
+      sections: menu.sections.map((section) => ({
+        ...section,
+        name: getLocalizedValue(section.name, { en: section.name_en, pt: section.name_pt }, language),
+        description: section.description
+          ? getLocalizedValue(section.description, { en: section.description_en, pt: section.description_pt }, language)
+          : section.description,
+        items: section.items.map((item) => ({
+          ...item,
+          name: getLocalizedValue(item.name, { en: item.name_en, pt: item.name_pt }, language),
+        description: item.description
+          ? getLocalizedValue(item.description, { en: item.description_en, pt: item.description_pt }, language)
+          : item.description,
+        pairing: item.pairing
+          ? getLocalizedValue(item.pairing, { en: item.pairing_en, pt: item.pairing_pt }, language)
+          : getPairingSuggestion(item.name, language),
+      })),
+      })),
+      promotions: menu.promotions.map((promo) => ({
+        ...promo,
+        title: getLocalizedValue(promo.title, { en: promo.title_en, pt: promo.title_pt }, language),
+        description: promo.description
+          ? getLocalizedValue(promo.description, { en: promo.description_en, pt: promo.description_pt }, language)
+          : promo.description,
+        price_text: getLocalizedValue(promo.price_text, { en: promo.price_text_en, pt: promo.price_text_pt }, language),
+      })),
+    };
+  }, [language, menu]);
+
   // Track page view on mount
   useEffect(() => {
     if (menu?.id) {
@@ -197,11 +244,41 @@ export default function PublicMenu() {
   }, [menu?.id, searchParams]);
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setNowTimestamp(Date.now());
-    }, 5000);
+    if (!menu?.promotions?.length) return;
 
-    return () => window.clearInterval(intervalId);
+    const now = Date.now();
+    const upcoming = menu.promotions
+      .flatMap((promo) => [promo.starts_at, promo.ends_at])
+      .filter(Boolean)
+      .map((date) => new Date(date as string).getTime())
+      .filter((time) => time > now);
+
+    if (upcoming.length === 0) return;
+
+    const nextChange = Math.min(...upcoming);
+    const timeout = Math.max(1000, nextChange - now);
+    const timer = window.setTimeout(() => {
+      setNowTimestamp(Date.now());
+    }, timeout);
+
+    return () => window.clearTimeout(timer);
+  }, [menu?.promotions, nowTimestamp]);
+
+  useEffect(() => {
+    const paramLang = searchParams.get('lang')?.toLowerCase();
+    if (paramLang && supportedLanguages.includes(paramLang as SupportedLanguage)) {
+      setLanguage(paramLang as SupportedLanguage);
+    }
+  }, [searchParams, supportedLanguages]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = Math.min(window.scrollY * 0.18, 80);
+      document.documentElement.style.setProperty('--hero-parallax', `${offset}px`);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -244,9 +321,9 @@ export default function PublicMenu() {
 
   // Filter active promotions based on schedule
   const activePromotions = useMemo(() => {
-    if (!menu) return [];
+    if (!localizedMenu) return [];
     const now = new Date(nowTimestamp);
-    return menu.promotions.filter(p => {
+    return localizedMenu.promotions.filter(p => {
       if (!p.is_active) return false;
       if (p.starts_at) {
         const startsAt = parseISO(p.starts_at);
@@ -258,12 +335,56 @@ export default function PublicMenu() {
       }
       return true;
     });
-  }, [menu, nowTimestamp]);
+  }, [localizedMenu, nowTimestamp]);
+
+  const abPromotions = useMemo(() => {
+    if (!menu?.id) return activePromotions;
+    const grouped = new Map<string, typeof activePromotions>();
+    const standalone: typeof activePromotions = [];
+
+    activePromotions.forEach((promo) => {
+      if (promo.ab_group) {
+        const groupPromos = grouped.get(promo.ab_group) || [];
+        groupPromos.push(promo);
+        grouped.set(promo.ab_group, groupPromos);
+      } else {
+        standalone.push(promo);
+      }
+    });
+
+    const selected = Array.from(grouped.entries()).map(([group, promos]) => {
+      const key = `promo-ab:${menu.id}:${group}`;
+      try {
+        const stored = sessionStorage.getItem(key);
+        const found = promos.find((promo) => promo.id === stored);
+        if (found) return found;
+      } catch {
+        // ignore storage errors
+      }
+
+      const totalWeight = promos.reduce((sum, promo) => sum + (promo.ab_weight ?? 50), 0);
+      let roll = Math.random() * totalWeight;
+      const chosen =
+        promos.find((promo) => {
+          roll -= promo.ab_weight ?? 50;
+          return roll <= 0;
+        }) || promos[0];
+
+      try {
+        sessionStorage.setItem(key, chosen.id);
+      } catch {
+        // ignore storage errors
+      }
+      return chosen;
+    });
+
+    return [...standalone, ...selected].sort((a, b) => a.sort_order - b.sort_order);
+  }, [activePromotions, menu?.id]);
 
   const visibleSections = useMemo(() => {
-    if (!menu) return [];
-    return menu.sections.filter(s => s.items.length > 0);
-  }, [menu]);
+    if (!localizedMenu) return [];
+    return localizedMenu.sections.filter(s => s.items.length > 0);
+  }, [localizedMenu]);
 
   const filteredSections = useMemo(() => {
     if (visibleSections.length === 0) return [];
@@ -314,9 +435,9 @@ export default function PublicMenu() {
   const pairingHighlights = useMemo(() => {
     return highlightedItems.slice(0, 3).map(({ item }) => ({
       name: item.name,
-      suggestion: item.pairing || getPairingSuggestion(item.name),
+      suggestion: item.pairing || getPairingSuggestion(item.name, language),
     }));
-  }, [highlightedItems]);
+  }, [highlightedItems, language]);
 
   if (isLoading) {
     return <MenuLoading />;
@@ -327,7 +448,7 @@ export default function PublicMenu() {
   }
 
   return (
-    <div className={cn("min-h-screen bg-background relative overflow-x-hidden")}>
+    <div className={cn("min-h-screen bg-background relative overflow-x-hidden", isMobilePreview && "py-10")}>
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -338,9 +459,138 @@ export default function PublicMenu() {
       />
       
       {/* Content wrapper */}
-      <div className="relative z-10">
+      <div
+        className={cn(
+          "relative z-10",
+          isMobilePreview && "mx-auto max-w-sm rounded-[2rem] border border-border/60 shadow-menu-lg overflow-hidden"
+        )}
+      >
         {/* Header - Hero */}
-        <EditorialHeader name={menu.name} logoUrl={menu.logo_url} />
+        <EditorialHeader name={localizedMenu?.name || menu.name} logoUrl={menu.logo_url} />
+
+        {localizedMenu?.cta_url && (
+          <div className="container max-w-5xl mx-auto px-6 md:px-8 -mt-10 relative z-20">
+            <div className="menu-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                  Experiencia directa
+                </p>
+                <p className="text-sm text-foreground/80">
+                  {localizedMenu.cta_label || 'Reservar o pedir ahora desde tu menú.'}
+                </p>
+              </div>
+              <Button asChild>
+                <a href={localizedMenu.cta_url} target="_blank" rel="noopener noreferrer">
+                  {localizedMenu.cta_label || 'Reservar ahora'}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {(localizedMenu?.pos_url || localizedMenu?.delivery_url) && (
+          <div className="container max-w-5xl mx-auto px-6 md:px-8 mt-6">
+            <div className="menu-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                  Integraciones activas
+                </p>
+                <p className="text-sm text-foreground/80">
+                  Conectá tu menú con POS y delivery sin salir de la experiencia.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {localizedMenu.delivery_url && (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={localizedMenu.delivery_url} target="_blank" rel="noopener noreferrer">
+                      Delivery
+                    </a>
+                  </Button>
+                )}
+                {localizedMenu.pos_url && (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={localizedMenu.pos_url} target="_blank" rel="noopener noreferrer">
+                      POS
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <section className="py-8 md:py-10 section-fade section-fade-delay-1">
+          <div className="container max-w-5xl mx-auto px-6 md:px-8">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="menu-card p-6">
+                <p className="menu-chip">Premium</p>
+                <h2 className="mt-4 text-xl md:text-2xl font-display font-semibold text-foreground">
+                  {copy.experienceTitle}
+                </h2>
+                <p className="mt-3 text-sm md:text-base text-muted-foreground">
+                  {copy.experienceDescription}
+                </p>
+                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  {copy.experienceTags.map((tag) => (
+                    <span key={tag} className="menu-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="menu-card p-6 space-y-5">
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                    {copy.modeLabel}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(['auto', 'night', 'day'] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setThemeMode(mode)}
+                        className={cn(
+                          'menu-tag border border-border/50 transition-colors',
+                          themeMode === mode && 'bg-primary/15 text-primary border-primary/40'
+                        )}
+                      >
+                        {mode === 'auto' && copy.modeAuto}
+                        {mode === 'night' && copy.modeNight}
+                        {mode === 'day' && copy.modeDay}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                    {copy.languageLabel}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {supportedLanguages.map((lang) => (
+                      <button
+                        key={lang}
+                        type="button"
+                        onClick={() => setLanguage(lang)}
+                        className={cn(
+                          'menu-tag border border-border/50 transition-colors',
+                          language === lang && 'bg-primary/15 text-primary border-primary/40'
+                        )}
+                      >
+                        {lang.toUpperCase()}
+                      </button>
+                    ))}
+                    <span className="text-xs text-muted-foreground/80 ml-2 self-center">
+                      {copy.languageAuto}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="py-8 md:py-10 section-fade section-fade-delay-1">
           <div className="container max-w-5xl mx-auto px-6 md:px-8">
@@ -448,7 +698,7 @@ export default function PublicMenu() {
                 </p>
                 <h3 className="text-lg font-semibold text-foreground">{copy.storyOrigin}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {menu.sections[0]?.description || getOriginNote(menu.name)}
+                  {localizedMenu?.sections[0]?.description || getOriginNote(localizedMenu?.name || menu.name, language)}
                 </p>
               </div>
               <div className="menu-card p-5 space-y-3">
@@ -457,7 +707,7 @@ export default function PublicMenu() {
                 </p>
                 <h3 className="text-lg font-semibold text-foreground">{copy.storyChef}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {getChefNote(menu.name)}
+                  {getChefNote(localizedMenu?.name || menu.name, language)}
                 </p>
               </div>
               <div className="menu-card p-5 space-y-3">
@@ -485,9 +735,9 @@ export default function PublicMenu() {
         </section>
 
         {/* Promotions Carousel */}
-        {activePromotions.length > 0 && (
+        {abPromotions.length > 0 && (
           <EditorialPromosSection
-            promotions={activePromotions}
+            promotions={abPromotions}
             onNavigateToSection={scrollToSection}
             onNavigateToItem={scrollToItem}
           />
@@ -570,7 +820,7 @@ export default function PublicMenu() {
         </main>
 
         {/* Footer */}
-        <EditorialFooter />
+        <EditorialFooter hideBranding={Boolean(menu.hide_branding)} />
 
         {/* Back to Top Button */}
         <BackToTopButton threshold={600} />
