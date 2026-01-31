@@ -8,6 +8,7 @@ import { EditorialHeader } from '@/components/menu/EditorialHeader';
 import { EditorialPromosSection } from '@/components/menu/EditorialPromosSection';
 import { EditorialMenuSection } from '@/components/menu/EditorialMenuSection';
 import { EditorialHighlightsSection } from '@/components/menu/EditorialHighlightsSection';
+import { MenuFilters, MenuFiltersState } from '@/components/menu/MenuFilters';
 import { StickySectionsNav } from '@/components/menu/StickySectionsNav';
 import { BackToTopButton } from '@/components/menu/BackToTopButton';
 import { EditorialFooter } from '@/components/menu/EditorialFooter';
@@ -20,17 +21,10 @@ export default function PublicMenu() {
   const [searchParams] = useSearchParams();
   const { data: menu, isLoading, error } = usePublicMenu(slug || '');
   const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
-
-  // Memoize section IDs for observer
-  const sectionIds = useMemo(() => 
-    menu?.sections.map(s => s.id) || [], 
-    [menu?.sections]
-  );
-
-  // Active section observer with scroll helpers
-  const { activeSectionId, scrollToSection, scrollToItem } = useActiveSectionObserver({
-    sectionIds,
-    offset: 100,
+  const [filters, setFilters] = useState<MenuFiltersState>({
+    vegan: false,
+    spicy: false,
+    recommended: false,
   });
 
   // Track page view on mount
@@ -88,6 +82,35 @@ export default function PublicMenu() {
     return menu.sections.filter(s => s.items.length > 0);
   }, [menu]);
 
+  const filteredSections = useMemo(() => {
+    if (visibleSections.length === 0) return [];
+    const { vegan, spicy, recommended } = filters;
+
+    if (!vegan && !spicy && !recommended) {
+      return visibleSections;
+    }
+
+    return visibleSections
+      .map(section => ({
+        ...section,
+        items: section.items.filter(item => {
+          if (vegan && !item.is_vegan) return false;
+          if (spicy && !item.is_spicy) return false;
+          if (recommended && !item.is_recommended) return false;
+          return true;
+        }),
+      }))
+      .filter(section => section.items.length > 0);
+  }, [filters, visibleSections]);
+
+  const sectionIds = useMemo(() => filteredSections.map(s => s.id), [filteredSections]);
+
+  // Active section observer with scroll helpers
+  const { activeSectionId, scrollToSection, scrollToItem } = useActiveSectionObserver({
+    sectionIds,
+    offset: 100,
+  });
+
   const highlightedItems = useMemo(() => {
     if (visibleSections.length === 0) return [];
     return visibleSections
@@ -128,10 +151,12 @@ export default function PublicMenu() {
 
         {/* Sticky Section Navigation */}
         <StickySectionsNav
-          sections={visibleSections}
+          sections={filteredSections}
           activeSectionId={activeSectionId}
           onSectionClick={scrollToSection}
         />
+
+        <MenuFilters value={filters} onChange={setFilters} />
 
         {/* Highlights */}
         <EditorialHighlightsSection
@@ -150,15 +175,22 @@ export default function PublicMenu() {
 
         {/* Menu Sections */}
         <main className="container max-w-5xl mx-auto px-5 md:px-8 pb-24 md:pb-16">
-          {visibleSections.map((section) => (
+          {filteredSections.map((section) => (
             <EditorialMenuSection key={section.id} section={section} />
           ))}
 
-          {visibleSections.length === 0 && (
+          {filteredSections.length === 0 && (
             <div className="py-24 text-center">
               <p className="text-muted-foreground font-body text-sm uppercase tracking-wider">
-                Este menú aún no tiene secciones.
+                No hay platos con los filtros seleccionados.
               </p>
+              <button
+                type="button"
+                className="mt-4 menu-tag border border-border/50 text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setFilters({ vegan: false, spicy: false, recommended: false })}
+              >
+                Limpiar filtros
+              </button>
             </div>
           )}
         </main>
