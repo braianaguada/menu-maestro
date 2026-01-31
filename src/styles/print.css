@@ -116,6 +116,20 @@
     margin-bottom: 24pt !important;
   }
 
+  .print-hero {
+    padding-top: 12pt !important;
+    padding-bottom: 18pt !important;
+  }
+
+  .print-qr {
+    margin-top: 18pt !important;
+  }
+
+  .print-qr svg {
+    width: 110pt !important;
+    height: 110pt !important;
+  }
+
   /* Footer */
   footer {
     margin-top: 24pt !important;
