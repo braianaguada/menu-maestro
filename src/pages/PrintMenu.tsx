@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import type { Section, Item, Promotion } from '@/types/menu';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { QRCodeSVG } from 'qrcode.react';
 
 // Print-specific item component
 function PrintMenuItem({ item }: { item: Item }) {
@@ -70,6 +71,43 @@ function PrintPromotions({ promotions }: { promotions: Promotion[] }) {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function PrintHighlights({ items }: { items: Item[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <section className="mb-10 p-6 bg-background rounded-2xl border border-primary/20 break-inside-avoid-page">
+      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-3">
+        Selección del chef
+      </p>
+      <h2 className="font-display text-2xl font-semibold mb-4">Platos destacados</h2>
+      <div className="grid grid-cols-2 gap-4">
+        {items.map((item) => (
+          <div key={item.id} className="rounded-xl border border-border/40 p-4">
+            <div className="font-display text-base font-semibold">{item.name}</div>
+            {item.description && (
+              <p className="text-xs text-muted-foreground mt-2">{item.description}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PrintQRCode({ menuUrl }: { menuUrl: string }) {
+  return (
+    <section className="print-qr mt-12 text-center break-inside-avoid-page">
+      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-2">
+        Versión digital
+      </p>
+      <div className="inline-flex items-center justify-center rounded-2xl border border-border/40 bg-background p-4">
+        <QRCodeSVG value={menuUrl} size={140} level="H" bgColor="#ffffff" fgColor="#111827" />
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">{menuUrl}</p>
     </section>
   );
 }
@@ -148,11 +186,16 @@ export default function PrintMenu() {
   }
 
   const activePromotions = menu.promotions.filter(p => p.is_active);
+  const highlightedItems = menu.sections
+    .flatMap((section) => section.items)
+    .filter((item) => item.is_recommended)
+    .slice(0, 4);
+  const menuUrl = `${window.location.origin}/m/${menu.slug}`;
 
   return (
     <div className={cn("print-menu bg-background text-foreground min-h-screen")}>
       {/* Print Header */}
-      <header className="text-center py-10 border-b border-border/30 mb-8">
+      <header className="text-center py-10 border-b border-border/30 mb-8 print-hero">
         {menu.logo_url && (
           <img
             src={menu.logo_url}
@@ -161,12 +204,16 @@ export default function PrintMenu() {
           />
         )}
         <h1 className="font-display text-4xl font-semibold tracking-tight">{menu.name}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Carta curada para una experiencia premium.
+        </p>
       </header>
 
       {/* Content Container */}
       <main className="px-8 max-w-4xl mx-auto">
         {/* Promotions block */}
         <PrintPromotions promotions={activePromotions} />
+        <PrintHighlights items={highlightedItems} />
 
         {/* Sections */}
         {menu.sections.map((section) => (
@@ -176,7 +223,8 @@ export default function PrintMenu() {
 
       {/* Print Footer */}
       <footer className="text-center py-8 mt-12 border-t border-border/30">
-        <p className="text-xs text-muted-foreground">Menú digital</p>
+        <PrintQRCode menuUrl={menuUrl} />
+        <p className="mt-6 text-xs text-muted-foreground">Menú digital</p>
       </footer>
     </div>
   );

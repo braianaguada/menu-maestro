@@ -87,11 +87,24 @@ export function usePublicMenu(slug: string) {
 const MENU_VIEW_KEY = 'menu_view_tracked_';
 const PROMO_CLICK_KEY = 'promo_click_tracked_';
 const MAX_USER_AGENT_LENGTH = 512;
+const MAX_SOURCE_LENGTH = 32;
 
 // Sanitize and truncate user agent string
 function sanitizeUserAgent(ua: string): string {
   if (!ua || typeof ua !== 'string') return '';
   return ua.slice(0, MAX_USER_AGENT_LENGTH);
+}
+
+function sanitizeSource(source?: string | null): string | null {
+  if (!source || typeof source !== 'string') return null;
+  return source.slice(0, MAX_SOURCE_LENGTH);
+}
+
+function buildUserAgent(ua: string, source?: string | null): string {
+  const cleanUA = sanitizeUserAgent(ua);
+  const cleanSource = sanitizeSource(source);
+  if (!cleanSource) return cleanUA;
+  return `${cleanUA} | source:${cleanSource}`.slice(0, MAX_USER_AGENT_LENGTH);
 }
 
 // Check if already tracked this session
@@ -113,13 +126,14 @@ function markTrackedThisSession(key: string): void {
 }
 
 // Track page view with session deduplication and input validation
-export async function trackMenuView(menuId: string) {
+export async function trackMenuView(menuId: string, source?: string | null) {
   // Validate menuId format (UUID)
   if (!menuId || typeof menuId !== 'string' || !/^[0-9a-f-]{36}$/i.test(menuId)) {
     return;
   }
 
-  const sessionKey = MENU_VIEW_KEY + menuId;
+  const sourceKey = sanitizeSource(source) || 'direct';
+  const sessionKey = `${MENU_VIEW_KEY}${menuId}:${sourceKey}`;
   
   // Deduplicate: only track once per session per menu
   if (hasTrackedThisSession(sessionKey)) {
@@ -129,7 +143,7 @@ export async function trackMenuView(menuId: string) {
   try {
     await supabase.from('menu_views').insert({
       menu_id: menuId,
-      user_agent: sanitizeUserAgent(navigator.userAgent),
+      user_agent: buildUserAgent(navigator.userAgent, source),
     });
     markTrackedThisSession(sessionKey);
   } catch (error) {

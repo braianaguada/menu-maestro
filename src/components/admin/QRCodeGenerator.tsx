@@ -18,6 +18,7 @@ interface QRCodeGeneratorProps {
 export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const menuUrl = `${window.location.origin}/m/${menuSlug}`;
+  const trackedMenuUrl = `${menuUrl}?source=qr`;
 
   const downloadQR = useCallback(() => {
     if (!qrRef.current) return;
@@ -79,7 +80,7 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
       ctx.fillText('Abrí el menú en:', padding, headerHeight + qrSize + 100);
       ctx.fillStyle = '#f97316';
       ctx.font = 'bold 30px Inter, system-ui, sans-serif';
-      ctx.fillText(menuUrl, padding, headerHeight + qrSize + 145);
+      ctx.fillText(trackedMenuUrl, padding, headerHeight + qrSize + 145);
 
       const pngUrl = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
@@ -91,7 +92,7 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
       URL.revokeObjectURL(svgUrl);
     };
     img.src = svgUrl;
-  }, [menuSlug]);
+  }, [menuSlug, menuName, trackedMenuUrl]);
 
   return (
     <Dialog>
@@ -116,7 +117,7 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
             </div>
             <div className="mx-auto inline-flex items-center justify-center rounded-2xl bg-white p-4 shadow-md">
               <QRCodeSVG
-                value={menuUrl}
+                value={trackedMenuUrl}
                 size={220}
                 level="H"
                 includeMargin={false}
@@ -131,9 +132,9 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
 
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
-              Enlace del menú:
+              Enlace público:
             </p>
-            <a 
+            <a
               href={menuUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -141,6 +142,9 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
             >
               {menuUrl}
             </a>
+            <p className="text-xs text-muted-foreground">
+              El QR incluye tracking de escaneos.
+            </p>
           </div>
 
           <Button onClick={downloadQR} className="w-full">
