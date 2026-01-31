@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useMenus, useUpdateMenu, useSections, usePromotions, useUpdatePrices } from '@/hooks/useAdminMenus';
+import { useMenu, useUpdateMenu, useSections, usePromotions, useUpdatePrices } from '@/hooks/useAdminMenus';
 import type { MenuTheme } from '@/types/menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,13 +40,11 @@ import { cn } from '@/lib/utils';
 
 export default function MenuEditor() {
   const { menuId } = useParams<{ menuId: string }>();
-  const { data: menus, isLoading: menusLoading } = useMenus();
+  const { data: menu, isLoading: menusLoading } = useMenu(menuId);
   const { data: sections } = useSections(menuId);
   const { data: promotions } = usePromotions(menuId);
   const updateMenu = useUpdateMenu();
   const updatePrices = useUpdatePrices();
-
-  const menu = menus?.find(m => m.id === menuId);
 
   const [editData, setEditData] = useState<{
     name?: string;
@@ -62,7 +60,7 @@ export default function MenuEditor() {
   const currentData = {
     name: editData.name ?? menu?.name ?? '',
     slug: editData.slug ?? menu?.slug ?? '',
-    theme: editData.theme ?? menu?.theme ?? 'elegant',
+    theme: editData.theme ?? menu?.theme ?? 'editorial',
     status: editData.status ?? menu?.status ?? 'draft',
     logo_url: editData.logo_url !== undefined ? editData.logo_url : (menu?.logo_url ?? null),
   };

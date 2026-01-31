@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Plus, Eye, ExternalLink, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { buildDefaultMenuPayload } from '@/lib/menuDefaults';
 
 export default function Dashboard() {
   const { data: menus, isLoading } = useMenus();
@@ -14,12 +15,7 @@ export default function Dashboard() {
   const draftMenus = menus?.filter(m => m.status === 'draft') || [];
 
   const handleCreateMenu = async () => {
-    const slugSuffix = Math.random().toString(36).slice(2, 7);
-    const draftPayload = {
-      name: 'Nuevo menú',
-      slug: `menu-${slugSuffix}`,
-      theme: 'elegant',
-    };
+    const draftPayload = buildDefaultMenuPayload();
 
     try {
       const newMenu = await createMenu.mutateAsync(draftPayload);

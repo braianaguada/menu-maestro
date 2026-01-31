@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { PublicMenu, Menu, Section, Item, Promotion } from '@/types/menu';
+import type { PublicMenu, Menu } from '@/types/menu';
 import { demoMenu } from '@/data/demoMenu';
 
 // Explicit column selection for public menu queries - excludes user_id for privacy
@@ -38,16 +38,18 @@ export function usePublicMenu(slug: string) {
 
       if (sectionsError) throw sectionsError;
 
-      // Fetch all items for these sections - explicitly select only public columns
       const sectionIds = sections?.map(s => s.id) || [];
-      const { data: items, error: itemsError } = await supabase
-        .from('items')
-        .select(PUBLIC_ITEM_COLUMNS)
-        .in('section_id', sectionIds)
-        .eq('is_visible', true)
-        .order('sort_order', { ascending: true });
+      // Fetch all items for these sections - explicitly select only public columns
+      const items = sectionIds.length > 0
+        ? await supabase
+          .from('items')
+          .select(PUBLIC_ITEM_COLUMNS)
+          .in('section_id', sectionIds)
+          .eq('is_visible', true)
+          .order('sort_order', { ascending: true })
+        : { data: [], error: null };
 
-      if (itemsError) throw itemsError;
+      if (items.error) throw items.error;
 
       // Fetch active promotions - explicitly select only public columns
       const { data: promotions, error: promosError } = await supabase
@@ -60,16 +62,17 @@ export function usePublicMenu(slug: string) {
       if (promosError) throw promosError;
 
       // Combine sections with their items
+      const itemsData = items.data ?? [];
       const sectionsWithItems = (sections || []).map(section => ({
         ...section,
-        items: (items || []).filter(item => item.section_id === section.id)
+        items: itemsData.filter(item => item.section_id === section.id),
       }));
 
       return {
         ...menu,
         // Add a placeholder user_id for type compatibility (never exposed from DB)
         user_id: '',
-        theme: menu.theme as 'elegant' | 'light' | 'modern',
+        theme: menu.theme as Menu['theme'],
         status: menu.status as 'draft' | 'published',
         sections: sectionsWithItems,
         promotions: promotions || []
