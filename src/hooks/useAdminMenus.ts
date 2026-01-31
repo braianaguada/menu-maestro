@@ -3,6 +3,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import type { Menu, Section, Item, Promotion } from '@/types/menu';
 
+async function resolveUserId(userId: string | undefined) {
+  if (userId) return userId;
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw error;
+  if (!data.user) {
+    throw new Error('No hay sesión activa');
+  }
+
+  return data.user.id;
+}
+
 // Menus
 export function useMenus() {
   const { user } = useAuth();
@@ -49,10 +61,11 @@ export function useCreateMenu() {
 
   return useMutation({
     mutationFn: async (data: { name: string; slug: string; theme?: string }) => {
+      const userId = await resolveUserId(user?.id);
       const { data: menu, error } = await supabase
         .from('menus')
         .insert({
-          user_id: user!.id,
+          user_id: userId,
           name: data.name,
           slug: data.slug,
           theme: data.theme || 'editorial',
@@ -76,11 +89,14 @@ export function useUpdateMenu() {
 
   return useMutation({
     mutationFn: async ({ id, ...data }: Partial<Menu> & { id: string }) => {
+      const userId = await resolveUserId(user?.id);
       const { data: menu, error } = await supabase
         .from('menus')
         .update(data)
         .eq('id', id)
-        .eq('user_id', user!.id);
+        .eq('user_id', userId)
+        .select()
+        .single();
       
       if (error) throw error;
       return menu as Menu;
