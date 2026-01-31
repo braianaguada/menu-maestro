@@ -1,45 +1,87 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Star, UtensilsCrossed, Wallet, ShieldCheck, Leaf, Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Star, UtensilsCrossed, Wallet, ShieldCheck, Leaf, Check, Moon, Sun } from 'lucide-react';
+import { useUiMode } from '@/hooks/useUiMode';
 
-const features = [
+const premiumExperience = [
   {
     icon: Sparkles,
-    title: 'Estética fine dining',
-    description: 'Tipografías con carácter, espacios amplios y fotografía protagonista.',
-  },
-  {
-    icon: UtensilsCrossed,
-    title: 'Carta viva',
-    description: 'Actualizá tu menú en segundos sin perder coherencia visual.',
+    title: 'Micro-animaciones editoriales',
+    description: 'Hover sutil en cards, transiciones suaves y parallax en hero.',
   },
   {
     icon: Star,
-    title: 'Promos que seducen',
-    description: 'Destacá tus platos estrella como piezas editoriales.',
+    title: 'Modo nocturno/diurno',
+    description: 'Temas premium con paletas oscuras, dorados y serif refinada.',
+  },
+  {
+    icon: UtensilsCrossed,
+    title: 'Storytelling del menú',
+    description: 'Origen, notas del chef y maridajes que elevan el valor percibido.',
   },
   {
     icon: Wallet,
-    title: 'Listo para vender',
-    description: 'QR, PDF premium y analítica para tomar decisiones rápidas.',
+    title: 'Upsell inteligente',
+    description: 'Sugerencias “combínalo con” para aumentar el ticket promedio.',
   },
 ];
 
-const benefits = [
+const restaurantFeatures = [
   {
     icon: ShieldCheck,
-    title: 'Operación estable',
-    description: 'Infraestructura segura para equipos gastronómicos exigentes.',
+    title: 'Multilenguaje y QR con idioma',
+    description: 'ES/EN/PT con detección automática o QR pre-seleccionado.',
   },
   {
     icon: Leaf,
-    title: 'Marca coherente',
-    description: 'Temas elegantes que hablan el mismo idioma en cada vista.',
+    title: 'Filtros premium',
+    description: 'Por alérgenos, dieta (vegano, sin gluten) y preferencias.',
   },
   {
     icon: Sparkles,
-    title: 'Experiencia memorable',
-    description: 'Una carta digital que se siente como un restaurante premium.',
+    title: 'Galería optimizada',
+    description: 'Fotos comprimidas automáticamente con layout editorial.',
+  },
+];
+
+const adminPro = [
+  {
+    icon: Star,
+    title: 'Editor WYSIWYG + vistas',
+    description: 'Mobile, desktop y print en vivo para consistencia premium.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Versionado y rollback',
+    description: 'Historial de cambios con restauración inmediata.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Roles y permisos',
+    description: 'Dueño, manager y editor para equipos grandes.',
+  },
+  {
+    icon: UtensilsCrossed,
+    title: 'A/B testing de promos',
+    description: 'Optimización de ítems destacados y conversión.',
+  },
+];
+
+const analyticsPro = [
+  {
+    icon: ShieldCheck,
+    title: 'Eventos de conversión',
+    description: 'Clicks en CTA, tiempo por sección y platos más vistos.',
+  },
+  {
+    icon: Leaf,
+    title: 'Embudo de interacción',
+    description: 'Visualizá qué secciones convierten mejor.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Comparativas avanzadas',
+    description: 'Comparación por período y exportación premium.',
   },
 ];
 
@@ -48,7 +90,12 @@ const plans = [
     name: 'Starter',
     price: '$12',
     description: 'Ideal para locales pequeños que están empezando.',
-    features: ['1 menú publicado', 'QR descargable', 'Promociones básicas', 'Soporte por email'],
+    features: [
+      '1 menú publicado',
+      'QR descargable',
+      'Filtros básicos',
+      'Soporte por email',
+    ],
     highlighted: false,
   },
   {
@@ -58,8 +105,9 @@ const plans = [
     features: [
       'Menús ilimitados',
       'Promociones avanzadas',
-      'Analítica en tiempo real',
-      'Exportación CSV',
+      'Analítica avanzada',
+      'Multilenguaje ES/EN/PT',
+      'Exportación premium',
       'Soporte prioritario',
     ],
     highlighted: true,
@@ -71,16 +119,46 @@ const plans = [
     features: [
       'Multi-sucursal',
       'Integraciones a medida',
-      'Reportes avanzados',
+      'Roles y permisos',
+      'A/B testing',
       'SLA dedicado',
     ],
     highlighted: false,
   },
 ];
 
+const addons = [
+  {
+    title: 'QR personalizado con branding',
+    description: 'QR dinámico con métricas de escaneo y tu identidad visual.',
+  },
+  {
+    title: 'Dominio propio + white label light',
+    description: 'Tu marca primero, con onboarding de logo, colores y tipografías.',
+  },
+  {
+    title: 'Soporte VIP + onboarding asistido',
+    description: 'Acompañamiento experto para equipos de alto volumen.',
+  },
+  {
+    title: 'Integraciones POS / delivery',
+    description: 'Sincronización con sistemas de alto ticket.',
+  },
+  {
+    title: 'Modo offline / PWA',
+    description: 'Carga instantánea incluso con Wi-Fi débil en sala.',
+  },
+  {
+    title: 'Impresión premium',
+    description: 'PDF con márgenes elegantes y tipografías finas.',
+  },
+];
+
 export default function Index() {
+  const { mode, setMode } = useUiMode();
+
   return (
-    <div className="min-h-screen bg-[hsl(230_22%_6%)] text-white overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Decorative blur orbs */}
       <div className="blur-orb blur-orb-cyan w-[500px] h-[500px] -top-48 -right-48 opacity-40" />
       <div className="blur-orb blur-orb-purple w-[400px] h-[400px] top-1/3 -left-32 opacity-30" />
@@ -95,6 +173,14 @@ export default function Index() {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+              className="text-white/70 hover:text-white"
+            >
+              {mode === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </Button>
             <Link 
               to="/m/demo" 
               className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block"
@@ -204,7 +290,7 @@ export default function Index() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-5 md:gap-6">
-            {features.map((feature, index) => (
+            {premiumExperience.map((feature) => (
               <div
                 key={feature.title}
                 className="group p-6 md:p-7 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-primary/40 transition-all duration-300 backdrop-blur-sm"
@@ -237,17 +323,17 @@ export default function Index() {
               </h2>
               <p className="text-gray-400 text-lg mb-6">
                 Cada sección está pensada como una pieza de revista: fotos protagonistas,
-                jerarquía tipográfica y espacio en blanco para respirar.
+                jerarquía tipográfica y storytelling para convertir visitas en pedidos.
               </p>
               <div className="flex flex-wrap gap-3">
                 <span className="menu-chip border-white/15 bg-white/5 text-white/70">
-                  Hero impactante
+                  Hero parallax
                 </span>
                 <span className="menu-chip border-white/15 bg-white/5 text-white/70">
-                  Promos destacadas
+                  Storytelling
                 </span>
                 <span className="menu-chip border-white/15 bg-white/5 text-white/70">
-                  Secciones claras
+                  Maridajes sugeridos
                 </span>
               </div>
             </div>
@@ -290,8 +376,19 @@ export default function Index() {
 
       <section className="relative py-16 border-t border-white/5">
         <div className="container max-w-5xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">
+              Experiencia premium
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-white mb-3">
+              Hecho para restaurantes exigentes
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Todo lo necesario para que tu menú se sienta exclusivo desde el primer escaneo.
+            </p>
+          </div>
           <div className="grid md:grid-cols-3 gap-8 md:gap-10">
-            {benefits.map((benefit) => (
+            {restaurantFeatures.map((benefit) => (
               <div key={benefit.title} className="text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/15 text-primary mb-4">
                   <benefit.icon className="w-5 h-5" />
@@ -301,6 +398,76 @@ export default function Index() {
                 </h3>
                 <p className="text-gray-500 text-sm">
                   {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative py-20 border-t border-white/5">
+        <div className="container max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
+              Admin Pro
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-white mb-4">
+              Operación de alto nivel
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Herramientas profesionales para equipos grandes y operaciones multi-sucursal.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {adminPro.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-menu-sm backdrop-blur-sm"
+              >
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary mb-5">
+                  <item.icon className="w-5 h-5" />
+                </div>
+                <h3 className="font-display text-lg font-semibold text-white mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative py-20 border-t border-white/5">
+        <div className="container max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
+              Analytics Pro
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-white mb-4">
+              Métricas que impulsan ventas
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Visualizaciones avanzadas para optimizar secciones, promos y ticket promedio.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {analyticsPro.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-menu-sm backdrop-blur-sm"
+              >
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary mb-5">
+                  <item.icon className="w-5 h-5" />
+                </div>
+                <h3 className="font-display text-lg font-semibold text-white mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {item.description}
                 </p>
               </div>
             ))}
@@ -365,6 +532,38 @@ export default function Index() {
                     {plan.price === 'Custom' ? 'Contactar ventas' : 'Elegir plan'}
                   </Link>
                 </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative py-20 border-t border-white/5">
+        <div className="container max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
+              Add-ons premium
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-white mb-4">
+              Monetización y escalabilidad
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Complementos premium para reforzar la percepción de lujo y aumentar ingresos.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {addons.map((addon) => (
+              <div
+                key={addon.title}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-menu-sm backdrop-blur-sm"
+              >
+                <h3 className="font-display text-lg font-semibold text-white mb-2">
+                  {addon.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {addon.description}
+                </p>
               </div>
             ))}
           </div>

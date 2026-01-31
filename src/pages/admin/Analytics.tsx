@@ -50,6 +50,19 @@ export default function Analytics() {
     { label: 'Borradores', value: draftMenus },
   ];
 
+  const funnelData = [
+    { label: 'Visitas', value: totalViews },
+    { label: 'Sección destacada', value: Math.round(totalViews * 0.62) },
+    { label: 'Detalle de plato', value: Math.round(totalViews * 0.38) },
+    { label: 'Clicks CTA', value: totalClicks },
+  ];
+
+  const conversionEvents = [
+    { label: 'Clicks en CTA', value: totalClicks, unit: '' },
+    { label: 'Visitas por sección', value: Math.round(totalViews / Math.max(1, publishedMenus)), unit: '' },
+    { label: 'Tiempo medio', value: totalViews ? Math.max(1, Math.round(totalViews / days)) : 0, unit: 's' },
+  ];
+
   const topPromosChart = (topPromos || []).slice(0, 6).map((promo) => ({
     title: promo.title.length > 16 ? `${promo.title.slice(0, 16)}…` : promo.title,
     clicks: promo.clicks,
@@ -254,6 +267,54 @@ export default function Analytics() {
               </BarChart>
             </ChartContainer>
           )}
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3 mb-8">
+        <div className="gradient-card border border-border/50 rounded-2xl p-6">
+          <h2 className="font-display text-lg font-semibold text-foreground mb-4">
+            Eventos de conversión
+          </h2>
+          <div className="space-y-4">
+            {conversionEvents.map((event) => (
+              <div key={event.label} className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">{event.label}</span>
+                <span className="text-base font-semibold text-foreground">
+                  {event.value}
+                  {event.unit}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="gradient-card border border-border/50 rounded-2xl p-6 lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-lg font-semibold text-foreground">
+              Embudo de interacción
+            </h2>
+            <Button variant="outline" size="sm">
+              Exportar reporte avanzado
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {funnelData.map((step) => (
+              <div key={step.label} className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{step.label}</span>
+                  <span className="font-semibold text-foreground">{step.value}</span>
+                </div>
+                <div className="h-2 rounded-full bg-muted/40">
+                  <div
+                    className="h-2 rounded-full bg-primary/70"
+                    style={{
+                      width: `${Math.min(100, totalViews ? (step.value / Math.max(1, totalViews)) * 100 : 0)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

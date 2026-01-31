@@ -55,9 +55,10 @@ import type { Section } from '@/types/menu';
 
 interface SectionsManagerProps {
   menuId: string;
+  autoImageEnabled?: boolean;
 }
 
-export function SectionsManager({ menuId }: SectionsManagerProps) {
+export function SectionsManager({ menuId, autoImageEnabled = false }: SectionsManagerProps) {
   const { data: sections, isLoading } = useSections(menuId);
   const createSection = useCreateSection();
   const updateSection = useUpdateSection();
@@ -68,7 +69,14 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', description: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    name_en: '',
+    name_pt: '',
+    description_en: '',
+    description_pt: '',
+  });
   const [openSections, setOpenSections] = useState<string[]>([]);
 
   useEffect(() => {
@@ -106,13 +114,27 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
 
   const openEditDialog = (section: Section) => {
     setEditingSection(section);
-    setFormData({ name: section.name, description: section.description || '' });
+    setFormData({
+      name: section.name,
+      description: section.description || '',
+      name_en: section.name_en || '',
+      name_pt: section.name_pt || '',
+      description_en: section.description_en || '',
+      description_pt: section.description_pt || '',
+    });
     setDialogOpen(true);
   };
 
   const openCreateDialog = () => {
     setEditingSection(null);
-    setFormData({ name: '', description: '' });
+    setFormData({
+      name: '',
+      description: '',
+      name_en: '',
+      name_pt: '',
+      description_en: '',
+      description_pt: '',
+    });
     setDialogOpen(true);
   };
 
@@ -129,6 +151,10 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
           menu_id: menuId,
           name: formData.name,
           description: formData.description || null,
+          name_en: formData.name_en || null,
+          name_pt: formData.name_pt || null,
+          description_en: formData.description_en || null,
+          description_pt: formData.description_pt || null,
         });
         toast.success('Sección actualizada');
       } else {
@@ -137,6 +163,10 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
           menu_id: menuId,
           name: formData.name,
           description: formData.description || undefined,
+          name_en: formData.name_en || undefined,
+          name_pt: formData.name_pt || undefined,
+          description_en: formData.description_en || undefined,
+          description_pt: formData.description_pt || undefined,
           sort_order: nextOrder,
         });
         toast.success('Sección creada');
@@ -253,7 +283,7 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <div className="border-t border-border/50 p-4 bg-muted/20">
-                        <ItemsManager sectionId={section.id} />
+                        <ItemsManager sectionId={section.id} autoImageEnabled={autoImageEnabled} />
                       </div>
                     </CollapsibleContent>
                   </div>
@@ -291,6 +321,26 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="section-name-en">Nombre (EN)</Label>
+                <Input
+                  id="section-name-en"
+                  placeholder="Starters"
+                  value={formData.name_en}
+                  onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="section-name-pt">Nombre (PT)</Label>
+                <Input
+                  id="section-name-pt"
+                  placeholder="Entradas"
+                  value={formData.name_pt}
+                  onChange={(e) => setFormData({ ...formData, name_pt: e.target.value })}
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="section-desc">Descripción (opcional)</Label>
               <Textarea
@@ -299,6 +349,26 @@ export function SectionsManager({ menuId }: SectionsManagerProps) {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="section-desc-en">Descripción (EN)</Label>
+                <Textarea
+                  id="section-desc-en"
+                  placeholder="Section description"
+                  value={formData.description_en}
+                  onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="section-desc-pt">Descripción (PT)</Label>
+                <Textarea
+                  id="section-desc-pt"
+                  placeholder="Descrição breve"
+                  value={formData.description_pt}
+                  onChange={(e) => setFormData({ ...formData, description_pt: e.target.value })}
+                />
+              </div>
             </div>
             <Button
               onClick={handleSubmit}

@@ -1,6 +1,14 @@
 import { cn } from '@/lib/utils';
-import { Leaf, Flame, Star } from 'lucide-react';
+import { Leaf, Flame, ShieldCheck, Star } from 'lucide-react';
 import type { Item } from '@/types/menu';
+import { getPairingSuggestion } from '@/lib/menuSuggestions';
+
+const allergenLabels: Record<string, string> = {
+  nuts: 'Frutos secos',
+  seafood: 'Mariscos',
+  egg: 'Huevo',
+  soy: 'Soja',
+};
 
 interface EditorialMenuItemProps {
   item: Item;
@@ -28,8 +36,16 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
     }).format(price);
   };
 
-  const hasTags = item.is_recommended || item.is_vegan || item.is_spicy;
+  const hasTags =
+    item.is_recommended ||
+    item.is_vegan ||
+    item.is_spicy ||
+    item.is_gluten_free ||
+    item.is_dairy_free ||
+    Boolean(item.allergens?.length);
   const imageUrl = item.image_url || getFallbackImage(item.name);
+  const pairing = item.pairing || getPairingSuggestion(item.name);
+  const showPairing = item.is_recommended || Boolean(item.pairing);
 
   return (
     <article
@@ -92,12 +108,38 @@ export function EditorialMenuItem({ item, className, style }: EditorialMenuItemP
                   Picante
                 </span>
               )}
+              {item.is_gluten_free && (
+                <span className="menu-tag">
+                  <ShieldCheck className="w-3 h-3 text-primary" />
+                  Sin gluten
+                </span>
+              )}
+              {item.is_dairy_free && (
+                <span className="menu-tag">
+                  <ShieldCheck className="w-3 h-3 text-primary" />
+                  Sin lactosa
+                </span>
+              )}
+              {item.allergens?.map((allergen) => (
+                <span key={allergen} className="menu-tag text-destructive">
+                  Contiene {allergenLabels[allergen] || allergen}
+                </span>
+              ))}
               {item.is_recommended && (
                 <span className="menu-tag">
                   <Star className="w-3 h-3 text-primary" />
                   Favorito
                 </span>
               )}
+            </div>
+          )}
+
+          {showPairing && (
+            <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Maridaje sugerido
+              <span className="block text-sm normal-case text-foreground/80 mt-1">
+                {pairing}
+              </span>
             </div>
           )}
         </div>

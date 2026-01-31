@@ -13,6 +13,24 @@ export default function Dashboard() {
 
   const publishedMenus = menus?.filter(m => m.status === 'published') || [];
   const draftMenus = menus?.filter(m => m.status === 'draft') || [];
+  const proOperations = [
+    {
+      title: 'WYSIWYG + vistas en vivo',
+      description: 'Preview mobile, desktop y print sin salir del editor.',
+    },
+    {
+      title: 'Versionado y rollback',
+      description: 'Historial de cambios con restauración inmediata.',
+    },
+    {
+      title: 'Roles y permisos',
+      description: 'Dueño, manager y editor para equipos grandes.',
+    },
+    {
+      title: 'A/B testing de promos',
+      description: 'Compará variantes y optimizá conversiones.',
+    },
+  ];
 
   const handleCreateMenu = async () => {
     const draftPayload = buildDefaultMenuPayload();
@@ -99,6 +117,25 @@ export default function Dashboard() {
               </Link>
             </Button>
           </div>
+        </div>
+      </div>
+
+      <div className="gradient-card border border-border/50 rounded-2xl p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-display text-xl font-semibold text-foreground">
+            Operación premium
+          </h2>
+          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            Pro toolkit
+          </span>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {proOperations.map((feature) => (
+            <div key={feature.title} className="rounded-xl border border-border/50 bg-card/60 p-4">
+              <h3 className="text-base font-semibold text-foreground">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{feature.description}</p>
+            </div>
+          ))}
         </div>
       </div>
 
