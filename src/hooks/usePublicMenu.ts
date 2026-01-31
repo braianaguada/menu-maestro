@@ -4,10 +4,91 @@ import type { PublicMenu, Menu } from '@/types/menu';
 import { demoMenu } from '@/data/demoMenu';
 
 // Explicit column selection for public menu queries - excludes user_id for privacy
-const PUBLIC_MENU_COLUMNS = 'id, name, slug, logo_url, status, theme, created_at, updated_at';
-const PUBLIC_SECTION_COLUMNS = 'id, menu_id, name, description, sort_order, is_visible, created_at, updated_at';
-const PUBLIC_ITEM_COLUMNS = 'id, section_id, name, description, price, image_url, sort_order, is_visible, is_spicy, is_vegan, is_recommended, created_at, updated_at';
-const PUBLIC_PROMO_COLUMNS = 'id, menu_id, title, description, price_text, image_url, is_active, starts_at, ends_at, linked_item_id, linked_section_id, sort_order, created_at, updated_at';
+const PUBLIC_MENU_COLUMNS = [
+  'id',
+  'name',
+  'name_en',
+  'name_pt',
+  'slug',
+  'logo_url',
+  'custom_domain',
+  'auto_image_enabled',
+  'qr_primary_color',
+  'qr_background_color',
+  'qr_logo_url',
+  'cta_label',
+  'cta_url',
+  'pos_url',
+  'delivery_url',
+  'hide_branding',
+  'status',
+  'theme',
+  'created_at',
+  'updated_at',
+].join(', ');
+const PUBLIC_SECTION_COLUMNS = [
+  'id',
+  'menu_id',
+  'name',
+  'name_en',
+  'name_pt',
+  'description',
+  'description_en',
+  'description_pt',
+  'sort_order',
+  'is_visible',
+  'created_at',
+  'updated_at',
+].join(', ');
+const PUBLIC_ITEM_COLUMNS = [
+  'id',
+  'section_id',
+  'name',
+  'name_en',
+  'name_pt',
+  'description',
+  'description_en',
+  'description_pt',
+  'pairing',
+  'pairing_en',
+  'pairing_pt',
+  'price',
+  'image_url',
+  'sort_order',
+  'is_visible',
+  'is_spicy',
+  'is_vegan',
+  'is_recommended',
+  'is_gluten_free',
+  'is_dairy_free',
+  'allergens',
+  'created_at',
+  'updated_at',
+].join(', ');
+const PUBLIC_PROMO_COLUMNS = [
+  'id',
+  'menu_id',
+  'title',
+  'title_en',
+  'title_pt',
+  'description',
+  'description_en',
+  'description_pt',
+  'price_text',
+  'price_text_en',
+  'price_text_pt',
+  'image_url',
+  'is_active',
+  'starts_at',
+  'ends_at',
+  'linked_item_id',
+  'linked_section_id',
+  'ab_group',
+  'ab_weight',
+  'sort_order',
+  'created_at',
+  'updated_at',
+].join(', ');
 
 export function usePublicMenu(slug: string) {
   return useQuery({

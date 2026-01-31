@@ -48,22 +48,41 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import type { Item } from '@/types/menu';
+import { buildAutoImageUrl } from '@/lib/autoImage';
 
 interface ItemsManagerProps {
   sectionId: string;
+  autoImageEnabled?: boolean;
 }
+
+const allergenOptions = [
+  { id: 'nuts', label: 'Frutos secos' },
+  { id: 'seafood', label: 'Mariscos' },
+  { id: 'egg', label: 'Huevo' },
+  { id: 'soy', label: 'Soja' },
+];
 
 const defaultFormData = {
   name: '',
   description: '',
+  name_en: '',
+  name_pt: '',
+  description_en: '',
+  description_pt: '',
+  pairing: '',
+  pairing_en: '',
+  pairing_pt: '',
   price: '',
   image_url: null as string | null,
   is_recommended: false,
   is_vegan: false,
   is_spicy: false,
+  is_gluten_free: false,
+  is_dairy_free: false,
+  allergens: [] as string[],
 };
 
-export function ItemsManager({ sectionId }: ItemsManagerProps) {
+export function ItemsManager({ sectionId, autoImageEnabled = false }: ItemsManagerProps) {
   const { data: items, isLoading } = useItems(sectionId);
   const createItem = useCreateItem();
   const updateItem = useUpdateItem();
@@ -108,11 +127,21 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
     setFormData({
       name: item.name,
       description: item.description || '',
+      name_en: item.name_en || '',
+      name_pt: item.name_pt || '',
+      description_en: item.description_en || '',
+      description_pt: item.description_pt || '',
+      pairing: item.pairing || '',
+      pairing_en: item.pairing_en || '',
+      pairing_pt: item.pairing_pt || '',
       price: item.price.toString(),
       image_url: item.image_url || null,
       is_recommended: item.is_recommended,
       is_vegan: item.is_vegan,
       is_spicy: item.is_spicy,
+      is_gluten_free: item.is_gluten_free ?? false,
+      is_dairy_free: item.is_dairy_free ?? false,
+      allergens: item.allergens ?? [],
     });
     setDialogOpen(true);
   };
@@ -135,6 +164,10 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
       return;
     }
 
+    const resolvedImageUrl =
+      formData.image_url ||
+      (autoImageEnabled ? buildAutoImageUrl(formData.name) : null);
+
     try {
       if (editingItem) {
         await updateItem.mutateAsync({
@@ -142,11 +175,21 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
           section_id: sectionId,
           name: formData.name,
           description: formData.description || null,
+          name_en: formData.name_en || null,
+          name_pt: formData.name_pt || null,
+          description_en: formData.description_en || null,
+          description_pt: formData.description_pt || null,
+          pairing: formData.pairing || null,
+          pairing_en: formData.pairing_en || null,
+          pairing_pt: formData.pairing_pt || null,
           price,
-          image_url: formData.image_url,
+          image_url: resolvedImageUrl,
           is_recommended: formData.is_recommended,
           is_vegan: formData.is_vegan,
           is_spicy: formData.is_spicy,
+          is_gluten_free: formData.is_gluten_free,
+          is_dairy_free: formData.is_dairy_free,
+          allergens: formData.allergens,
         });
         toast.success('Ítem actualizado');
       } else {
@@ -155,11 +198,21 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
           section_id: sectionId,
           name: formData.name,
           description: formData.description || undefined,
+          name_en: formData.name_en || undefined,
+          name_pt: formData.name_pt || undefined,
+          description_en: formData.description_en || undefined,
+          description_pt: formData.description_pt || undefined,
+          pairing: formData.pairing || undefined,
+          pairing_en: formData.pairing_en || undefined,
+          pairing_pt: formData.pairing_pt || undefined,
           price,
-          image_url: formData.image_url,
+          image_url: resolvedImageUrl,
           is_recommended: formData.is_recommended,
           is_vegan: formData.is_vegan,
           is_spicy: formData.is_spicy,
+          is_gluten_free: formData.is_gluten_free,
+          is_dairy_free: formData.is_dairy_free,
+          allergens: formData.allergens,
           sort_order: nextOrder,
         });
         toast.success('Ítem creado');
@@ -200,6 +253,29 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
       currency: 'ARS',
       minimumFractionDigits: 0,
     }).format(price);
+  };
+
+  const handleGenerateMissingImages = async () => {
+    const missingItems = localItems.filter((item) => !item.image_url);
+    if (missingItems.length === 0) {
+      toast.success('Todos los ítems ya tienen imagen');
+      return;
+    }
+
+    try {
+      await Promise.all(
+        missingItems.map((item) =>
+          updateItem.mutateAsync({
+            id: item.id,
+            section_id: sectionId,
+            image_url: buildAutoImageUrl(item.name),
+          })
+        )
+      );
+      toast.success('Imágenes generadas');
+    } catch (error) {
+      toast.error('No pudimos generar imágenes');
+    }
   };
 
   if (isLoading) {
@@ -245,18 +321,24 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-medium text-foreground">{item.name}</span>
-                        {item.is_recommended && (
-                          <Star className="w-3.5 h-3.5 text-primary" />
-                        )}
-                        {item.is_vegan && (
-                          <Leaf className="w-3.5 h-3.5 text-green-500" />
-                        )}
-                        {item.is_spicy && (
-                          <Flame className="w-3.5 h-3.5 text-red-500" />
-                        )}
-                      </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium text-foreground">{item.name}</span>
+                    {item.is_recommended && (
+                      <Star className="w-3.5 h-3.5 text-primary" />
+                    )}
+                    {item.is_vegan && (
+                      <Leaf className="w-3.5 h-3.5 text-green-500" />
+                    )}
+                    {item.is_spicy && (
+                      <Flame className="w-3.5 h-3.5 text-red-500" />
+                    )}
+                    {item.is_gluten_free && (
+                      <span className="text-[10px] uppercase tracking-wide text-primary">Sin gluten</span>
+                    )}
+                    {item.is_dairy_free && (
+                      <span className="text-[10px] uppercase tracking-wide text-primary">Sin lactosa</span>
+                    )}
+                  </div>
                       <p className="text-sm text-primary font-medium">{formatPrice(item.price)}</p>
                     </div>
                   </div>
@@ -298,10 +380,22 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
         </SortableContext>
       </DndContext>
 
-      <Button onClick={openCreateDialog} variant="ghost" size="sm" className="w-full">
-        <Plus className="w-4 h-4 mr-2" />
-        Agregar ítem
-      </Button>
+      <div className="grid gap-2 md:grid-cols-2">
+        <Button onClick={openCreateDialog} variant="ghost" size="sm" className="w-full">
+          <Plus className="w-4 h-4 mr-2" />
+          Agregar ítem
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={handleGenerateMissingImages}
+          disabled={!autoImageEnabled}
+        >
+          Generar imágenes faltantes
+        </Button>
+      </div>
 
       {/* Edit/Create Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -321,6 +415,26 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="item-name-en">Nombre (EN)</Label>
+                <Input
+                  id="item-name-en"
+                  placeholder="English name"
+                  value={formData.name_en}
+                  onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="item-name-pt">Nombre (PT)</Label>
+                <Input
+                  id="item-name-pt"
+                  placeholder="Nome em português"
+                  value={formData.name_pt}
+                  onChange={(e) => setFormData({ ...formData, name_pt: e.target.value })}
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="item-desc">Descripción (opcional)</Label>
               <Textarea
@@ -329,6 +443,55 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="item-desc-en">Descripción (EN)</Label>
+                <Textarea
+                  id="item-desc-en"
+                  placeholder="English description"
+                  value={formData.description_en}
+                  onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="item-desc-pt">Descripción (PT)</Label>
+                <Textarea
+                  id="item-desc-pt"
+                  placeholder="Descrição em português"
+                  value={formData.description_pt}
+                  onChange={(e) => setFormData({ ...formData, description_pt: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="item-pairing">Maridaje</Label>
+                <Input
+                  id="item-pairing"
+                  placeholder="Maridaje sugerido"
+                  value={formData.pairing}
+                  onChange={(e) => setFormData({ ...formData, pairing: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="item-pairing-en">Maridaje (EN)</Label>
+                <Input
+                  id="item-pairing-en"
+                  placeholder="Pairing in English"
+                  value={formData.pairing_en}
+                  onChange={(e) => setFormData({ ...formData, pairing_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="item-pairing-pt">Maridaje (PT)</Label>
+                <Input
+                  id="item-pairing-pt"
+                  placeholder="Harmonização em português"
+                  value={formData.pairing_pt}
+                  onChange={(e) => setFormData({ ...formData, pairing_pt: e.target.value })}
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="item-price">Precio ($)</Label>
@@ -351,6 +514,25 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                 aspectRatio="wide"
                 placeholder="Foto del plato"
               />
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      image_url: buildAutoImageUrl(formData.name),
+                    })
+                  }
+                  disabled={!formData.name.trim()}
+                >
+                  Generar imagen sugerida
+                </Button>
+                {autoImageEnabled && !formData.image_url && (
+                  <span>Se generará automáticamente si no cargas una imagen.</span>
+                )}
+              </div>
             </div>
             <div className="space-y-3">
               <Label>Etiquetas</Label>
@@ -385,6 +567,45 @@ export function ItemsManager({ sectionId }: ItemsManagerProps) {
                   <Flame className="w-4 h-4 text-red-500" />
                   <span className="text-sm">Picante</span>
                 </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={formData.is_gluten_free}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_gluten_free: !!checked })
+                    }
+                  />
+                  <span className="text-sm">Sin gluten</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={formData.is_dairy_free}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_dairy_free: !!checked })
+                    }
+                  />
+                  <span className="text-sm">Sin lactosa</span>
+                </label>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Label>Alérgenos</Label>
+              <div className="flex flex-wrap gap-4">
+                {allergenOptions.map((allergen) => (
+                  <label key={allergen.id} className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox
+                      checked={formData.allergens.includes(allergen.id)}
+                      onCheckedChange={(checked) =>
+                        setFormData({
+                          ...formData,
+                          allergens: checked
+                            ? [...formData.allergens, allergen.id]
+                            : formData.allergens.filter((value) => value !== allergen.id),
+                        })
+                      }
+                    />
+                    <span className="text-sm">{allergen.label}</span>
+                  </label>
+                ))}
               </div>
             </div>
             <Button

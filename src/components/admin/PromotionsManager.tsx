@@ -65,12 +65,20 @@ interface PromotionsManagerProps {
 const defaultFormData = {
   title: '',
   description: '',
+  title_en: '',
+  title_pt: '',
+  description_en: '',
+  description_pt: '',
   price_text: '',
+  price_text_en: '',
+  price_text_pt: '',
   image_url: null as string | null,
   linked_section_id: '',
   linked_item_id: '',
   starts_at: '',
   ends_at: '',
+  ab_group: '',
+  ab_weight: '50',
 };
 
 export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) {
@@ -129,12 +137,20 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
     setFormData({
       title: promo.title,
       description: promo.description || '',
+      title_en: promo.title_en || '',
+      title_pt: promo.title_pt || '',
+      description_en: promo.description_en || '',
+      description_pt: promo.description_pt || '',
       price_text: promo.price_text,
+      price_text_en: promo.price_text_en || '',
+      price_text_pt: promo.price_text_pt || '',
       image_url: promo.image_url || null,
       linked_section_id: promo.linked_section_id || '',
       linked_item_id: promo.linked_item_id || '',
       starts_at: formatDateTimeForInput(promo.starts_at),
       ends_at: formatDateTimeForInput(promo.ends_at),
+      ab_group: promo.ab_group || '',
+      ab_weight: promo.ab_weight?.toString() || '50',
     });
     if (promo.linked_item_id) {
       setLinkType('item');
@@ -159,16 +175,26 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
       return;
     }
 
+    const weight = Math.min(100, Math.max(1, parseInt(formData.ab_weight || '50', 10)));
+
     const data = {
       menu_id: menuId,
       title: formData.title,
       description: formData.description || undefined,
+      title_en: formData.title_en || undefined,
+      title_pt: formData.title_pt || undefined,
+      description_en: formData.description_en || undefined,
+      description_pt: formData.description_pt || undefined,
       price_text: formData.price_text,
+      price_text_en: formData.price_text_en || undefined,
+      price_text_pt: formData.price_text_pt || undefined,
       image_url: formData.image_url,
       linked_section_id: linkType === 'section' ? formData.linked_section_id || undefined : undefined,
       linked_item_id: linkType === 'item' ? formData.linked_item_id || undefined : undefined,
       starts_at: formData.starts_at ? new Date(formData.starts_at).toISOString() : null,
       ends_at: formData.ends_at ? new Date(formData.ends_at).toISOString() : null,
+      ab_group: formData.ab_group || undefined,
+      ab_weight: weight,
     };
 
     try {
@@ -294,6 +320,11 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                           {promo.description && (
                             <p className="text-sm text-muted-foreground mt-1">{promo.description}</p>
                           )}
+                          {promo.ab_group && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Experimento: {promo.ab_group} · Peso {promo.ab_weight ?? 50}%
+                            </p>
+                          )}
                           {(promo.starts_at || promo.ends_at) && (
                             <p className="text-xs text-muted-foreground mt-1">
                               {promo.starts_at && `Desde: ${format(new Date(promo.starts_at), 'dd/MM/yy HH:mm')}`}
@@ -367,6 +398,26 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="promo-title-en">Título (EN)</Label>
+                <Input
+                  id="promo-title-en"
+                  placeholder="Happy Hour"
+                  value={formData.title_en}
+                  onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="promo-title-pt">Título (PT)</Label>
+                <Input
+                  id="promo-title-pt"
+                  placeholder="Happy Hour"
+                  value={formData.title_pt}
+                  onChange={(e) => setFormData({ ...formData, title_pt: e.target.value })}
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="promo-price">Texto de precio</Label>
               <Input
@@ -375,6 +426,26 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                 value={formData.price_text}
                 onChange={(e) => setFormData({ ...formData, price_text: e.target.value })}
               />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="promo-price-en">Texto de precio (EN)</Label>
+                <Input
+                  id="promo-price-en"
+                  placeholder="2-for-1, $18"
+                  value={formData.price_text_en}
+                  onChange={(e) => setFormData({ ...formData, price_text_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="promo-price-pt">Texto de precio (PT)</Label>
+                <Input
+                  id="promo-price-pt"
+                  placeholder="2x1, R$18"
+                  value={formData.price_text_pt}
+                  onChange={(e) => setFormData({ ...formData, price_text_pt: e.target.value })}
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="promo-desc">Descripción (opcional)</Label>
@@ -385,6 +456,26 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="promo-desc-en">Descripción (EN)</Label>
+                <Textarea
+                  id="promo-desc-en"
+                  placeholder="Promo description"
+                  value={formData.description_en}
+                  onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="promo-desc-pt">Descripción (PT)</Label>
+                <Textarea
+                  id="promo-desc-pt"
+                  placeholder="Descrição da promoção"
+                  value={formData.description_pt}
+                  onChange={(e) => setFormData({ ...formData, description_pt: e.target.value })}
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label>Imagen (opcional)</Label>
               <ImageUpload
@@ -394,6 +485,39 @@ export function PromotionsManager({ menuId, sections }: PromotionsManagerProps) 
                 aspectRatio="wide"
                 placeholder="Imagen de promoción"
               />
+            </div>
+
+            <div className="border-t border-border/50 pt-4 space-y-4">
+              <Label className="text-sm">A/B Testing</Label>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="promo-ab-group" className="text-xs text-muted-foreground">
+                    Grupo de experimento
+                  </Label>
+                  <Input
+                    id="promo-ab-group"
+                    placeholder="Ej: happy-hour"
+                    value={formData.ab_group}
+                    onChange={(e) => setFormData({ ...formData, ab_group: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="promo-ab-weight" className="text-xs text-muted-foreground">
+                    Peso (%)
+                  </Label>
+                  <Input
+                    id="promo-ab-weight"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={formData.ab_weight}
+                    onChange={(e) => setFormData({ ...formData, ab_weight: e.target.value })}
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Si varias promos comparten el mismo grupo, se mostrará una variante por visita.
+              </p>
             </div>
 
             {/* Schedule fields */}

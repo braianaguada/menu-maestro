@@ -124,7 +124,16 @@ export function useCreateSection() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { menu_id: string; name: string; description?: string; sort_order?: number }) => {
+    mutationFn: async (data: {
+      menu_id: string;
+      name: string;
+      description?: string;
+      name_en?: string | null;
+      name_pt?: string | null;
+      description_en?: string | null;
+      description_pt?: string | null;
+      sort_order?: number;
+    }) => {
       const { data: section, error } = await supabase
         .from('sections')
         .insert(data)
@@ -227,11 +236,21 @@ export function useCreateItem() {
       section_id: string; 
       name: string; 
       description?: string; 
+      description_en?: string | null;
+      description_pt?: string | null;
+      name_en?: string | null;
+      name_pt?: string | null;
+      pairing?: string | null;
+      pairing_en?: string | null;
+      pairing_pt?: string | null;
       price: number;
       image_url?: string | null;
       is_recommended?: boolean;
       is_vegan?: boolean;
       is_spicy?: boolean;
+      is_gluten_free?: boolean;
+      is_dairy_free?: boolean;
+      allergens?: string[];
       sort_order?: number;
     }) => {
       const { data: item, error } = await supabase
@@ -311,12 +330,20 @@ export function useCreatePromotion() {
       menu_id: string; 
       title: string; 
       description?: string; 
+      title_en?: string | null;
+      title_pt?: string | null;
+      description_en?: string | null;
+      description_pt?: string | null;
       price_text: string;
+      price_text_en?: string | null;
+      price_text_pt?: string | null;
       image_url?: string | null;
       linked_section_id?: string;
       linked_item_id?: string;
       starts_at?: string | null;
       ends_at?: string | null;
+      ab_group?: string | null;
+      ab_weight?: number;
       sort_order?: number;
     }) => {
       const { data: promo, error } = await supabase

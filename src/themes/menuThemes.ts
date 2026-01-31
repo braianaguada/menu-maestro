@@ -1,7 +1,7 @@
 // Premium Editorial Menu Themes
 // Each theme defines a complete visual identity for the public menu
 
-export type MenuTheme = 'editorial' | 'modern' | 'light' | 'bistro';
+export type MenuTheme = 'editorial' | 'modern' | 'light' | 'bistro' | 'noir';
 
 export interface ThemeConfig {
   id: MenuTheme;
@@ -35,6 +35,12 @@ export const menuThemes: Record<MenuTheme, ThemeConfig> = {
     className: 'theme-bistro',
     description: 'Warm terracotta and olive tones with a rustic premium feel',
   },
+  noir: {
+    id: 'noir',
+    name: 'Noir Gold',
+    className: 'theme-noir',
+    description: 'Dark charcoal palette with gold accents and serif refinement',
+  },
 };
 
 // Map old theme names to new ones
@@ -45,6 +51,7 @@ export function normalizeTheme(theme: string): MenuTheme {
     modern: 'modern',
     light: 'light',
     bistro: 'bistro',
+    noir: 'noir',
   };
   return themeMap[theme] || 'editorial';
 }
