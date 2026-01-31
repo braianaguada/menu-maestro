@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Download, QrCode } from 'lucide-react';
@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface QRCodeGeneratorProps {
   menuSlug: string;
@@ -17,8 +18,17 @@ interface QRCodeGeneratorProps {
 
 export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
   const qrRef = useRef<HTMLDivElement>(null);
+  const [language, setLanguage] = useState('auto');
   const menuUrl = `${window.location.origin}/m/${menuSlug}`;
-  const trackedMenuUrl = `${menuUrl}?source=qr`;
+
+  const trackedMenuUrl = useMemo(() => {
+    const url = new URL(menuUrl);
+    url.searchParams.set('source', 'qr');
+    if (language !== 'auto') {
+      url.searchParams.set('lang', language);
+    }
+    return url.toString();
+  }, [language, menuUrl]);
 
   const downloadQR = useCallback(() => {
     if (!qrRef.current) return;
@@ -63,7 +73,11 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
       ctx.fillText(menuName, padding, 130);
       ctx.font = '28px Inter, system-ui, sans-serif';
       ctx.fillStyle = '#d1d5db';
-      ctx.fillText('Menú digital · Escaneá para ver la carta', padding, 180);
+      ctx.fillText(
+        `Menú digital · Escaneá para ver la carta ${language !== 'auto' ? `(${language.toUpperCase()})` : ''}`,
+        padding,
+        180
+      );
 
       // QR container
       const qrX = (canvas.width - qrSize) / 2;
@@ -92,7 +106,7 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
       URL.revokeObjectURL(svgUrl);
     };
     img.src = svgUrl;
-  }, [menuSlug, menuName, trackedMenuUrl]);
+  }, [menuSlug, menuName, trackedMenuUrl, language]);
 
   return (
     <Dialog>
@@ -107,6 +121,22 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
           <DialogTitle>Código QR - {menuName}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-6 py-4">
+          <div className="w-full space-y-2">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              Idioma del QR
+            </p>
+            <Select value={language} onValueChange={setLanguage}>
+              <SelectTrigger>
+                <SelectValue placeholder="Idioma" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Detección automática</SelectItem>
+                <SelectItem value="es">Español</SelectItem>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="pt">Português</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div
             ref={qrRef}
             className="w-full rounded-2xl border border-border/60 bg-gradient-to-br from-background via-background to-muted/20 p-6 text-center shadow-menu-sm"
@@ -135,15 +165,15 @@ export function QRCodeGenerator({ menuSlug, menuName }: QRCodeGeneratorProps) {
               Enlace público:
             </p>
             <a
-              href={menuUrl}
+              href={trackedMenuUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline text-sm break-all"
             >
-              {menuUrl}
+              {trackedMenuUrl}
             </a>
             <p className="text-xs text-muted-foreground">
-              El QR incluye tracking de escaneos.
+              El QR incluye tracking de escaneos y preselección de idioma.
             </p>
           </div>
 

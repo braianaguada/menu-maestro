@@ -1,6 +1,6 @@
 export type MenuStatus = 'draft' | 'published';
 
-export type MenuTheme = 'editorial' | 'modern' | 'light' | 'bistro' | 'elegant';
+export type MenuTheme = 'editorial' | 'modern' | 'light' | 'bistro' | 'noir' | 'elegant';
 
 export interface Menu {
   id: string;
@@ -33,10 +33,16 @@ export interface Item {
   description: string | null;
   price: number;
   image_url: string | null;
+  pairing?: string | null;
+  origin_note?: string | null;
+  chef_note?: string | null;
   is_visible: boolean;
   is_recommended: boolean;
   is_vegan: boolean;
   is_spicy: boolean;
+  is_gluten_free?: boolean;
+  is_dairy_free?: boolean;
+  allergens?: string[] | null;
   sort_order: number;
   created_at: string;
   updated_at: string;

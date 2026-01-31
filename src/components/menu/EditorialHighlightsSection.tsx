@@ -1,6 +1,7 @@
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Item } from '@/types/menu';
+import { getPairingSuggestion } from '@/lib/menuSuggestions';
 
 interface HighlightedItem {
   item: Item;
@@ -52,6 +53,7 @@ export function EditorialHighlightsSection({
         <div className="grid gap-6 md:grid-cols-2">
           {items.map(({ item, sectionName }) => {
             const imageUrl = item.image_url || getFallbackImage(item.name);
+            const pairing = item.pairing || getPairingSuggestion(item.name);
 
             return (
               <button
@@ -93,6 +95,12 @@ export function EditorialHighlightsSection({
                         {item.description}
                       </p>
                     )}
+                    <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground/80">
+                      Maridaje sugerido
+                      <span className="block text-sm normal-case text-foreground/80 mt-1">
+                        {pairing}
+                      </span>
+                    </p>
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
                       <Star className="w-3.5 h-3.5" />
                       Recomendado

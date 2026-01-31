@@ -172,6 +172,43 @@ export default function MenuEditor() {
         </div>
       </div>
 
+      <div className="gradient-card border border-border/50 rounded-2xl p-6 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-foreground mb-2">
+              Vista en vivo · Editor WYSIWYG
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Visualizá mobile, desktop y print sin salir del editor para asegurar consistencia premium.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <a href={`/m/${currentData.slug}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Desktop
+              </a>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <a href={`/m/${currentData.slug}?view=mobile`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Mobile
+              </a>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <a
+                href={`/m/${currentData.slug}/print?theme=${currentData.theme}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Print
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
       <Tabs defaultValue="sections" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid rounded-full bg-card/60 border border-border/50">
@@ -344,6 +381,12 @@ export default function MenuEditor() {
                       <div className="flex flex-col">
                         <span>Bold Bistro</span>
                         <span className="text-xs text-muted-foreground">Terracota cálido, rústico</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="noir">
+                      <div className="flex flex-col">
+                        <span>Noir Gold</span>
+                        <span className="text-xs text-muted-foreground">Oscuro premium, dorados y serif</span>
                       </div>
                     </SelectItem>
                   </SelectContent>
